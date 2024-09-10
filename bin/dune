@@ -1,0 +1,4 @@
+(executable
+ (public_name rubics_cube)
+ (name main)
+ (libraries rubics_cube))
