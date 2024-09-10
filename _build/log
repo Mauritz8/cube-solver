@@ -1,6 +1,0 @@
-# dune init proj rubics_cube
-# OCAMLPARAM: unset
-# Shared cache: disabled
-# Shared cache location: /home/mauritz/.cache/dune/db
-# Workspace root: /home/mauritz/code/rubics_cube
-# Auto-detected concurrency: 12
