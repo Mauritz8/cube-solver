@@ -12,8 +12,7 @@ let solved_cube =
     side_one_color WHITE;
   ]
 
-let sticker_to_string sticker =
-  match sticker with
+let sticker_to_string = function
   | YELLOW -> "Y"
   | WHITE -> "W"
   | BLUE -> "B"
@@ -28,7 +27,15 @@ let side_to_string side =
   in
   String.concat "" (List.mapi f side)
 
-let cube_to_string cube = side_to_string (List.nth cube 0)
+let cube_to_string cube =
+  let side_string n = side_to_string (List.nth cube n) in
+  let front = side_string 0 in
+  let right = side_string 1 in
+  let back = side_string 2 in
+  let left = side_string 3 in
+  let top = side_string 4 in
+  let bottom = side_string 5 in
+  String.concat "\n\n" [ top; front; right; back; left; bottom ]
 
 let () =
   let cube_string = cube_to_string solved_cube in
