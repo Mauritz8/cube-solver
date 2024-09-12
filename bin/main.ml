@@ -39,20 +39,26 @@ let cube_to_string cube =
   String.concat "\n\n" [ top; front; right; back; left; bottom ]
 
 let move_up_clockwise cube =
-  let f i x =
-    if i = 0 then List.nth cube 3
-    else if i < 4 then List.nth cube (i - 1)
-    else x
+  let side_map i side =
+    let new_side =
+      if i > 3 then side
+      else List.nth cube (if i = 3 then 0 else i + 1)
+    in
+    let color_map j color = if j < 3 then List.nth new_side j else color in
+    List.mapi color_map side
   in
-  List.mapi f cube
+  List.mapi side_map cube
 
 let move_up_counter_clockwise cube =
-  let f i x =
-    if i = 3 then List.nth cube 0
-    else if i < 3 then List.nth cube (i + 1)
-    else x
+  let side_map i side =
+    let new_side =
+      if i > 3 then side
+      else List.nth cube (if i = 0 then 3 else i - 1)
+    in
+    let color_map j color = if j < 3 then List.nth new_side j else color in
+    List.mapi color_map side
   in
-  List.mapi f cube
+  List.mapi side_map cube
 
 let move_clockwise cube direction =
   match direction with
@@ -78,6 +84,7 @@ let move cube direction clockwise =
 
 let cube = solved_cube
 let cube2 = move cube UP true
+let cube3 = move cube2 UP false
 let _ = move cube DOWN true
 let _ = move cube RIGHT true
 let _ = move cube LEFT true
@@ -85,4 +92,5 @@ let _ = move cube FRONT true
 let _ = move cube BACK true
 
 (*let () = print_endline (cube_to_string cube)*)
-let () = print_endline (cube_to_string cube2)
+(*let () = print_endline (cube_to_string cube2)*)
+let () = print_endline (cube_to_string cube3)
