@@ -1,16 +1,16 @@
-type color = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
+type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK
 
-let side_one_color color = List.init 9 (fun _ -> color)
+let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
 
 let solved_cube =
   [
-    side_one_color GREEN;
-    side_one_color ORANGE;
-    side_one_color BLUE;
-    side_one_color RED;
-    side_one_color YELLOW;
-    side_one_color WHITE;
+    side_one_sticker GREEN;
+    side_one_sticker ORANGE;
+    side_one_sticker BLUE;
+    side_one_sticker RED;
+    side_one_sticker YELLOW;
+    side_one_sticker WHITE;
   ]
 
 let sticker_to_string = function
@@ -38,25 +38,34 @@ let cube_to_string cube =
   let bottom = side_string 5 in
   String.concat "\n\n" [ top; front; right; back; left; bottom ]
 
+let rotate_side side clockwise =
+  let new_side_indexes =
+    let indexes = [2; 5; 8; 1; 4; 7; 0; 3; 6] in
+    if clockwise then indexes else List.rev indexes
+  in
+  List.map (fun i -> List.nth side i) new_side_indexes
+
 let move_up_clockwise cube =
   let side_map i side =
-    let new_side =
-      if i > 3 then side
-      else List.nth cube (if i = 3 then 0 else i + 1)
+    let sticker_map j sticker =
+      let new_stickers_side = List.nth cube (if i = 3 then 0 else i + 1) in
+      if j < 3 then List.nth new_stickers_side j else sticker
     in
-    let color_map j color = if j < 3 then List.nth new_side j else color in
-    List.mapi color_map side
+    if i = 5 then side
+    else if i = 4 then rotate_side side true
+    else List.mapi sticker_map side
   in
   List.mapi side_map cube
 
 let move_up_counter_clockwise cube =
   let side_map i side =
-    let new_side =
-      if i > 3 then side
-      else List.nth cube (if i = 0 then 3 else i - 1)
+    let sticker_map j sticker =
+      let new_stickers_side = List.nth cube (if i = 0 then 3 else i - 1) in
+      if j < 3 then List.nth new_stickers_side j else sticker
     in
-    let color_map j color = if j < 3 then List.nth new_side j else color in
-    List.mapi color_map side
+    if i = 5 then side
+    else if i = 4 then rotate_side side false
+    else List.mapi sticker_map side
   in
   List.mapi side_map cube
 
