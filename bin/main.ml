@@ -54,39 +54,45 @@ let rotate_side side clockwise =
   in
   List.map (fun i -> List.nth side i) new_side_indexes
 
+let replace_at_indexes indexes lst new_lst =
+  let f i x = if List.mem i indexes then List.nth new_lst i else x in
+  List.mapi f lst
+
 let move_up cube clockwise =
-  let sticker_map new_stickers_side i sticker =
-    if i < 3 then List.nth new_stickers_side i else sticker
-  in
+  let replace_func = replace_at_indexes [ 0; 1; 2 ] in
   {
     bottom = cube.bottom;
     top = rotate_side cube.top clockwise;
     front =
-      List.mapi
-        (sticker_map (if clockwise then cube.right else cube.left))
-        cube.front;
+      replace_func cube.front (if clockwise then cube.right else cube.left);
     right =
-      List.mapi
-        (sticker_map (if clockwise then cube.back else cube.front))
-        cube.right;
-    back =
-      List.mapi
-        (sticker_map (if clockwise then cube.left else cube.right))
-        cube.back;
-    left =
-      List.mapi
-        (sticker_map (if clockwise then cube.front else cube.back))
-        cube.left;
+      replace_func cube.right (if clockwise then cube.back else cube.front);
+    back = replace_func cube.back (if clockwise then cube.left else cube.right);
+    left = replace_func cube.left (if clockwise then cube.front else cube.back);
+  }
+
+let move_right cube clockwise =
+  let replace_func = replace_at_indexes [ 2; 5; 8 ] in
+  {
+    left = cube.left;
+    right = rotate_side cube.right clockwise;
+    front =
+      replace_func cube.front (if clockwise then cube.bottom else cube.top);
+    top = replace_func cube.top (if clockwise then cube.front else cube.back);
+    back = replace_func cube.back (if clockwise then cube.top else cube.bottom);
+    bottom =
+      replace_func cube.bottom (if clockwise then cube.back else cube.front);
   }
 
 let move cube direction clockwise =
+  let f g = g cube clockwise in
   match direction with
-  | UP -> move_up cube clockwise
-  | DOWN -> move_up cube clockwise
-  | RIGHT -> move_up cube clockwise
-  | LEFT -> move_up cube clockwise
-  | FRONT -> move_up cube clockwise
-  | BACK -> move_up cube clockwise
+  | UP -> f move_up
+  | DOWN -> f move_up
+  | RIGHT -> f move_right
+  | LEFT -> f move_up
+  | FRONT -> f move_up
+  | BACK -> f move_up
 
 let cube = solved_cube
 let cube2 = move cube UP true
