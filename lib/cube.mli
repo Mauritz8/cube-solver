@@ -1,6 +1,7 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK
 type side = sticker list
+
 type cube = {
   front : side;
   right : side;

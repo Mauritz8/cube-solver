@@ -1,6 +1,7 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK
 type side = sticker list
+
 type cube = {
   front : side;
   right : side;
@@ -48,7 +49,7 @@ let cube_to_string cube =
 
 let rotate_side side clockwise =
   let new_side_indexes =
-    let indexes = [ 6; 3; 0; 7; 4; 1; 8; 5; 2; ] in
+    let indexes = [ 6; 3; 0; 7; 4; 1; 8; 5; 2 ] in
     if clockwise then indexes else List.rev indexes
   in
   List.map (fun i -> List.nth side i) new_side_indexes
@@ -144,4 +145,3 @@ let move cube direction clockwise =
   | LEFT -> f move_left
   | FRONT -> f move_front
   | BACK -> f move_back
-
