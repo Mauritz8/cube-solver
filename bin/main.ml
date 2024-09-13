@@ -71,6 +71,19 @@ let move_up cube clockwise =
     left = replace_func cube.left (if clockwise then cube.front else cube.back);
   }
 
+let move_down cube clockwise =
+  let replace_func = replace_at_indexes [ 6; 7; 8 ] in
+  {
+    top = cube.top;
+    bottom = rotate_side cube.bottom clockwise;
+    front =
+      replace_func cube.front (if clockwise then cube.left else cube.right);
+    right =
+      replace_func cube.right (if clockwise then cube.front else cube.back);
+    back = replace_func cube.back (if clockwise then cube.right else cube.left);
+    left = replace_func cube.left (if clockwise then cube.back else cube.front);
+  }
+
 let move_right cube clockwise =
   let replace_func = replace_at_indexes [ 2; 5; 8 ] in
   {
@@ -82,6 +95,45 @@ let move_right cube clockwise =
     back = replace_func cube.back (if clockwise then cube.top else cube.bottom);
     bottom =
       replace_func cube.bottom (if clockwise then cube.back else cube.front);
+  }
+
+let move_left cube clockwise =
+  let replace_func = replace_at_indexes [ 0; 3; 6 ] in
+  {
+    right = cube.right;
+    left = rotate_side cube.left clockwise;
+    front =
+      replace_func cube.front (if clockwise then cube.top else cube.bottom);
+    top = replace_func cube.top (if clockwise then cube.back else cube.front);
+    back = replace_func cube.back (if clockwise then cube.bottom else cube.top);
+    bottom =
+      replace_func cube.bottom (if clockwise then cube.front else cube.back);
+  }
+
+let move_front cube clockwise =
+  let replace_func = replace_at_indexes [ 0; 3; 6 ] in
+  {
+    back = cube.back;
+    front = rotate_side cube.front clockwise;
+    right =
+      replace_func cube.right (if clockwise then cube.top else cube.bottom);
+    top = replace_func cube.top (if clockwise then cube.left else cube.right);
+    left = replace_func cube.left (if clockwise then cube.bottom else cube.top);
+    bottom =
+      replace_func cube.bottom (if clockwise then cube.right else cube.left);
+  }
+
+let move_back cube clockwise =
+  let replace_func = replace_at_indexes [ 0; 1; 2 ] in
+  {
+    front = cube.front;
+    back = rotate_side cube.back clockwise;
+    right =
+      replace_func cube.right (if clockwise then cube.bottom else cube.top);
+    top = replace_func cube.top (if clockwise then cube.right else cube.left);
+    left = replace_func cube.left (if clockwise then cube.top else cube.bottom);
+    bottom =
+      replace_func cube.bottom (if clockwise then cube.left else cube.right);
   }
 
 let move cube direction clockwise =
