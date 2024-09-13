@@ -48,7 +48,7 @@ let cube_to_string cube =
 
 let rotate_side side clockwise =
   let new_side_indexes =
-    let indexes = [ 2; 5; 8; 1; 4; 7; 0; 3; 6 ] in
+    let indexes = [ 6; 3; 0; 7; 4; 1; 8; 5; 2; ] in
     if clockwise then indexes else List.rev indexes
   in
   List.map (fun i -> List.nth side i) new_side_indexes

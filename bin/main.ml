@@ -1,5 +1,4 @@
-open Rubics_cube
-open Cube
+open Rubics_cube.Cube
 
 let cube = solved_cube
 let cube2 = move cube UP true
