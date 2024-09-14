@@ -33,50 +33,21 @@ function move_cube_post_req(direction, clockwise) {
     });
 }
 
-document
-  .getElementById('move_up_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["UP"], true));
+function move_on_btn_click(btn_id, direction, clockwise) {
+  document
+    .getElementById(btn_id)
+    .addEventListener('click', () => move_cube_post_req([direction], clockwise));
+}
 
-document
-  .getElementById('move_up_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["UP"], false));
-
-document
-  .getElementById('move_down_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["DOWN"], true));
-
-document
-  .getElementById('move_down_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["DOWN"], false));
-
-document
-  .getElementById('move_right_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["RIGHT"], true));
-
-document
-  .getElementById('move_right_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["RIGHT"], false));
-
-document
-  .getElementById('move_left_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["LEFT"], true));
-
-document
-  .getElementById('move_left_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["LEFT"], false));
-
-document
-  .getElementById('move_front_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["FRONT"], true));
-
-document
-  .getElementById('move_front_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["FRONT"], false));
-
-document
-  .getElementById('move_back_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["BACK"], true));
-
-document
-  .getElementById('move_back_counter_clockwise_btn')
-  .addEventListener('click', () => move_cube_post_req(["BACK"], false));
+move_on_btn_click('move_up_clockwise_btn', 'UP', true);
+move_on_btn_click('move_up_counter_clockwise_btn', 'UP', false);
+move_on_btn_click('move_down_clockwise_btn', 'DOWN', true);
+move_on_btn_click('move_down_counter_clockwise_btn', 'DOWN', false);
+move_on_btn_click('move_right_clockwise_btn', 'RIGHT', true);
+move_on_btn_click('move_right_counter_clockwise_btn', 'RIGHT', false);
+move_on_btn_click('move_left_clockwise_btn', 'LEFT', true);
+move_on_btn_click('move_left_counter_clockwise_btn', 'LEFT', false);
+move_on_btn_click('move_front_clockwise_btn', 'FRONT', true);
+move_on_btn_click('move_front_counter_clockwise_btn', 'FRONT', false);
+move_on_btn_click('move_back_clockwise_btn', 'BACK', true);
+move_on_btn_click('move_back_counter_clockwise_btn', 'BACK', false);
