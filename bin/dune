@@ -1,4 +1,4 @@
 (executable
  (public_name rubics_cube)
  (name server)
- (libraries rubics_cube dream))
+ (libraries rubics_cube dream dream-html))

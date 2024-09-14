@@ -16,11 +16,11 @@ let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
 let solved_cube =
   {
     front = side_one_sticker GREEN;
-    right = side_one_sticker ORANGE;
+    right = side_one_sticker RED;
     back = side_one_sticker BLUE;
-    left = side_one_sticker RED;
-    top = side_one_sticker YELLOW;
-    bottom = side_one_sticker WHITE;
+    left = side_one_sticker ORANGE;
+    top = side_one_sticker WHITE;
+    bottom = side_one_sticker YELLOW;
   }
 
 let sticker_to_string = function
