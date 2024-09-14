@@ -1,2 +1,3 @@
 (library
- (name rubics_cube))
+ (name rubics_cube)
+ (preprocess (pps ppx_yojson_conv)))

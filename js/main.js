@@ -2,17 +2,17 @@ function getSideStickers(sideId) {
   const side = document.getElementById(sideId);
   const sticker_elems = Array.from(side.getElementsByClassName('sticker'));
   return sticker_elems.map(
-    sticker_elem => sticker_elem.classList[1].toUpperCase()
+    sticker_elem => [sticker_elem.classList[1].toUpperCase()]
   );
 }
 
 function getCube() {
   return {
-    top: getSideStickers('top'),
-    bottom: getSideStickers('bottom'),
+    front: getSideStickers('front'),
     right: getSideStickers('right'),
     left: getSideStickers('left'),
-    front: getSideStickers('front'),
+    top: getSideStickers('top'),
+    bottom: getSideStickers('bottom'),
     back: getSideStickers('back'),
   };
 }
@@ -24,7 +24,7 @@ function move_cube_post_req(path) {
     body: JSON.stringify(getCube()),
   }).then(res => res.text())
     .then(text => {
-      document.querySelector('html').innerHTML = text;
+      document.getElementById('cube').outerHTML = text;
     });
 }
 

@@ -13,9 +13,6 @@ depends: [
   "ocaml"
   "dune" {>= "3.15"}
   "odoc" {with-doc}
-  "alcotest" {with-test}
-  "dream"
-  "dream-html"
 ]
 build: [
   ["dune" "subst"] {dev}

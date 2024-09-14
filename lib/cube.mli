@@ -1,6 +1,6 @@
-type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
+type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE [@@deriving yojson]
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK
-type side = sticker list
+type side = sticker list [@@deriving yojson]
 
 type cube = {
   front : side;
@@ -9,7 +9,7 @@ type cube = {
   top : side;
   bottom : side;
   back : side;
-}
+} [@@deriving yojson]
 
 val solved_cube : cube
 val side_to_string : side -> string
