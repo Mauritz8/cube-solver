@@ -1,6 +1,8 @@
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE [@@deriving yojson]
+type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
+[@@deriving yojson]
+
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
 type side = sticker list [@@deriving yojson]
 
@@ -11,7 +13,8 @@ type cube = {
   top : side;
   bottom : side;
   back : side;
-} [@@deriving yojson]
+}
+[@@deriving yojson]
 
 let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
 
