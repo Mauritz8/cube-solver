@@ -8,12 +8,12 @@
 
 .side {
   display: flex;
-  width: 66px;
+  width: 126px;
   flex-wrap: wrap;
 }
 
 .top {
-  margin-left: 65px;
+  margin-left: 125px;
 }
 
 .left {
@@ -29,12 +29,12 @@
 }
 
 .bottom {
-  margin-left: 65px;
+  margin-left: 125px;
 }
 
 .sticker {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   border: 1px solid black;
 }
 
