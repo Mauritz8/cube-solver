@@ -13,7 +13,7 @@ let sticker_class sticker =
 let sticker_div sticker = div [class_ "sticker %s" (sticker_class sticker)] []
 
 let side_div side side_class =
-  div [class_ "side %s" side_class] (List.map sticker_div side)
+  div [class_ "side"; id side_class] (List.map sticker_div side)
 
 let page cube =
   html [] [
@@ -31,6 +31,8 @@ let page cube =
         side_div cube.back "back";
         side_div cube.bottom "bottom";
       ];
+      button [type_ "button"; id "move_up_btn"] [txt "U"];
+      script [src "js/main.js"] "";
     ];
   ]
 
@@ -38,6 +40,10 @@ let () =
   Dream.run
   @@ Dream.logger
   @@ Dream.router [
+    Dream.post "/api/move_up" (fun _ ->
+      Dream_html.respond (h1 [] [txt "hello world"])
+    );
+
     Dream.get "/" (fun _ -> Dream_html.respond (page solved_cube));
     Dream.get "/css/**" (Dream.static "css/");
     Dream.get "/js/**" (Dream.static "js/");

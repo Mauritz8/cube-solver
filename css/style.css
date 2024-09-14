@@ -12,23 +12,23 @@
   flex-wrap: wrap;
 }
 
-.top {
+#top {
   margin-left: 125px;
 }
 
-.left {
+#left {
   float: left;
 }
 
-.front {
+#front {
   float: left;
 }
 
-.right {
+#right {
   float: left;
 }
 
-.bottom {
+#bottom {
   margin-left: 125px;
 }
 
