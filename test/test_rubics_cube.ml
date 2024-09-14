@@ -54,7 +54,8 @@ let move_up_clockwise_test () =
 let move_up_counter_clockwise_test () =
   let expect =
     {
-      front = [ GREEN; YELLOW; BLUE; YELLOW; GREEN; ORANGE; WHITE; BLUE; YELLOW ];
+      front =
+        [ GREEN; YELLOW; BLUE; YELLOW; GREEN; ORANGE; WHITE; BLUE; YELLOW ];
       back = [ GREEN; ORANGE; BLUE; RED; BLUE; ORANGE; WHITE; BLUE; BLUE ];
       right = [ RED; BLUE; RED; YELLOW; RED; YELLOW; ORANGE; RED; BLUE ];
       left = [ WHITE; RED; ORANGE; WHITE; ORANGE; GREEN; ORANGE; GREEN; GREEN ];
@@ -206,7 +207,7 @@ let move_right_counter_clockwise_test () =
       back = [ ORANGE; RED; ORANGE; WHITE; BLUE; ORANGE; GREEN; BLUE; BLUE ];
       right = [ BLUE; YELLOW; BLUE; ORANGE; RED; RED; GREEN; YELLOW; ORANGE ];
       left = [ GREEN; YELLOW; BLUE; WHITE; ORANGE; GREEN; ORANGE; GREEN; GREEN ];
-      top = [ WHITE; GREEN; WHITE; BLUE; WHITE; GREEN; YELLOW; ORANGE; WHITE ];
+      top = [ WHITE; GREEN; WHITE; BLUE; WHITE; RED; YELLOW; ORANGE; WHITE ];
       bottom = [ RED; RED; RED; WHITE; YELLOW; ORANGE; YELLOW; WHITE; YELLOW ];
     }
   in
@@ -281,7 +282,8 @@ let move_left_counter_clockwise_test () =
       right = [ GREEN; ORANGE; BLUE; YELLOW; RED; YELLOW; ORANGE; RED; BLUE ];
       left = [ BLUE; GREEN; GREEN; YELLOW; ORANGE; GREEN; GREEN; WHITE; ORANGE ];
       top = [ RED; GREEN; RED; YELLOW; WHITE; GREEN; WHITE; ORANGE; YELLOW ];
-      bottom = [ BLUE; RED; GREEN; ORANGE; YELLOW; WHITE; ORANGE; WHITE; ORANGE ];
+      bottom =
+        [ BLUE; RED; GREEN; ORANGE; YELLOW; WHITE; ORANGE; WHITE; ORANGE ];
     }
   in
   let actual = move cube LEFT false in
@@ -354,9 +356,11 @@ let move_front_counter_clockwise_test () =
       front = [ RED; ORANGE; YELLOW; BLUE; GREEN; BLUE; RED; YELLOW; WHITE ];
       back = [ WHITE; RED; ORANGE; RED; BLUE; ORANGE; WHITE; BLUE; BLUE ];
       right = [ GREEN; ORANGE; BLUE; RED; RED; YELLOW; RED; RED; BLUE ];
-      left = [ GREEN; YELLOW; YELLOW; WHITE; ORANGE; ORANGE; ORANGE; GREEN; YELLOW ];
+      left =
+        [ GREEN; YELLOW; YELLOW; WHITE; ORANGE; ORANGE; ORANGE; GREEN; YELLOW ];
       top = [ WHITE; GREEN; RED; BLUE; WHITE; GREEN; GREEN; YELLOW; ORANGE ];
-      bottom = [ BLUE; GREEN; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
+      bottom =
+        [ BLUE; GREEN; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
   let actual = move cube FRONT false in
@@ -426,9 +430,10 @@ let move_back_counter_clockwise_test () =
   let expect =
     {
       front = [ RED; BLUE; RED; YELLOW; GREEN; ORANGE; WHITE; BLUE; YELLOW ];
-      back = [];
+      back = [ ORANGE; ORANGE; BLUE; RED; BLUE; BLUE; WHITE; RED; WHITE ];
       right = [ GREEN; ORANGE; WHITE; YELLOW; RED; GREEN; ORANGE; RED; RED ];
-      left = [ YELLOW; YELLOW; BLUE; WHITE; ORANGE; GREEN; ORANGE; GREEN; GREEN ];
+      left =
+        [ YELLOW; YELLOW; BLUE; WHITE; ORANGE; GREEN; ORANGE; GREEN; GREEN ];
       top = [ ORANGE; WHITE; GREEN; BLUE; WHITE; GREEN; YELLOW; ORANGE; YELLOW ];
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; BLUE; YELLOW; BLUE ];
     }
@@ -466,16 +471,22 @@ let () =
       ( "moves",
         [
           test_case "Move up clockwise" `Quick move_up_clockwise_test;
-          test_case "Move up counter clockwise" `Quick move_up_counter_clockwise_test;
+          test_case "Move up counter clockwise" `Quick
+            move_up_counter_clockwise_test;
           test_case "Move down clockwise" `Quick move_down_clockwise_test;
-          test_case "Move down counter clockwise" `Quick move_down_counter_clockwise_test;
+          test_case "Move down counter clockwise" `Quick
+            move_down_counter_clockwise_test;
           test_case "Move right clockwise" `Quick move_right_clockwise_test;
-          test_case "Move right counter clockwise" `Quick move_right_counter_clockwise_test;
+          test_case "Move right counter clockwise" `Quick
+            move_right_counter_clockwise_test;
           test_case "Move left clockwise" `Quick move_left_clockwise_test;
-          test_case "Move left counter clockwise" `Quick move_left_counter_clockwise_test;
+          test_case "Move left counter clockwise" `Quick
+            move_left_counter_clockwise_test;
           test_case "Move front clockwise" `Quick move_front_clockwise_test;
-          test_case "Move front counter clockwise" `Quick move_front_counter_clockwise_test;
+          test_case "Move front counter clockwise" `Quick
+            move_front_counter_clockwise_test;
           test_case "Move back clockwise" `Quick move_back_clockwise_test;
-          test_case "Move back counter clockwise" `Quick move_back_counter_clockwise_test;
+          test_case "Move back counter clockwise" `Quick
+            move_back_counter_clockwise_test;
         ] );
     ]

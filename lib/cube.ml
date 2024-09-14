@@ -102,7 +102,13 @@ let move_right cube clockwise =
       replace_at_indexes [ 2; 5; 8 ] cube.front
         (if clockwise then cube.bottom else cube.top);
     top =
-      replace_at_indexes [ 2; 5; 8 ] cube.top
+      replace_mapped
+        [
+          (2, if clockwise then 2 else 6);
+          (5, if clockwise then 5 else 3);
+          (8, if clockwise then 8 else 0);
+        ]
+        cube.top
         (if clockwise then cube.front else cube.back);
     back =
       replace_mapped
@@ -111,7 +117,11 @@ let move_right cube clockwise =
         (if clockwise then cube.top else cube.bottom);
     bottom =
       replace_mapped
-        [ (8, 0); (5, 3); (2, 6) ]
+        [
+          (2, if clockwise then 6 else 2);
+          (5, if clockwise then 3 else 5);
+          (8, if clockwise then 0 else 8);
+        ]
         cube.bottom
         (if clockwise then cube.back else cube.front);
   }
@@ -125,7 +135,11 @@ let move_left cube clockwise =
         (if clockwise then cube.top else cube.bottom);
     top =
       replace_mapped
-        [ (0, 8); (3, 5); (6, 2) ]
+        [
+          (0, if clockwise then 8 else 0);
+          (3, if clockwise then 5 else 3);
+          (6, if clockwise then 2 else 6);
+        ]
         cube.top
         (if clockwise then cube.back else cube.front);
     back =
@@ -134,7 +148,13 @@ let move_left cube clockwise =
         cube.back
         (if clockwise then cube.bottom else cube.top);
     bottom =
-      replace_at_indexes [ 0; 3; 6 ] cube.bottom
+      replace_mapped
+        [
+          (0, if clockwise then 0 else 8);
+          (3, if clockwise then 3 else 5);
+          (6, if clockwise then 6 else 2);
+        ]
+        cube.bottom
         (if clockwise then cube.front else cube.back);
   }
 
@@ -144,22 +164,38 @@ let move_front cube clockwise =
     front = rotate_side cube.front clockwise;
     right =
       replace_mapped
-        [ (0, 6); (3, 7); (6, 8) ]
+        [
+          (0, if clockwise then 6 else 2);
+          (3, if clockwise then 7 else 1);
+          (6, if clockwise then 8 else 0);
+        ]
         cube.right
         (if clockwise then cube.top else cube.bottom);
     top =
       replace_mapped
-        [ (6, 8); (7, 5); (8, 2) ]
+        [
+          (6, if clockwise then 8 else 0);
+          (7, if clockwise then 5 else 3);
+          (8, if clockwise then 2 else 6);
+        ]
         cube.top
         (if clockwise then cube.left else cube.right);
     left =
       replace_mapped
-        [ (2, 0); (5, 1); (8, 2) ]
+        [
+          (2, if clockwise then 0 else 8);
+          (5, if clockwise then 1 else 7);
+          (8, if clockwise then 2 else 6);
+        ]
         cube.left
         (if clockwise then cube.bottom else cube.top);
     bottom =
       replace_mapped
-        [ (0, 6); (1, 3); (2, 0) ]
+        [
+          (0, if clockwise then 6 else 2);
+          (1, if clockwise then 3 else 5);
+          (2, if clockwise then 0 else 8);
+        ]
         cube.bottom
         (if clockwise then cube.right else cube.left);
   }
@@ -170,22 +206,38 @@ let move_back cube clockwise =
     back = rotate_side cube.back clockwise;
     right =
       replace_mapped
-        [ (2, 8); (5, 7); (8, 6) ]
+        [
+          (2, if clockwise then 8 else 0);
+          (5, if clockwise then 7 else 1);
+          (8, if clockwise then 6 else 2);
+        ]
         cube.right
         (if clockwise then cube.bottom else cube.top);
     top =
       replace_mapped
-        [ (0, 2); (1, 5); (2, 8) ]
+        [
+          (0, if clockwise then 2 else 6);
+          (1, if clockwise then 5 else 3);
+          (2, if clockwise then 8 else 0);
+        ]
         cube.top
         (if clockwise then cube.right else cube.left);
     left =
       replace_mapped
-        [ (0, 2); (3, 1); (6, 0) ]
+        [
+          (0, if clockwise then 2 else 6);
+          (3, if clockwise then 1 else 7);
+          (6, if clockwise then 0 else 8);
+        ]
         cube.left
         (if clockwise then cube.top else cube.bottom);
     bottom =
       replace_mapped
-        [ (6, 0); (7, 3); (8, 6) ]
+        [
+          (6, if clockwise then 0 else 8);
+          (7, if clockwise then 3 else 5);
+          (8, if clockwise then 6 else 2);
+        ]
         cube.bottom
         (if clockwise then cube.left else cube.right);
   }
