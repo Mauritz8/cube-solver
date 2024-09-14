@@ -39,24 +39,24 @@
 }
 
 .white {
-  background-color: white;
+  background-color: #FFFFFF;
 }
 
 .yellow {
-  background-color: yellow;
+  background-color: #FFD500;
 }
 .green {
-  background-color: green;
+  background-color: #009B48;
 }
 
 .red {
-  background-color: red;
+  background-color: #B90000;
 }
 
 .blue {
-  background-color: blue;
+  background-color: #0045AD;
 }
 
 .orange {
-  background-color: orange;
+  background-color: #FF5900;
 }
