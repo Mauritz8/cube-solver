@@ -2,4 +2,4 @@
  (public_name rubics_cube)
  (name server)
  (libraries rubics_cube dream dream-html)
- (preprocess (pps lwt_ppx)))
+ (preprocess (pps lwt_ppx ppx_yojson_conv)))
