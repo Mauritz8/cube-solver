@@ -1,0 +1,62 @@
+#cube {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.side {
+  display: flex;
+  width: 66px;
+  flex-wrap: wrap;
+}
+
+.top {
+  margin-left: 65px;
+}
+
+.left {
+  float: left;
+}
+
+.front {
+  float: left;
+}
+
+.right {
+  float: left;
+}
+
+.bottom {
+  margin-left: 65px;
+}
+
+.sticker {
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+}
+
+.white {
+  background-color: white;
+}
+
+.yellow {
+  background-color: yellow;
+}
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.orange {
+  background-color: orange;
+}
