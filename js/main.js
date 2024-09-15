@@ -57,5 +57,5 @@ move_on_btn_click('move_back_counter_clockwise_btn', 'BACK', false);
 document.getElementById('scramble_btn').addEventListener('click', () => {
   fetch('/api/scramble')
     .then(res => res.text())
-    .then(text => document.getElementById('cube').outerHTML = text);
+    .then(text => document.getElementById('cube_container').outerHTML = text);
 });
