@@ -40,35 +40,53 @@ let page cube =
   html []
     [
       head []
-        [ title [] "test"; link [ rel "stylesheet"; href "css/style.css" ] ];
+        [
+          title [] "Rubic's cube";
+          link [ rel "stylesheet"; href "css/style.css" ];
+        ];
       body []
         [
-          h1 [] [ txt "this is a test" ];
+          h1 [] [ txt "Rubic's cube" ];
           cube_div cube;
-          button [ type_ "button"; id "move_up_clockwise_btn" ] [ txt "U" ];
-          button
-            [ type_ "button"; id "move_up_counter_clockwise_btn" ]
-            [ txt "U'" ];
-          button [ type_ "button"; id "move_down_clockwise_btn" ] [ txt "D" ];
-          button
-            [ type_ "button"; id "move_down_counter_clockwise_btn" ]
-            [ txt "D'" ];
-          button [ type_ "button"; id "move_right_clockwise_btn" ] [ txt "R" ];
-          button
-            [ type_ "button"; id "move_right_counter_clockwise_btn" ]
-            [ txt "R'" ];
-          button [ type_ "button"; id "move_left_clockwise_btn" ] [ txt "L" ];
-          button
-            [ type_ "button"; id "move_left_counter_clockwise_btn" ]
-            [ txt "L'" ];
-          button [ type_ "button"; id "move_front_clockwise_btn" ] [ txt "F" ];
-          button
-            [ type_ "button"; id "move_front_counter_clockwise_btn" ]
-            [ txt "F'" ];
-          button [ type_ "button"; id "move_back_clockwise_btn" ] [ txt "B" ];
-          button
-            [ type_ "button"; id "move_back_counter_clockwise_btn" ]
-            [ txt "B'" ];
+          div []
+            [ button [ type_ "button"; id "scramble_btn" ] [ txt "Scramble" ] ];
+          div []
+            [
+              button [ type_ "button"; id "move_up_clockwise_btn" ] [ txt "U" ];
+              button
+                [ type_ "button"; id "move_up_counter_clockwise_btn" ]
+                [ txt "U'" ];
+              button
+                [ type_ "button"; id "move_down_clockwise_btn" ]
+                [ txt "D" ];
+              button
+                [ type_ "button"; id "move_down_counter_clockwise_btn" ]
+                [ txt "D'" ];
+              button
+                [ type_ "button"; id "move_right_clockwise_btn" ]
+                [ txt "R" ];
+              button
+                [ type_ "button"; id "move_right_counter_clockwise_btn" ]
+                [ txt "R'" ];
+              button
+                [ type_ "button"; id "move_left_clockwise_btn" ]
+                [ txt "L" ];
+              button
+                [ type_ "button"; id "move_left_counter_clockwise_btn" ]
+                [ txt "L'" ];
+              button
+                [ type_ "button"; id "move_front_clockwise_btn" ]
+                [ txt "F" ];
+              button
+                [ type_ "button"; id "move_front_counter_clockwise_btn" ]
+                [ txt "F'" ];
+              button
+                [ type_ "button"; id "move_back_clockwise_btn" ]
+                [ txt "B" ];
+              button
+                [ type_ "button"; id "move_back_counter_clockwise_btn" ]
+                [ txt "B'" ];
+            ];
           script [ src "js/main.js" ] "";
         ];
     ]
@@ -84,6 +102,8 @@ let () =
              in
              Dream_html.respond
                (cube_div (move data.cube data.direction data.clockwise)));
+         Dream.get "/api/scramble" (fun _ ->
+             Dream_html.respond (cube_div (scramble ())));
          Dream.get "/" (fun _ -> Dream_html.respond (page solved_cube));
          Dream.get "/css/**" (Dream.static "css/");
          Dream.get "/js/**" (Dream.static "js/");

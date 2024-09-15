@@ -256,3 +256,24 @@ let move cube direction clockwise =
   | LEFT -> f move_left
   | FRONT -> f move_front
   | BACK -> f move_back
+
+let random_direction () =
+  Random.self_init ();
+  match Random.int 6 with
+  | 0 -> UP
+  | 1 -> DOWN
+  | 2 -> RIGHT
+  | 3 -> LEFT
+  | 4 -> FRONT
+  | 5 -> BACK
+  | _ -> failwith "unreachable state"
+
+let random_bool () =
+  Random.self_init ();
+  if Random.int 2 = 0 then false else true
+
+let random_move cube = move cube (random_direction ()) (random_bool ())
+
+let scramble () =
+  let rec aux cube n = if n = 0 then cube else aux (random_move cube) (n - 1) in
+  aux solved_cube 20

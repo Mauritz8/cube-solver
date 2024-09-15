@@ -51,3 +51,9 @@ move_on_btn_click('move_front_clockwise_btn', 'FRONT', true);
 move_on_btn_click('move_front_counter_clockwise_btn', 'FRONT', false);
 move_on_btn_click('move_back_clockwise_btn', 'BACK', true);
 move_on_btn_click('move_back_counter_clockwise_btn', 'BACK', false);
+
+document.getElementById('scramble_btn').addEventListener('click', () => {
+  fetch('/api/scramble')
+    .then(res => res.text())
+    .then(text => document.getElementById('cube').outerHTML = text);
+});
