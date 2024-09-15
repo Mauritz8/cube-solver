@@ -14,8 +14,12 @@ type cube = {
 }
 [@@deriving yojson]
 
+type move = { direction : direction; clockwise : bool } [@@deriving yojson]
+type scramble = { new_cube : cube; moves : move list }
+
 val solved_cube : cube
 val side_to_string : side -> string
 val cube_to_string : cube -> string
-val move : cube -> direction -> bool -> cube
-val scramble : unit -> cube
+val make_move : cube -> move -> cube
+val scramble : unit -> scramble
+val moves_string : move list -> string

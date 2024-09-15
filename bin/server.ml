@@ -1,14 +1,8 @@
 open Rubics_cube.Cube
 open Dream_html
 open HTML
-open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type make_move_req_body = {
-  direction : direction;
-  clockwise : bool;
-  cube : cube;
-}
-[@@deriving yojson]
+type make_move_req_body = { move : move; cube : cube } [@@deriving yojson]
 
 let sticker_class sticker =
   match sticker with
@@ -36,6 +30,12 @@ let cube_div cube =
       side_div cube.bottom "bottom";
     ]
 
+let scramble_div moves =
+  div [ id "scramble_div" ] [ span [] [ txt "%s" (moves_string moves) ] ]
+
+let cube_container cube scramble_moves =
+  div [ id "cube_container" ] [ scramble_div scramble_moves; cube_div cube ]
+
 let page cube =
   html []
     [
@@ -47,7 +47,7 @@ let page cube =
       body []
         [
           h1 [] [ txt "Rubic's cube" ];
-          cube_div cube;
+          cube_container cube [];
           div []
             [ button [ type_ "button"; id "scramble_btn" ] [ txt "Scramble" ] ];
           div []
@@ -100,10 +100,11 @@ let () =
              let data =
                body |> Yojson.Safe.from_string |> make_move_req_body_of_yojson
              in
-             Dream_html.respond
-               (cube_div (move data.cube data.direction data.clockwise)));
+             Dream_html.respond (cube_div (make_move data.cube data.move)));
          Dream.get "/api/scramble" (fun _ ->
-             Dream_html.respond (cube_div (scramble ())));
+             let scramble = scramble () in
+             Dream_html.respond
+               (cube_container scramble.new_cube scramble.moves));
          Dream.get "/" (fun _ -> Dream_html.respond (page solved_cube));
          Dream.get "/css/**" (Dream.static "css/");
          Dream.get "/js/**" (Dream.static "js/");

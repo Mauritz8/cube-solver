@@ -25,7 +25,7 @@ let move_up_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = move cube UP true in
+  let actual = make_move cube { direction = UP; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -63,7 +63,7 @@ let move_up_counter_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = move cube UP false in
+  let actual = make_move cube { direction = UP; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -100,7 +100,7 @@ let move_down_clockwise_test () =
       bottom = [ YELLOW; WHITE; RED; WHITE; YELLOW; RED; ORANGE; WHITE; GREEN ];
     }
   in
-  let actual = move cube DOWN true in
+  let actual = make_move cube { direction = DOWN; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -137,7 +137,7 @@ let move_down_counter_clockwise_test () =
       bottom = [ GREEN; WHITE; ORANGE; RED; YELLOW; WHITE; RED; WHITE; YELLOW ];
     }
   in
-  let actual = move cube DOWN false in
+  let actual = make_move cube { direction = DOWN; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -174,7 +174,7 @@ let move_right_clockwise_test () =
       bottom = [ RED; RED; WHITE; WHITE; YELLOW; RED; YELLOW; WHITE; WHITE ];
     }
   in
-  let actual = move cube RIGHT true in
+  let actual = make_move cube { direction = RIGHT; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -211,7 +211,7 @@ let move_right_counter_clockwise_test () =
       bottom = [ RED; RED; RED; WHITE; YELLOW; ORANGE; YELLOW; WHITE; YELLOW ];
     }
   in
-  let actual = move cube RIGHT false in
+  let actual = make_move cube { direction = RIGHT; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -248,7 +248,7 @@ let move_left_clockwise_test () =
       bottom = [ RED; RED; GREEN; YELLOW; YELLOW; WHITE; WHITE; WHITE; ORANGE ];
     }
   in
-  let actual = move cube LEFT true in
+  let actual = make_move cube { direction = LEFT; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -286,7 +286,7 @@ let move_left_counter_clockwise_test () =
         [ BLUE; RED; GREEN; ORANGE; YELLOW; WHITE; ORANGE; WHITE; ORANGE ];
     }
   in
-  let actual = move cube LEFT false in
+  let actual = make_move cube { direction = LEFT; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -324,7 +324,7 @@ let move_front_clockwise_test () =
         [ ORANGE; YELLOW; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = move cube FRONT true in
+  let actual = make_move cube { direction = FRONT; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -363,7 +363,7 @@ let move_front_counter_clockwise_test () =
         [ BLUE; GREEN; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = move cube FRONT false in
+  let actual = make_move cube { direction = FRONT; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -400,7 +400,7 @@ let move_back_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; GREEN; WHITE; ORANGE ];
     }
   in
-  let actual = move cube BACK true in
+  let actual = make_move cube { direction = BACK; clockwise = true } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)
@@ -438,7 +438,7 @@ let move_back_counter_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; BLUE; YELLOW; BLUE ];
     }
   in
-  let actual = move cube BACK false in
+  let actual = make_move cube { direction = BACK; clockwise = false } in
   Alcotest.(check string)
     "same front"
     (side_to_string expect.front)

@@ -16,6 +16,9 @@ type cube = {
 }
 [@@deriving yojson]
 
+type move = { direction : direction; clockwise : bool } [@@deriving yojson]
+type scramble = { new_cube : cube; moves : move list }
+
 let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
 
 let solved_cube =
@@ -247,9 +250,9 @@ let move_back cube clockwise =
         (if clockwise then cube.left else cube.right);
   }
 
-let move cube direction clockwise =
-  let f g = g cube clockwise in
-  match direction with
+let make_move cube move =
+  let f g = g cube move.clockwise in
+  match move.direction with
   | UP -> f move_up
   | DOWN -> f move_down
   | RIGHT -> f move_right
@@ -272,8 +275,27 @@ let random_bool () =
   Random.self_init ();
   if Random.int 2 = 0 then false else true
 
-let random_move cube = move cube (random_direction ()) (random_bool ())
+let random_move () =
+  { direction = random_direction (); clockwise = random_bool () }
 
 let scramble () =
-  let rec aux cube n = if n = 0 then cube else aux (random_move cube) (n - 1) in
-  aux solved_cube 20
+  let rec aux cube n moves =
+    let move = random_move () in
+    let new_cube = make_move cube move in
+    if n = 0 then { new_cube = cube; moves }
+    else aux new_cube (n - 1) (List.append moves [ move ])
+  in
+  aux solved_cube 20 []
+
+let move_to_notation move =
+  String.cat
+    (match move.direction with
+    | UP -> "U"
+    | DOWN -> "D"
+    | RIGHT -> "R"
+    | LEFT -> "L"
+    | FRONT -> "F"
+    | BACK -> "B")
+    (if move.clockwise then "" else "'")
+
+let moves_string moves = String.concat " " (List.map move_to_notation moves)

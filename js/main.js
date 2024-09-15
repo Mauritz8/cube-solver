@@ -19,8 +19,10 @@ function getCube() {
 
 function move_cube_post_req(direction, clockwise) {
   const body = {
-    direction: direction,
-    clockwise: clockwise,
+    move: {
+      direction: direction,
+      clockwise: clockwise,
+    },
     cube: getCube(),
   };
   fetch('/api/move', {
