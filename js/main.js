@@ -70,8 +70,8 @@ const white = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleS
 const orange = new THREE.MeshBasicMaterial({ color: 0xffA500, side: THREE.DoubleSide });
 
 const rect_size = 1 / 3;
-const margin = 0.01;
-const axis_pos = axis => axis * (rect_size);
+const margin = 0.00;
+const axis_pos = axis => axis * (rect_size + margin);
 function create_rect(color, x, y, z) {
   const geometry = new THREE.PlaneGeometry(rect_size, rect_size);
   const rect = new THREE.Mesh(geometry, color);
@@ -80,50 +80,56 @@ function create_rect(color, x, y, z) {
 }
 
 const group = new THREE.Group();
-function create_cube() {
-  function create_side(is_x, is_y, is_z) {
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (is_x && is_y) {
-          group.add(create_rect(blue, axis_pos(i), axis_pos(j), 0));
-        } else if (is_x && is_z) {
-          group.add(create_rect(blue, axis_pos(i), 0, axis_pos(j)));
-        } else if (is_y && is_z) {
-          group.add(create_rect(blue, 0, axis_pos(i), axis_pos(j)));
-        }
-      }
-    }
-  }
-  //create_side(true, true, false);
-  //create_side(true, false, true);
-  create_side(false, true, true);
-}
 
 // front
-group.add(create_rect(blue, 0, 0, 0));
+for (let x = 0; x < 3; x++) {
+  for (let y = 0; y < 3; y++) {
+    group.add(create_rect(blue, axis_pos(x), axis_pos(y), 0));
+  }
+}
 
 // back
-group.add(create_rect(green, 0, 0, axis_pos(1)));
+for (let x = 0; x < 3; x++) {
+  for (let y = 0; y < 3; y++) {
+    group.add(create_rect(green, axis_pos(x), axis_pos(y), axis_pos(3)));
+  }
+}
 
 // top
-const rect3 = create_rect(white, 0, axis_pos(1) / 2, axis_pos(1) / 2);
-rect3.rotation.set(Math.PI / 2, 0, 0);
-group.add(rect3);
+for (let x = 0; x < 3; x++) {
+  for (let z = 0; z < 3; z++) {
+    const rect = create_rect(white, axis_pos(x), -axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+    rect.rotateX(Math.PI / 2);
+    group.add(rect);
+  }
+}
 
 // bottom
-const rect4 = create_rect(yellow, 0, -axis_pos(1) / 2, axis_pos(1) / 2);
-rect4.rotation.set(Math.PI / 2, 0, 0);
-group.add(rect4);
+for (let x = 0; x < 3; x++) {
+  for (let z = 0; z < 3; z++) {
+    const rect = create_rect(yellow, axis_pos(x), axis_pos(2) + axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+    rect.rotateX(Math.PI / 2);
+    group.add(rect);
+  }
+}
 
 // right
-const rect5 = create_rect(red, axis_pos(1) / 2, 0, axis_pos(1) / 2);
-rect5.rotation.set(0, Math.PI / 2, 0);
-group.add(rect5);
+for (let y = 0; y < 3; y++) {
+  for (let z = 0; z < 3; z++) {
+    const rect = create_rect(red, -axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+    rect.rotateY(Math.PI / 2);
+    group.add(rect);
+  }
+}
 
 // left
-const rect6 = create_rect(orange, -axis_pos(1) / 2, 0, axis_pos(1) / 2);
-rect6.rotation.set(0, Math.PI / 2, 0);
-group.add(rect6);
+for (let y = 0; y < 3; y++) {
+  for (let z = 0; z < 3; z++) {
+    const rect = create_rect(orange, axis_pos(2) + axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+    rect.rotateY(Math.PI / 2);
+    group.add(rect);
+  }
+}
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
