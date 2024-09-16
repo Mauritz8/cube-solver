@@ -36,18 +36,26 @@ let scramble_div moves =
 let cube_container cube scramble_moves =
   div [ id "cube_container" ] [ scramble_div scramble_moves; cube_div cube ]
 
-let page cube =
+let page _ =
   html []
     [
       head []
         [
           title [] "Rubic's cube";
           link [ rel "stylesheet"; href "css/style.css" ];
+          script [ type_ "importmap" ] {|
+          {
+            "imports": {
+              "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+              "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+            }
+          }
+  |}
         ];
       body []
         [
           h1 [] [ txt "Rubic's cube" ];
-          cube_container cube [];
+          (*cube_container cube [];*)
           div []
             [ button [ type_ "button"; id "scramble_btn" ] [ txt "Scramble" ] ];
           div []
@@ -87,7 +95,7 @@ let page cube =
                 [ type_ "button"; id "move_back_counter_clockwise_btn" ]
                 [ txt "B'" ];
             ];
-          script [ src "js/main.js" ] "";
+          script [ type_ "module"; src "js/main.js" ] "";
         ];
     ]
 
