@@ -175,7 +175,8 @@ const solved_cube = {
   ],
 };
 
-const cube = create_cube(solved_cube);
+let cube = solved_cube;
+let cube_three_js = create_cube(cube);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -185,36 +186,24 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-scene.add(cube);
+scene.add(cube_three_js);
 
 camera.position.x = 2;
 camera.position.y = 2;
 camera.position.z = 4;
 camera.lookAt(scene.position);
 function animate() {
-	//cube.rotation.x += 0.01;
-	//cube.rotation.y += 0.01;
+	//cube_three_js.rotation.x += 0.01;
+	//cube_three_js.rotation.y += 0.01;
 	renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
-function getSideStickers(sideId) {
-  const side = document.getElementById(sideId);
-  const sticker_elems = Array.from(side.getElementsByClassName('sticker'));
-  return sticker_elems.map(
-    sticker_elem => [sticker_elem.classList[1].toUpperCase()]
-  );
-}
-
-function getCube() {
-  return {
-    front: getSideStickers('front'),
-    right: getSideStickers('right'),
-    left: getSideStickers('left'),
-    top: getSideStickers('top'),
-    bottom: getSideStickers('bottom'),
-    back: getSideStickers('back'),
-  };
+function update_cube(new_cube) {
+  scene.remove(cube_three_js);
+  cube = new_cube;
+  cube_three_js = create_cube(cube);
+  scene.add(cube_three_js);
 }
 
 function move_cube_post_req(direction, clockwise) {
@@ -223,16 +212,13 @@ function move_cube_post_req(direction, clockwise) {
       direction: direction,
       clockwise: clockwise,
     },
-    cube: getCube(),
+    cube: cube,
   };
   fetch('/api/move', {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
-  }).then(res => res.text())
-    .then(text => {
-      document.getElementById('cube').outerHTML = text;
-    });
+  }).then(res => res.json().then(json => update_cube(json)));
 }
 
 function move_on_btn_click(btn_id, direction, clockwise) {
@@ -257,6 +243,5 @@ move_on_btn_click('move_back_counter_clockwise_btn', 'BACK', false);
 
 document.getElementById('scramble_btn').addEventListener('click', () => {
   fetch('/api/scramble')
-    .then(res => res.text())
-    .then(text => document.getElementById('cube_container').outerHTML = text);
+    .then(res => res.json().then(json => update_cube(json)));
 });
