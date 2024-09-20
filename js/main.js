@@ -70,6 +70,18 @@ const yellow = color(0xffff00);
 const white = color(0xffffff);
 const orange = color(0xffA500);
 
+function sticker_to_color(sticker) {
+  const sticker_to_color_map = {
+    ["BLUE"]: blue,
+    ["GREEN"]: green,
+    ["RED"]: red,
+    ["YELLOW"]: yellow,
+    ["WHITE"]: white,
+    ["ORANGE"]: orange,
+  };
+  return sticker_to_color_map[sticker];
+}
+
 const rect_size = 1 / 3;
 const margin = 0.00;
 const axis_pos = axis => axis * (rect_size + margin);
@@ -80,46 +92,41 @@ function create_rect(color, x, y, z) {
   return rect;
 }
 
-function create_cube() {
+function create_cube(cube) {
   const group = new THREE.Group();
-
-  // front
-  for (let x = 0; x < 3; x++) {
-    for (let y = 0; y < 3; y++) {
-      group.add(create_rect(blue, axis_pos(x), axis_pos(y), 0));
-    }
-  }
 
   // back
   for (let x = 0; x < 3; x++) {
     for (let y = 0; y < 3; y++) {
-      group.add(create_rect(green, axis_pos(x), axis_pos(y), axis_pos(3)));
+      const color = sticker_to_color(cube.back[3 * y + x]);
+      group.add(create_rect(color, axis_pos(x), axis_pos(y), 0));
     }
   }
 
-  // top
+  // front
   for (let x = 0; x < 3; x++) {
-    for (let z = 0; z < 3; z++) {
-      const rect = create_rect(white, axis_pos(x), -axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
-      rect.rotateX(Math.PI / 2);
-      group.add(rect);
+    for (let y = 0; y < 3; y++) {
+      const color = sticker_to_color(cube.front[3 * y + x]);
+      group.add(create_rect(color, axis_pos(x), axis_pos(y), axis_pos(3)));
     }
   }
 
   // bottom
   for (let x = 0; x < 3; x++) {
     for (let z = 0; z < 3; z++) {
-      const rect = create_rect(yellow, axis_pos(x), axis_pos(2) + axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+      const color = sticker_to_color(cube.bottom[3 * z + x]);
+      const rect = create_rect(color, axis_pos(x), -axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
       rect.rotateX(Math.PI / 2);
       group.add(rect);
     }
   }
 
-  // right
-  for (let y = 0; y < 3; y++) {
+  // top
+  for (let x = 0; x < 3; x++) {
     for (let z = 0; z < 3; z++) {
-      const rect = create_rect(red, -axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
-      rect.rotateY(Math.PI / 2);
+      const color = sticker_to_color(cube.top[3 * z + x]);
+      const rect = create_rect(color, axis_pos(x), axis_pos(2) + axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateX(Math.PI / 2);
       group.add(rect);
     }
   }
@@ -127,7 +134,18 @@ function create_cube() {
   // left
   for (let y = 0; y < 3; y++) {
     for (let z = 0; z < 3; z++) {
-      const rect = create_rect(orange, axis_pos(2) + axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+      const color = sticker_to_color(cube.left[3 * z + y]);
+      const rect = create_rect(color, -axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateY(Math.PI / 2);
+      group.add(rect);
+    }
+  }
+
+  // right
+  for (let y = 0; y < 3; y++) {
+    for (let z = 0; z < 3; z++) {
+      const color = sticker_to_color(cube.right[3 * z + y]);
+      const rect = create_rect(color, axis_pos(2) + axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
       rect.rotateY(Math.PI / 2);
       group.add(rect);
     }
@@ -143,7 +161,75 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const cube = create_cube();
+const cube_record = {
+  front: [
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+    ["GREEN"],
+  ],
+  right: [
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+    ["ORANGE"],
+  ],
+  left: [
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+    ["RED"],
+  ],
+  top: [
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+    ["WHITE"],
+  ],
+  bottom: [
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+    ["YELLOW"],
+  ],
+  back: [
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+    ["BLUE"],
+  ],
+};
+const cube = create_cube(cube_record);
 scene.add(cube);
 
 camera.position.x = 2;
