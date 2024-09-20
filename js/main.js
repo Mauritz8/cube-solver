@@ -62,12 +62,13 @@ document.getElementById('scramble_btn').addEventListener('click', () => {
     .then(text => document.getElementById('cube_container').outerHTML = text);
 });
 
-const blue = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide });
-const green = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide });
-const red = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-const yellow = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
-const white = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
-const orange = new THREE.MeshBasicMaterial({ color: 0xffA500, side: THREE.DoubleSide });
+const color = c => new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide });
+const blue = color(0x0000ff);
+const green = color(0x00ff00);
+const red = color(0xff0000);
+const yellow = color(0xffff00);
+const white = color(0xffffff);
+const orange = color(0xffA500);
 
 const rect_size = 1 / 3;
 const margin = 0.00;
@@ -79,71 +80,79 @@ function create_rect(color, x, y, z) {
   return rect;
 }
 
-const group = new THREE.Group();
+function create_cube() {
+  const group = new THREE.Group();
 
-// front
-for (let x = 0; x < 3; x++) {
+  // front
+  for (let x = 0; x < 3; x++) {
+    for (let y = 0; y < 3; y++) {
+      group.add(create_rect(blue, axis_pos(x), axis_pos(y), 0));
+    }
+  }
+
+  // back
+  for (let x = 0; x < 3; x++) {
+    for (let y = 0; y < 3; y++) {
+      group.add(create_rect(green, axis_pos(x), axis_pos(y), axis_pos(3)));
+    }
+  }
+
+  // top
+  for (let x = 0; x < 3; x++) {
+    for (let z = 0; z < 3; z++) {
+      const rect = create_rect(white, axis_pos(x), -axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateX(Math.PI / 2);
+      group.add(rect);
+    }
+  }
+
+  // bottom
+  for (let x = 0; x < 3; x++) {
+    for (let z = 0; z < 3; z++) {
+      const rect = create_rect(yellow, axis_pos(x), axis_pos(2) + axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateX(Math.PI / 2);
+      group.add(rect);
+    }
+  }
+
+  // right
   for (let y = 0; y < 3; y++) {
-    group.add(create_rect(blue, axis_pos(x), axis_pos(y), 0));
+    for (let z = 0; z < 3; z++) {
+      const rect = create_rect(red, -axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateY(Math.PI / 2);
+      group.add(rect);
+    }
   }
-}
 
-// back
-for (let x = 0; x < 3; x++) {
+  // left
   for (let y = 0; y < 3; y++) {
-    group.add(create_rect(green, axis_pos(x), axis_pos(y), axis_pos(3)));
+    for (let z = 0; z < 3; z++) {
+      const rect = create_rect(orange, axis_pos(2) + axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
+      rect.rotateY(Math.PI / 2);
+      group.add(rect);
+    }
   }
-}
 
-// top
-for (let x = 0; x < 3; x++) {
-  for (let z = 0; z < 3; z++) {
-    const rect = create_rect(white, axis_pos(x), -axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
-    rect.rotateX(Math.PI / 2);
-    group.add(rect);
-  }
-}
-
-// bottom
-for (let x = 0; x < 3; x++) {
-  for (let z = 0; z < 3; z++) {
-    const rect = create_rect(yellow, axis_pos(x), axis_pos(2) + axis_pos(1) / 2, axis_pos(z) + axis_pos(1) / 2);
-    rect.rotateX(Math.PI / 2);
-    group.add(rect);
-  }
-}
-
-// right
-for (let y = 0; y < 3; y++) {
-  for (let z = 0; z < 3; z++) {
-    const rect = create_rect(red, -axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
-    rect.rotateY(Math.PI / 2);
-    group.add(rect);
-  }
-}
-
-// left
-for (let y = 0; y < 3; y++) {
-  for (let z = 0; z < 3; z++) {
-    const rect = create_rect(orange, axis_pos(2) + axis_pos(1) / 2, axis_pos(y), axis_pos(z) + axis_pos(1) / 2);
-    rect.rotateY(Math.PI / 2);
-    group.add(rect);
-  }
+  return group;
 }
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-scene.add(group);
+const cube = create_cube();
+scene.add(cube);
 
-camera.position.z = 5;
+camera.position.x = 2;
+camera.position.y = 2;
+camera.position.z = 4;
+camera.lookAt(scene.position);
 function animate() {
-	group.rotation.x += 0.01;
-	group.rotation.y += 0.01;
+	//cube.rotation.x += 0.01;
+	//cube.rotation.y += 0.01;
 	renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
