@@ -17,7 +17,7 @@ let () =
              let scramble = scramble () in
              yojson_of_cube scramble.new_cube
              |> Yojson.Safe.to_string |> Dream.json);
-         Dream.get "/index.html" (Dream.from_filesystem "view" "index.html");
+         Dream.get "/" (Dream.from_filesystem "view" "index.html");
          Dream.get "/css/**" (Dream.static "css/");
          Dream.get "/js/**" (Dream.static "js/");
        ]
