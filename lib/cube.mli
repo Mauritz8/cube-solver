@@ -23,3 +23,4 @@ val cube_to_string : cube -> string
 val make_move : cube -> move -> cube
 val scramble : unit -> scramble
 val moves_string : move list -> string
+val rotate_cube : cube -> cube

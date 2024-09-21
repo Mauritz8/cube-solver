@@ -229,3 +229,13 @@ document.getElementById('scramble_btn').addEventListener('click', () => {
   fetch('/api/scramble')
     .then(res => res.json().then(json => update_cube(json)));
 });
+
+document.getElementById('rotate_right_btn').addEventListener('click', () => {
+  fetch('/api/rotate', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cube),
+  }).then(res => res.json().then(json => {
+    update_cube(json);
+  }));
+});

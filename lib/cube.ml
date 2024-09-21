@@ -299,3 +299,13 @@ let move_to_notation move =
     (if move.clockwise then "" else "'")
 
 let moves_string moves = String.concat " " (List.map move_to_notation moves)
+
+let rotate_cube cube = 
+  {
+    front = cube.right;
+    right = cube.back;
+    back = cube.left;
+    left = cube.front;
+    top = rotate_side cube.top true;
+    bottom = rotate_side cube.bottom false;
+  }
