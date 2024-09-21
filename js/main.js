@@ -2,12 +2,12 @@ import * as THREE from 'three';
 
 const color =
   c => new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide });
-const blue = color(0x0000ff);
-const green = color(0x00ff00);
-const red = color(0xff0000);
-const yellow = color(0xffff00);
-const white = color(0xffffff);
-const orange = color(0xffA500);
+const blue = color(0x0045AD);
+const green = color(0x009B48);
+const red = color(0xB90000);
+const yellow = color(0xFFD500);
+const white = color(0xFFFFFF);
+const orange = color(0xFF5900);
 
 function sticker_to_color(sticker) {
   const sticker_to_color_map = {
