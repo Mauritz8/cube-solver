@@ -29,85 +29,82 @@ function create_rect(color, x, y, z) {
   return rect;
 }
 
-const margin = 0.00;
-const axis_pos = axis => axis * (rect_size + margin);
+const axis_pos = axis => axis * rect_size;
 
 function create_cube(cube) {
-  const group = new THREE.Group();
+  const cube_three_js = new THREE.Group();
 
-  // back
+  const back = new THREE.Group();
   for (let x = 0; x < 3; x++) {
     for (let y = 0; y < 3; y++) {
       const color = sticker_to_color(cube.back[3 * y + (2 - x)]);
-      group.add(create_rect(color, axis_pos(x), axis_pos(-y), axis_pos(-2)));
+      back.add(create_rect(color, axis_pos(x), axis_pos(-y), axis_pos(-3)));
     }
   }
+  cube_three_js.add(back);
 
-  // front
+  const front = new THREE.Group();
   for (let x = 0; x < 3; x++) {
     for (let y = 0; y < 3; y++) {
       const color = sticker_to_color(cube.front[3 * y + x]);
-      group.add(create_rect(color, axis_pos(x), axis_pos(-y), axis_pos(1)));
+      front.add(create_rect(color, axis_pos(x), axis_pos(-y), 0));
     }
   }
+  cube_three_js.add(front);
 
-  // bottom
+  const bottom = new THREE.Group();
   for (let x = 0; x < 3; x++) {
-    for (let z = 0; z < 3; z++) {
-      const color = sticker_to_color(cube.bottom[3 * z + x]);
-      const rect = create_rect(
-        color,
-        axis_pos(x),
-        axis_pos(-2) - axis_pos(1) / 2,
-        axis_pos(-z) + axis_pos(1) / 2);
-      rect.rotateX(Math.PI / 2);
-      group.add(rect);
+    for (let y = 0; y < 3; y++) {
+      const color = sticker_to_color(cube.bottom[3 * y + x]);
+      const rect = create_rect(color, axis_pos(x), axis_pos(-y), axis_pos(3));
+      bottom.add(rect);
     }
   }
+  bottom.rotateX(Math.PI / 2);
+  bottom.translateY(-rect_size / 2);
+  bottom.translateZ(-rect_size / 2);
+  cube_three_js.add(bottom);
 
-  // top
+  const top = new THREE.Group();
   for (let x = 0; x < 3; x++) {
-    for (let z = 0; z < 3; z++) {
-      const color = sticker_to_color(cube.top[3 * (2 - z) + x]);
-      const rect = create_rect(
-        color,
-        axis_pos(x),
-        axis_pos(1) / 2,
-        axis_pos(-z) + axis_pos(1) / 2);
-      rect.rotateX(Math.PI / 2);
-      group.add(rect);
+    for (let y = 0; y < 3; y++) {
+      const color = sticker_to_color(cube.top[3 * (2 - y) + x]);
+      const rect = create_rect(color, axis_pos(x), axis_pos(-y), 0);
+      top.add(rect);
     }
   }
+  top.rotateX(Math.PI / 2);
+  top.translateZ(-rect_size / 2);
+  top.translateY(-rect_size / 2);
+  cube_three_js.add(top);
 
-  // left
-  for (let y = 0; y < 3; y++) {
-    for (let z = 0; z < 3; z++) {
-      const color = sticker_to_color(cube.left[3 * y + (2 - z)]);
-      const rect = create_rect(
-        color,
-        -axis_pos(1) / 2,
-        axis_pos(-y),
-        axis_pos(-z) + axis_pos(1) / 2);
-      rect.rotateY(Math.PI / 2);
-      group.add(rect);
+  const left = new THREE.Group();
+  for (let x = 0; x < 3; x++) {
+    for (let y = 0; y < 3; y++) {
+      const color = sticker_to_color(cube.left[3 * x + (2 - y)]);
+      const rect = create_rect(color, axis_pos(y), axis_pos(-x), 0);
+      left.add(rect);
     }
   }
+  left.rotateY(Math.PI / 2);
+  left.translateZ(-rect_size / 2);
+  left.translateX(rect_size / 2);
+  cube_three_js.add(left);
 
-  // right
-  for (let y = 0; y < 3; y++) {
-    for (let z = 0; z < 3; z++) {
-      const color = sticker_to_color(cube.right[3 * y + z]);
-      const rect = create_rect(
-        color,
-        axis_pos(2) + axis_pos(1) / 2,
-        axis_pos(-y),
-        axis_pos(-z) + axis_pos(1) / 2);
-      rect.rotateY(Math.PI / 2);
-      group.add(rect);
+  const right = new THREE.Group();
+  for (let x = 0; x < 3; x++) {
+    for (let y = 0; y < 3; y++) {
+      const color = sticker_to_color(cube.right[3 * x + y]);
+      const rect = create_rect(color, axis_pos(y), axis_pos(-x), axis_pos(3));
+      right.add(rect);
     }
   }
+  right.rotateY(Math.PI / 2);
+  right.translateZ(-rect_size / 2);
+  right.translateX(rect_size / 2);
+  cube_three_js.add(right);
 
-  return group;
+  return cube_three_js;
 }
 
 const solved_cube = {
@@ -198,7 +195,7 @@ camera.position.z = 4;
 camera.lookAt(scene.position);
 function animate() {
 	//cube_three_js.rotation.x += 0.01;
-	//cube_three_js.rotation.y += 0.01;
+	cube_three_js.rotation.y += 0.01;
 	renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
