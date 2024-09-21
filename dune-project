@@ -19,7 +19,13 @@
  (name rubics_cube)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune)
+ (depends
+   ocaml
+   dune
+   dream
+   lwt_ppx
+   ppx_yojson_conv
+   (alcotest :with-test))
  (tags
   (topics "to describe" your project)))
 
