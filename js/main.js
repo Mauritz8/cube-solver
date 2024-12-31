@@ -170,6 +170,7 @@ const camera = new THREE.PerspectiveCamera(
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(scene_width, scene_height);
+renderer.setClearColor(0x000000, 0);
 const cube_container = document.getElementById("cube_container");
 cube_container.style.width =  scene_width;
 cube_container.style.height = scene_height;

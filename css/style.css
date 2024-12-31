@@ -1,3 +1,43 @@
+body {
+  background-color: #F5F5F5;
+}
+
+#title {
+  text-align: center;
+}
+
+#layout {
+  display: flex;
+  justify-content: space-around;
+}
+
 #cube_container {
-  margin: auto;
+  display: inline-block;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#control_panel {
+  display: inline-block;
+}
+
+#move_btns {
+  display: flex;
+  row-gap: 5px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #0051ba;
+  color: white;
+}
+
+button:hover {
+  background-color: #0046ad;
 }
