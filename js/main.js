@@ -163,23 +163,29 @@ let cube = solved_cube;
 let cube_three_js = create_cube(cube);
 
 const scene = new THREE.Scene();
+const scene_height = 500;
+const scene_width = 500;
 const camera = new THREE.PerspectiveCamera(
-  75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  50, scene_width / scene_height, 0.1, 2000);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setSize(scene_width, scene_height);
+const cube_container = document.getElementById("cube_container");
+cube_container.style.width =  scene_width;
+cube_container.style.height = scene_height;
+cube_container.appendChild(renderer.domElement);
 
 scene.add(cube_three_js);
 
 camera.position.x = 3;
 camera.position.y = 2;
 camera.position.z = 3;
-camera.lookAt(scene.position);
+
+camera.lookAt(new THREE.Vector3(1, 0, 0));
 function animate() {
-	//cube_three_js.rotation.x += 0.01;
-	//cube_three_js.rotation.y += 0.01;
-	renderer.render(scene, camera);
+  //cube_three_js.rotation.x += 0.01;
+  //cube_three_js.rotation.y += 0.01;
+  renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
