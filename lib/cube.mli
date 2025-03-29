@@ -1,9 +1,6 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
-
-type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
 type face = sticker list [@@deriving yojson]
-
 type cube = {
   front : face;
   right : face;
@@ -14,6 +11,7 @@ type cube = {
 }
 [@@deriving yojson]
 
+type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
 type move = { direction : direction; clockwise : bool } [@@deriving yojson]
 type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
