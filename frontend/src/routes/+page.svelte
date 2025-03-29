@@ -6,6 +6,8 @@
   import { solved_cube } from '$lib/cube.ts';
 
 
+  let scramble_moves = "";
+
   let cube = solved_cube;
   let cube_three_js = create_cube(cube);
   const scene = new THREE.Scene();
@@ -46,7 +48,10 @@
   function scramble() {
     Api.scramble()
       .then(res => res.json()
-      .then(json => update_cube(json)));
+      .then(json => {
+        scramble_moves = json.moves.join(" ");
+        update_cube(json.new_cube)
+      }));
   }
 </script>
 
@@ -55,7 +60,7 @@
   <h1 id="title">Rubik's Cube</h1>
 
   <div id="scramble">
-    <p>U D' F U B</p>
+    <p>{scramble_moves}</p>
   </div>
 
   <div id="cube_container"></div>

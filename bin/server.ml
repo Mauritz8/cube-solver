@@ -23,7 +23,7 @@ let () =
              yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);
          Dream.get "/api/scramble" (fun _ ->
              let scramble = scramble () in
-             yojson_of_cube scramble.new_cube
+             yojson_of_scramble scramble
              |> Yojson.Safe.to_string |> Dream.json);
          Dream.post "/api/rotate" (fun req ->
              let%lwt body = Dream.body req in

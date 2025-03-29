@@ -17,7 +17,8 @@ type cube = {
 [@@deriving yojson]
 
 type move = { direction : direction; clockwise : bool } [@@deriving yojson]
-type scramble = { new_cube : cube; moves : move list }
+type moves = string list [@@deriving yojson]
+type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
 let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
 
@@ -278,16 +279,6 @@ let random_bool () =
 let random_move () =
   { direction = random_direction (); clockwise = random_bool () }
 
-let scramble () =
-  let rec scramble_helper cube moves = function
-    | 0 -> { new_cube = cube; moves = List.rev moves }
-    | n ->
-      let move = random_move () in
-      let new_cube = make_move cube move in
-      scramble_helper new_cube (move :: moves) (n - 1)
-  in
-  scramble_helper solved_cube [] 20
-
 let move_to_notation move =
   String.cat
     (match move.direction with
@@ -300,6 +291,16 @@ let move_to_notation move =
     (if move.clockwise then "" else "'")
 
 let moves_string moves = String.concat " " (List.map move_to_notation moves)
+
+let scramble () =
+  let rec scramble_helper cube moves = function
+    | 0 -> { new_cube = cube; moves = List.rev moves }
+    | n ->
+      let move = random_move () in
+      let new_cube = make_move cube move in
+      scramble_helper new_cube ((move_to_notation move) :: moves) (n - 1)
+  in
+  scramble_helper solved_cube [] 20
 
 let rotate_cube cube = 
   {
