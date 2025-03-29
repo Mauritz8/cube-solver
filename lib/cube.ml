@@ -279,13 +279,14 @@ let random_move () =
   { direction = random_direction (); clockwise = random_bool () }
 
 let scramble () =
-  let rec aux cube n moves =
-    let move = random_move () in
-    let new_cube = make_move cube move in
-    if n = 0 then { new_cube = cube; moves }
-    else aux new_cube (n - 1) (List.append moves [ move ])
+  let rec scramble_helper cube moves = function
+    | 0 -> { new_cube = cube; moves = List.rev moves }
+    | n ->
+      let move = random_move () in
+      let new_cube = make_move cube move in
+      scramble_helper new_cube (move :: moves) (n - 1)
   in
-  aux solved_cube 20 []
+  scramble_helper solved_cube [] 20
 
 let move_to_notation move =
   String.cat
