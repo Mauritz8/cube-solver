@@ -2,15 +2,15 @@ type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
 
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
-type side = sticker list [@@deriving yojson]
+type face = sticker list [@@deriving yojson]
 
 type cube = {
-  front : side;
-  right : side;
-  left : side;
-  top : side;
-  bottom : side;
-  back : side;
+  front : face;
+  right : face;
+  left : face;
+  top : face;
+  bottom : face;
+  back : face;
 }
 [@@deriving yojson]
 
@@ -19,7 +19,7 @@ type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
 val solved_cube : cube
-val side_to_string : side -> string
+val face_to_string : face -> string
 val cube_to_string : cube -> string
 val make_move : cube -> move -> cube
 val scramble : unit -> scramble

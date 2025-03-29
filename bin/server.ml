@@ -32,7 +32,4 @@ let () =
              in
              let new_cube = rotate_cube cube in
              yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);
-         Dream.get "/" (Dream.from_filesystem "view" "index.html");
-         Dream.get "/css/**" (Dream.static "css/");
-         Dream.get "/js/**" (Dream.static "js/");
        ]

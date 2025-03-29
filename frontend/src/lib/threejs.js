@@ -31,7 +31,7 @@ function create_rect(size, color, x, y, z) {
 
 const rect_size = 1 / 2;
 
-function create_side(side_name, side_arr) {
+function create_face(face_name, face_arr) {
   const index_map = (x, y) => ({
     "FRONT": 3 * y + x,
     "RIGHT": 3 * y + x,
@@ -41,48 +41,48 @@ function create_side(side_name, side_arr) {
     "TOP": 3 * (2 - y) + x,
   });
 
-  const side_three_js = new THREE.Group();
+  const face_three_js = new THREE.Group();
   for (let x = 0; x < 3; x++) {
     for (let y = 0; y < 3; y++) {
-      const i = index_map(x, y)[side_name];
-      const color = sticker_to_color(side_arr[i]);
+      const i = index_map(x, y)[face_name];
+      const color = sticker_to_color(face_arr[i]);
       const rect =
         create_rect(rect_size, color, x * rect_size, -y * rect_size, 0);
-      side_three_js.add(rect);
+      face_three_js.add(rect);
     }
   }
-  return side_three_js;
+  return face_three_js;
 }
 
 export function create_cube(cube) {
   const cube_three_js = new THREE.Group();
 
-  const back = create_side("BACK", cube.back);
+  const back = create_face("BACK", cube.back);
   back.translateZ(-3 * rect_size);
   cube_three_js.add(back);
 
-  const front = create_side("FRONT", cube.front);
+  const front = create_face("FRONT", cube.front);
   cube_three_js.add(front);
 
-  const bottom = create_side("BOTTOM", cube.bottom);
+  const bottom = create_face("BOTTOM", cube.bottom);
   bottom.rotateX(Math.PI / 2);
   bottom.translateY(-rect_size / 2);
   bottom.translateZ(rect_size * 5 / 2);
   cube_three_js.add(bottom);
 
-  const top = create_side("TOP", cube.top);
+  const top = create_face("TOP", cube.top);
   top.rotateX(Math.PI / 2);
   top.translateZ(-rect_size / 2);
   top.translateY(-rect_size / 2);
   cube_three_js.add(top);
 
-  const left = create_side("LEFT", cube.left);
+  const left = create_face("LEFT", cube.left);
   left.rotateY(Math.PI / 2);
   left.translateZ(-rect_size / 2);
   left.translateX(rect_size / 2);
   cube_three_js.add(left);
 
-  const right = create_side("RIGHT", cube.right);
+  const right = create_face("RIGHT", cube.right);
   right.rotateY(Math.PI / 2);
   right.translateZ(rect_size * 5 / 2);
   right.translateX(rect_size / 2);

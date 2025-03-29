@@ -4,15 +4,15 @@ type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
 
 type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
-type side = sticker list [@@deriving yojson]
+type face = sticker list [@@deriving yojson]
 
 type cube = {
-  front : side;
-  right : side;
-  left : side;
-  top : side;
-  bottom : side;
-  back : side;
+  front : face;
+  right : face;
+  left : face;
+  top : face;
+  bottom : face;
+  back : face;
 }
 [@@deriving yojson]
 
@@ -20,16 +20,16 @@ type move = { direction : direction; clockwise : bool } [@@deriving yojson]
 type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
-let side_one_sticker sticker = List.init 9 (fun _ -> sticker)
+let face_one_sticker sticker = List.init 9 (fun _ -> sticker)
 
 let solved_cube =
   {
-    front = side_one_sticker GREEN;
-    right = side_one_sticker RED;
-    back = side_one_sticker BLUE;
-    left = side_one_sticker ORANGE;
-    top = side_one_sticker WHITE;
-    bottom = side_one_sticker YELLOW;
+    front = face_one_sticker GREEN;
+    right = face_one_sticker RED;
+    back = face_one_sticker BLUE;
+    left = face_one_sticker ORANGE;
+    top = face_one_sticker WHITE;
+    bottom = face_one_sticker YELLOW;
   }
 
 let sticker_to_string = function
@@ -40,28 +40,28 @@ let sticker_to_string = function
   | GREEN -> "G"
   | ORANGE -> "O"
 
-let side_to_string side =
+let face_to_string face =
   let f i x =
     if i = 2 || i = 5 then String.cat (sticker_to_string x) "\n"
     else sticker_to_string x
   in
-  String.concat "" (List.mapi f side)
+  String.concat "" (List.mapi f face)
 
 let cube_to_string cube =
-  let front = side_to_string cube.front in
-  let right = side_to_string cube.right in
-  let back = side_to_string cube.back in
-  let left = side_to_string cube.left in
-  let top = side_to_string cube.top in
-  let bottom = side_to_string cube.bottom in
+  let front = face_to_string cube.front in
+  let right = face_to_string cube.right in
+  let back = face_to_string cube.back in
+  let left = face_to_string cube.left in
+  let top = face_to_string cube.top in
+  let bottom = face_to_string cube.bottom in
   String.concat "\n\n" [ top; front; right; back; left; bottom ]
 
-let rotate_side side clockwise =
-  let new_side_indexes =
+let rotate_face face clockwise =
+  let new_face_indexes =
     let indexes = [ 6; 3; 0; 7; 4; 1; 8; 5; 2 ] in
     if clockwise then indexes else List.rev indexes
   in
-  List.map (fun i -> List.nth side i) new_side_indexes
+  List.map (fun i -> List.nth face i) new_face_indexes
 
 module IntMap = Map.Make (Int)
 
@@ -81,7 +81,7 @@ let move_up cube clockwise =
   let replace_func = replace_at_indexes [ 0; 1; 2 ] in
   {
     bottom = cube.bottom;
-    top = rotate_side cube.top clockwise;
+    top = rotate_face cube.top clockwise;
     front =
       replace_func cube.front (if clockwise then cube.right else cube.left);
     right =
@@ -94,7 +94,7 @@ let move_down cube clockwise =
   let replace_func = replace_at_indexes [ 6; 7; 8 ] in
   {
     top = cube.top;
-    bottom = rotate_side cube.bottom clockwise;
+    bottom = rotate_face cube.bottom clockwise;
     front =
       replace_func cube.front (if clockwise then cube.left else cube.right);
     right =
@@ -106,7 +106,7 @@ let move_down cube clockwise =
 let move_right cube clockwise =
   {
     left = cube.left;
-    right = rotate_side cube.right clockwise;
+    right = rotate_face cube.right clockwise;
     front =
       replace_at_indexes [ 2; 5; 8 ] cube.front
         (if clockwise then cube.bottom else cube.top);
@@ -138,7 +138,7 @@ let move_right cube clockwise =
 let move_left cube clockwise =
   {
     right = cube.right;
-    left = rotate_side cube.left clockwise;
+    left = rotate_face cube.left clockwise;
     front =
       replace_at_indexes [ 0; 3; 6 ] cube.front
         (if clockwise then cube.top else cube.bottom);
@@ -170,7 +170,7 @@ let move_left cube clockwise =
 let move_front cube clockwise =
   {
     back = cube.back;
-    front = rotate_side cube.front clockwise;
+    front = rotate_face cube.front clockwise;
     right =
       replace_mapped
         [
@@ -212,7 +212,7 @@ let move_front cube clockwise =
 let move_back cube clockwise =
   {
     front = cube.front;
-    back = rotate_side cube.back clockwise;
+    back = rotate_face cube.back clockwise;
     right =
       replace_mapped
         [
@@ -308,6 +308,6 @@ let rotate_cube cube =
     right = cube.back;
     back = cube.left;
     left = cube.front;
-    top = rotate_side cube.top true;
-    bottom = rotate_side cube.bottom false;
+    top = rotate_face cube.top true;
+    bottom = rotate_face cube.bottom false;
   }
