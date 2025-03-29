@@ -2,8 +2,16 @@ open Rubics_cube.Cube
 
 type make_move_req_body = { move : move; cube : cube } [@@deriving yojson]
 
+let cors_middleware handler request =
+  let%lwt response = handler request in
+  Dream.add_header response "Access-Control-Allow-Origin" "*";
+  Dream.add_header response "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS";
+  Dream.add_header response "Access-Control-Allow-Headers" "Content-Type";
+  Dream.set_status response `OK;
+  Lwt.return response
+
 let () =
-  Dream.run @@ Dream.logger
+  Dream.run @@ Dream.logger @@ cors_middleware
   @@ Dream.router
        [
          Dream.post "/api/move" (fun req ->
