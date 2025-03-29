@@ -1,14 +1,12 @@
 import * as THREE from 'three';
 
 
-const color =
-  c => new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide });
-const blue = color(0x0045AD);
-const green = color(0x009B48);
-const red = color(0xB90000);
-const yellow = color(0xFFD500);
-const white = color(0xFFFFFF);
-const orange = color(0xFF5900);
+const blue = 0x0045AD;
+const green = 0x009B48;
+const red = 0xB90000;
+const yellow = 0xFFD500;
+const white = 0xFFFFFF;
+const orange = 0xFF5900;
 
 function sticker_to_color(sticker) {
   const sticker_to_color_map = {
@@ -22,71 +20,36 @@ function sticker_to_color(sticker) {
   return sticker_to_color_map[sticker];
 }
 
-function create_rect(size, color, x, y, z) {
-  const geometry = new THREE.PlaneGeometry(size, size);
-  const rect = new THREE.Mesh(geometry, color);
-  rect.position.set(x, y, z);
-  return rect;
-}
+function create_cubie(x, y, z, colors) {
+  const materials = colors.map(c =>
+    c ? new THREE.MeshBasicMaterial({ color: c }) :
+        new THREE.MeshBasicMaterial({ color: 0x222222, transparent: true, opacity: 0.5 }));
 
-const rect_size = 1 / 2;
-
-function create_face(face_name, face_arr) {
-  const index_map = (x, y) => ({
-    "FRONT": 3 * y + x,
-    "RIGHT": 3 * y + x,
-    "BOTTOM": 3 * y + x,
-    "BACK": 3 * y + (2 - x),
-    "LEFT": 3 * y + (2 - x),
-    "TOP": 3 * (2 - y) + x,
-  });
-
-  const face_three_js = new THREE.Group();
-  for (let x = 0; x < 3; x++) {
-    for (let y = 0; y < 3; y++) {
-      const i = index_map(x, y)[face_name];
-      const color = sticker_to_color(face_arr[i]);
-      const rect =
-        create_rect(rect_size, color, x * rect_size, -y * rect_size, 0);
-      face_three_js.add(rect);
-    }
-  }
-  return face_three_js;
+  const cubie = new THREE.Mesh(
+    new THREE.BoxGeometry(0.98, 0.98, 0.98),
+    materials
+  );
+  cubie.position.set(x, y, z);
+  return cubie;
 }
 
 export function create_cube(cube) {
-  const cube_three_js = new THREE.Group();
-
-  const back = create_face("BACK", cube.back);
-  back.translateZ(-3 * rect_size);
-  cube_three_js.add(back);
-
-  const front = create_face("FRONT", cube.front);
-  cube_three_js.add(front);
-
-  const bottom = create_face("BOTTOM", cube.bottom);
-  bottom.rotateX(Math.PI / 2);
-  bottom.translateY(-rect_size / 2);
-  bottom.translateZ(rect_size * 5 / 2);
-  cube_three_js.add(bottom);
-
-  const top = create_face("TOP", cube.top);
-  top.rotateX(Math.PI / 2);
-  top.translateZ(-rect_size / 2);
-  top.translateY(-rect_size / 2);
-  cube_three_js.add(top);
-
-  const left = create_face("LEFT", cube.left);
-  left.rotateY(Math.PI / 2);
-  left.translateZ(-rect_size / 2);
-  left.translateX(rect_size / 2);
-  cube_three_js.add(left);
-
-  const right = create_face("RIGHT", cube.right);
-  right.rotateY(Math.PI / 2);
-  right.translateZ(rect_size * 5 / 2);
-  right.translateX(rect_size / 2);
-  cube_three_js.add(right);
-
+  let cube_three_js = new THREE.Group();
+  for (let x = -1; x <= 1; x++) {
+    for (let y = -1; y <= 1; y++) {
+      for (let z = -1; z <= 1; z++) {
+        const color = (face, index) => sticker_to_color(face.at(index));
+        const colors = [
+          x === 1 ? color(cube.right, 3 * (1 - y) + 1 - z) : null,
+          x === -1 ? color(cube.left, 3 * (1 - y) + 1 + z) : null,
+          y === 1 ? color(cube.top, 3 * (1 + z) + 1 + x) : null,
+          y === -1 ? color(cube.bottom, 3 * (1 - z) + 1 + x) : null,
+          z === 1 ? color(cube.front, 3 * (1 - y) + 1 + x) : null,
+          z === -1 ? color(cube.back, 3 * (1 - y) + 1 - x) : null,
+        ];
+        cube_three_js.add(create_cubie(x, y, z, colors));
+      }
+    }
+  }
   return cube_three_js;
 }

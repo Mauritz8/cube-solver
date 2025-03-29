@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import Api from '$lib/api.ts';
   import { create_cube } from '$lib/threejs.js';
   import { solved_cube } from '$lib/cube.ts';
@@ -26,15 +27,20 @@
     cube_container.style.height = scene_height;
     cube_container.appendChild(renderer.domElement);
 
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
     scene.add(cube_three_js);
 
     camera.position.x = 3;
     camera.position.y = 2;
-    camera.position.z = 3;
+    camera.position.z = 7;
 
-    camera.lookAt(new THREE.Vector3(1, 0, 0));
-
-    const animate = () => renderer.render(scene, camera);
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
     renderer.setAnimationLoop(animate);
   });
 
