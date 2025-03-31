@@ -1,4 +1,5 @@
 open Rubics_cube.Cube
+open Rubics_cube.Move
 
 type make_move_req_body = { move : move; cube : cube } [@@deriving yojson]
 

@@ -1,4 +1,5 @@
 open Rubics_cube.Cube
+open Rubics_cube.Move
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 (* White on top and green on the front *)
