@@ -26,31 +26,31 @@ let move_up_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = UP; clockwise = true } in
+  let actual = make_move cube { face = TOP; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_up_counter_clockwise_test () =
   let expect =
@@ -64,31 +64,31 @@ let move_up_counter_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = UP; clockwise = false } in
+  let actual = make_move cube { face = TOP; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_down_clockwise_test () =
   let expect =
@@ -101,31 +101,31 @@ let move_down_clockwise_test () =
       bottom = [ YELLOW; WHITE; RED; WHITE; YELLOW; RED; ORANGE; WHITE; GREEN ];
     }
   in
-  let actual = make_move cube { direction = DOWN; clockwise = true } in
+  let actual = make_move cube { face = BOTTOM; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_down_counter_clockwise_test () =
   let expect =
@@ -138,31 +138,31 @@ let move_down_counter_clockwise_test () =
       bottom = [ GREEN; WHITE; ORANGE; RED; YELLOW; WHITE; RED; WHITE; YELLOW ];
     }
   in
-  let actual = make_move cube { direction = DOWN; clockwise = false } in
+  let actual = make_move cube { face = BOTTOM; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_right_clockwise_test () =
   let expect =
@@ -175,31 +175,31 @@ let move_right_clockwise_test () =
       bottom = [ RED; RED; WHITE; WHITE; YELLOW; RED; YELLOW; WHITE; WHITE ];
     }
   in
-  let actual = make_move cube { direction = RIGHT; clockwise = true } in
+  let actual = make_move cube { face = RIGHT; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_right_counter_clockwise_test () =
   let expect =
@@ -212,31 +212,31 @@ let move_right_counter_clockwise_test () =
       bottom = [ RED; RED; RED; WHITE; YELLOW; ORANGE; YELLOW; WHITE; YELLOW ];
     }
   in
-  let actual = make_move cube { direction = RIGHT; clockwise = false } in
+  let actual = make_move cube { face = RIGHT; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_left_clockwise_test () =
   let expect =
@@ -249,31 +249,31 @@ let move_left_clockwise_test () =
       bottom = [ RED; RED; GREEN; YELLOW; YELLOW; WHITE; WHITE; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = LEFT; clockwise = true } in
+  let actual = make_move cube { face = LEFT; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_left_counter_clockwise_test () =
   let expect =
@@ -287,31 +287,31 @@ let move_left_counter_clockwise_test () =
         [ BLUE; RED; GREEN; ORANGE; YELLOW; WHITE; ORANGE; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = LEFT; clockwise = false } in
+  let actual = make_move cube { face = LEFT; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_front_clockwise_test () =
   let expect =
@@ -325,31 +325,31 @@ let move_front_clockwise_test () =
         [ ORANGE; YELLOW; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = FRONT; clockwise = true } in
+  let actual = make_move cube { face = FRONT; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_front_counter_clockwise_test () =
   let expect =
@@ -364,31 +364,31 @@ let move_front_counter_clockwise_test () =
         [ BLUE; GREEN; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = FRONT; clockwise = false } in
+  let actual = make_move cube { face = FRONT; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_back_clockwise_test () =
   let expect =
@@ -401,31 +401,31 @@ let move_back_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; GREEN; WHITE; ORANGE ];
     }
   in
-  let actual = make_move cube { direction = BACK; clockwise = true } in
+  let actual = make_move cube { face = BACK; clockwise = true } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let move_back_counter_clockwise_test () =
   let expect =
@@ -439,31 +439,31 @@ let move_back_counter_clockwise_test () =
       bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; BLUE; YELLOW; BLUE ];
     }
   in
-  let actual = make_move cube { direction = BACK; clockwise = false } in
+  let actual = make_move cube { face = BACK; clockwise = false } in
   Alcotest.(check string)
     "same front"
-    (face_to_string expect.front)
-    (face_to_string actual.front);
+    (stickers_to_string expect.front)
+    (stickers_to_string actual.front);
   Alcotest.(check string)
     "same back"
-    (face_to_string expect.back)
-    (face_to_string actual.back);
+    (stickers_to_string expect.back)
+    (stickers_to_string actual.back);
   Alcotest.(check string)
     "same right"
-    (face_to_string expect.right)
-    (face_to_string actual.right);
+    (stickers_to_string expect.right)
+    (stickers_to_string actual.right);
   Alcotest.(check string)
     "same left"
-    (face_to_string expect.left)
-    (face_to_string actual.left);
+    (stickers_to_string expect.left)
+    (stickers_to_string actual.left);
   Alcotest.(check string)
     "same top"
-    (face_to_string expect.top)
-    (face_to_string actual.top);
+    (stickers_to_string expect.top)
+    (stickers_to_string actual.top);
   Alcotest.(check string)
     "same bottom"
-    (face_to_string expect.bottom)
-    (face_to_string actual.bottom)
+    (stickers_to_string expect.bottom)
+    (stickers_to_string actual.bottom)
 
 let () =
   let open Alcotest in

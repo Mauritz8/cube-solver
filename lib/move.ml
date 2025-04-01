@@ -1,8 +1,7 @@
 open Cube
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
-type move = { direction : direction; clockwise : bool } [@@deriving yojson]
+type move = { face : face; clockwise : bool } [@@deriving yojson]
 type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
@@ -203,9 +202,9 @@ let move_back cube clockwise =
 
 let make_move cube move =
   let f g = g cube move.clockwise in
-  match move.direction with
-  | UP -> f move_up
-  | DOWN -> f move_down
+  match move.face with
+  | TOP -> f move_up
+  | BOTTOM -> f move_down
   | RIGHT -> f move_right
   | LEFT -> f move_left
   | FRONT -> f move_front
@@ -225,8 +224,8 @@ let rotate_cube cube =
 let random_direction () =
   Random.self_init ();
   match Random.int 6 with
-  | 0 -> UP
-  | 1 -> DOWN
+  | 0 -> TOP
+  | 1 -> BOTTOM
   | 2 -> RIGHT
   | 3 -> LEFT
   | 4 -> FRONT
@@ -238,13 +237,13 @@ let random_bool () =
   if Random.int 2 = 0 then false else true
 
 let random_move () =
-  { direction = random_direction (); clockwise = random_bool () }
+  { face = random_direction (); clockwise = random_bool () }
 
 let move_to_notation move =
   String.cat
-    (match move.direction with
-    | UP -> "U"
-    | DOWN -> "D"
+    (match move.face with
+    | TOP -> "U"
+    | BOTTOM -> "D"
     | RIGHT -> "R"
     | LEFT -> "L"
     | FRONT -> "F"

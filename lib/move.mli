@@ -1,7 +1,6 @@
 open Cube
 
-type direction = UP | DOWN | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
-type move = { direction : direction; clockwise : bool } [@@deriving yojson]
+type move = { face : face; clockwise : bool } [@@deriving yojson]
 type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
