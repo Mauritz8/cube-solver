@@ -11,6 +11,17 @@ let cube =
     bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
   }
 
+(* TODO: make more tests, for example:
+     1. cross is already solved
+     2. only one edge is not solved
+     
+     tests for multiple different scrambles to really make sure it works
+     3. solve all four edges #1
+     4. solve all four edges #2
+     5. solve all four edges #3
+ *)
+
+(* TODO: make test output be more logical and easier to interpret*)
 let solve_cross_test () =
   let color = WHITE in
   let cross_stickers_expected =
