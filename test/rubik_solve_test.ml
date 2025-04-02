@@ -1,5 +1,5 @@
-open Rubics_cube.Cube
-open Rubics_cube.Solve
+open Rubik.Cube
+open Rubik.Solve
 
 let cube =
   {

@@ -1,4 +1,4 @@
-# CubeSolver: Interactive 3D Rubik's Cube Solver
+# cube-solver: Interactive 3D Rubik's Cube Solver
 A 3D Rubik's Cube simulator with built-in solving guidance. Use the "Scramble"
 button to randomize the cube, then select "Solve" to display a step-by-step 
 solution.

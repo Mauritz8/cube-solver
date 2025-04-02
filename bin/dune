@@ -1,6 +1,6 @@
 (executable
- (public_name rubics_cube)
+ (public_name cube-solver)
  (name server)
- (libraries rubics_cube dream)
+ (libraries rubik dream)
  (preprocess
   (pps lwt_ppx ppx_yojson_conv)))

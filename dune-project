@@ -1,6 +1,6 @@
 (lang dune 3.15)
 
-(name rubics_cube)
+(name cube-solver)
 
 (generate_opam_files true)
 
@@ -16,7 +16,7 @@
 (documentation https://url/to/documentation)
 
 (package
- (name rubics_cube)
+ (name cube-solver)
  (synopsis "A short synopsis")
  (description "A longer description")
  (depends
