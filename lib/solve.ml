@@ -3,11 +3,6 @@ open Move
 
 type edge = { face : face; index : int }
 
-let edge_to_string edge = Printf.sprintf
-  "{ face = %s; index = %d }"
-  (face_to_string edge.face)
-  edge.index
-
 let face_stickers cube = function
   | FRONT -> cube.front
   | BACK -> cube.back
@@ -16,9 +11,9 @@ let face_stickers cube = function
   | TOP -> cube.top
   | BOTTOM -> cube.bottom
 
-let find_edges_face face =
+let find_edges_face stickers =
   let is_odd i _ = i mod 2 != 0 in
-  List.filteri is_odd (snd face)
+  List.filteri is_odd stickers
 
 let find_edge_face color face = 
   let edges = find_edges_face face in
@@ -31,26 +26,14 @@ let find_edge_face color face =
     | Some 3 -> Some 7
     | _ -> None
   in
-  (fst face, face_index)
+  face_index
 
-let find_all_edges_cube color cube = 
-  let faces = [
-    (FRONT, cube.front); (BACK, cube.back); (RIGHT, cube.right);
-    (LEFT, cube.left); (BOTTOM, cube.bottom); (TOP, cube.top)] in
-  let edges = List.map (find_edge_face color) faces in
-  let found_edges = List.filter
-    (fun edge -> (Option.is_some (snd edge)))
-    edges
-  in
-  List.map
-    (fun edge -> { face = fst edge; index = Option.get (snd edge) })
-    found_edges
-
-let find_edge_cube color cube =
-  let edges = find_all_edges_cube color cube in
-  let () = List.iter (fun edge -> Printf.printf "%s " (edge_to_string edge)) edges in
-  let () = print_newline () in
-  List.hd edges
+let find_edge_cube color cube = 
+  let faces = [ FRONT; BACK; RIGHT; LEFT; BOTTOM; TOP ] in
+  let faces_stickers = [ cube.front; cube.back; cube.right; cube.left; cube.bottom; cube.top ] in
+  let edges = List.map (find_edge_face color) faces_stickers in
+  let edge = Option.get (List.find Option.is_some edges) in
+  { face = List.nth faces edge; index = edge }
 
 let rec move_edge_to_top edge cube = 
   match edge.index with
@@ -88,7 +71,6 @@ let solve_cross cube =
   let face = TOP in
   let face_stickers = face_stickers cube face in
   let color = List.nth face_stickers 4 in
-  Printf.printf "%s\n" (sticker_to_string color);
   let rec solve_cross_helper cube = function
     | 0 -> cube
     | n ->
@@ -105,6 +87,6 @@ let solve_cross cube =
       let new_cube = solve_edge edge cube in
       solve_cross_helper new_cube (n - 1)
   in
-  let cross_edges = 1 in
+  let cross_edges = 4 in
   solve_cross_helper cube cross_edges
 
