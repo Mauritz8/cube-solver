@@ -20,21 +20,41 @@ let rec solve_cross cube =
   else
     let cube_after_move =
       if cube.bottom_face.fst.snd == cross_color then
-        let move = { layer = FRONT; clockwise = true } in
-        let cube2 = make_move cube move in
-        make_move cube2 move
+        let edge = cube.bottom_layer.front.snd in
+        let center = cube.middle_layer.front.snd in
+        if edge == center then
+          let move = { layer = FRONT; clockwise = true } in
+          let cube2 = make_move cube move in
+          make_move cube2 move
+        else
+          make_move cube { layer = BOTTOM; clockwise = true }
       else if cube.bottom_face.snd.fst == cross_color then
-        let move = { layer = LEFT; clockwise = true } in
-        let cube2 = make_move cube move in
-        make_move cube2 move
+        let edge = cube.bottom_layer.left.snd in
+        let center = cube.middle_layer.left.snd in
+        if edge == center then
+          let move = { layer = LEFT; clockwise = true } in
+          let cube2 = make_move cube move in
+          make_move cube2 move
+        else
+          make_move cube { layer = BOTTOM; clockwise = true }
       else if cube.bottom_face.snd.trd == cross_color then
-        let move = { layer = RIGHT; clockwise = true } in
-        let cube2 = make_move cube move in
-        make_move cube2 move
+        let edge = cube.bottom_layer.right.snd in
+        let center = cube.middle_layer.right.snd in
+        if edge == center then
+          let move = { layer = RIGHT; clockwise = true } in
+          let cube2 = make_move cube move in
+          make_move cube2 move
+        else
+          make_move cube { layer = BOTTOM; clockwise = true }
       else if cube.bottom_face.trd.snd == cross_color then
-        let move = { layer = BACK; clockwise = true } in
-        let cube2 = make_move cube move in
-        make_move cube2 move
+        let edge = cube.bottom_layer.back.snd in
+        let center = cube.middle_layer.back.snd in
+        if edge == center then
+          let move = { layer = BACK; clockwise = true } in
+          let cube2 = make_move cube move in
+          make_move cube2 move
+        else
+          make_move cube { layer = BOTTOM; clockwise = true }
       else if cube.middle_layer.front.fst == cross_color then
         make_move cube { layer = LEFT; clockwise = true }
       else if cube.middle_layer.front.trd == cross_color then
