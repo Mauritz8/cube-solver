@@ -1,227 +1,99 @@
 open Cube
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type move = { face : face; clockwise : bool } [@@deriving yojson]
+type layer = TOP | BOTTOM | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
+type move = { layer : layer; clockwise : bool } [@@deriving yojson]
 type moves = string list [@@deriving yojson]
 type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
 
-let rotate_face face clockwise =
-  let new_face_indexes =
-    let indexes = [ 6; 3; 0; 7; 4; 1; 8; 5; 2 ] in
-    if clockwise then indexes else List.rev indexes
-  in
-  List.map (fun i -> List.nth face i) new_face_indexes
+let rotate_face face _ = face
 
-module IntMap = Map.Make (Int)
+let move_layer layer clockwise =
+  if clockwise then
+    {
+      front = layer.right;
+      right = layer.back;
+      back = layer.left;
+      left = layer.front;
+    }
+  else
+    {
+      front = layer.left;
+      right = layer.front;
+      back = layer.right;
+      left = layer.back;
+    }
 
-let replace_mapped mapped_indexes lst new_lst =
-  let map = IntMap.of_list mapped_indexes in
-  let f i x =
-    let mapped_index = IntMap.find_opt i map in
-    match mapped_index with Some j -> List.nth new_lst j | None -> x
-  in
-  List.mapi f lst
-
-let replace_at_indexes indexes lst new_lst =
-  let f i x = if List.mem i indexes then List.nth new_lst i else x in
-  List.mapi f lst
-
-let move_up cube clockwise =
-  let replace_func = replace_at_indexes [ 0; 1; 2 ] in
-  {
-    bottom = cube.bottom;
-    top = rotate_face cube.top clockwise;
-    front =
-      replace_func cube.front (if clockwise then cube.right else cube.left);
-    right =
-      replace_func cube.right (if clockwise then cube.back else cube.front);
-    back = replace_func cube.back (if clockwise then cube.left else cube.right);
-    left = replace_func cube.left (if clockwise then cube.front else cube.back);
+let move_top cube clockwise =
+  { cube with
+    top_face = rotate_face cube.top_face clockwise;
+    top_layer = move_layer cube.top_layer clockwise;
   }
 
-let move_down cube clockwise =
-  let replace_func = replace_at_indexes [ 6; 7; 8 ] in
-  {
-    top = cube.top;
-    bottom = rotate_face cube.bottom clockwise;
-    front =
-      replace_func cube.front (if clockwise then cube.left else cube.right);
-    right =
-      replace_func cube.right (if clockwise then cube.front else cube.back);
-    back = replace_func cube.back (if clockwise then cube.right else cube.left);
-    left = replace_func cube.left (if clockwise then cube.back else cube.front);
+let move_bottom cube clockwise =
+  { cube with
+    bottom_face = rotate_face cube.bottom_face clockwise;
+    bottom_layer = move_layer cube.bottom_layer clockwise;
   }
 
-let move_right cube clockwise =
+let move_right cube _ =
   {
-    left = cube.left;
-    right = rotate_face cube.right clockwise;
-    front =
-      replace_at_indexes [ 2; 5; 8 ] cube.front
-        (if clockwise then cube.bottom else cube.top);
-    top =
-      replace_mapped
-        [
-          (2, if clockwise then 2 else 6);
-          (5, if clockwise then 5 else 3);
-          (8, if clockwise then 8 else 0);
-        ]
-        cube.top
-        (if clockwise then cube.front else cube.back);
-    back =
-      replace_mapped
-        [ (0, 8); (3, 5); (6, 2) ]
-        cube.back
-        (if clockwise then cube.top else cube.bottom);
-    bottom =
-      replace_mapped
-        [
-          (2, if clockwise then 6 else 2);
-          (5, if clockwise then 3 else 5);
-          (8, if clockwise then 0 else 8);
-        ]
-        cube.bottom
-        (if clockwise then cube.back else cube.front);
+    top_face = {
+      fst = { cube.top_face.fst with trd = cube.top_layer.front.trd }; 
+      snd = { cube.top_face.snd with trd = cube.middle_layer.front.trd }; 
+      trd = { cube.top_face.trd with trd = cube.bottom_layer.front.trd }; 
+    };
+    top_layer = { cube.top_layer with
+      front = { cube.top_layer.front with trd = cube.bottom_face.fst.trd };
+      back = { cube.top_layer.back with fst = cube.top_face.trd.trd };
+      right = {
+        fst = cube.bottom_layer.right.fst;
+        snd = cube.middle_layer.right.fst;
+        trd = cube.top_layer.right.fst;
+      };
+    };
+    middle_layer = { cube.middle_layer with
+      front = { cube.middle_layer.front with trd = cube.bottom_face.snd.trd };
+      back = { cube.middle_layer.back with fst = cube.top_face.snd.trd };
+      right = { cube.middle_layer.right with
+        fst = cube.bottom_layer.right.snd;
+        trd = cube.top_layer.right.snd;
+      };
+    };
+    bottom_layer = { cube.bottom_layer with
+      front = { cube.bottom_layer.front with trd = cube.bottom_face.trd.trd };
+      back = { cube.bottom_layer.back with fst = cube.top_face.fst.trd };
+      right = {
+        fst = cube.bottom_layer.right.trd;
+        snd = cube.middle_layer.right.trd;
+        trd = cube.top_layer.right.trd;
+      };
+    };
+    bottom_face = {
+      fst = { cube.bottom_face.fst with trd = cube.bottom_layer.back.fst }; 
+      snd = { cube.bottom_face.snd with trd = cube.middle_layer.back.fst }; 
+      trd = { cube.bottom_face.trd with trd = cube.top_layer.back.fst }; 
+    };
   }
 
-let move_left cube clockwise =
-  {
-    right = cube.right;
-    left = rotate_face cube.left clockwise;
-    front =
-      replace_at_indexes [ 0; 3; 6 ] cube.front
-        (if clockwise then cube.top else cube.bottom);
-    top =
-      replace_mapped
-        [
-          (0, if clockwise then 8 else 0);
-          (3, if clockwise then 5 else 3);
-          (6, if clockwise then 2 else 6);
-        ]
-        cube.top
-        (if clockwise then cube.back else cube.front);
-    back =
-      replace_mapped
-        [ (8, 0); (5, 3); (2, 6) ]
-        cube.back
-        (if clockwise then cube.bottom else cube.top);
-    bottom =
-      replace_mapped
-        [
-          (0, if clockwise then 0 else 8);
-          (3, if clockwise then 3 else 5);
-          (6, if clockwise then 6 else 2);
-        ]
-        cube.bottom
-        (if clockwise then cube.front else cube.back);
-  }
 
-let move_front cube clockwise =
-  {
-    back = cube.back;
-    front = rotate_face cube.front clockwise;
-    right =
-      replace_mapped
-        [
-          (0, if clockwise then 6 else 2);
-          (3, if clockwise then 7 else 1);
-          (6, if clockwise then 8 else 0);
-        ]
-        cube.right
-        (if clockwise then cube.top else cube.bottom);
-    top =
-      replace_mapped
-        [
-          (6, if clockwise then 8 else 0);
-          (7, if clockwise then 5 else 3);
-          (8, if clockwise then 2 else 6);
-        ]
-        cube.top
-        (if clockwise then cube.left else cube.right);
-    left =
-      replace_mapped
-        [
-          (2, if clockwise then 0 else 8);
-          (5, if clockwise then 1 else 7);
-          (8, if clockwise then 2 else 6);
-        ]
-        cube.left
-        (if clockwise then cube.bottom else cube.top);
-    bottom =
-      replace_mapped
-        [
-          (0, if clockwise then 6 else 2);
-          (1, if clockwise then 3 else 5);
-          (2, if clockwise then 0 else 8);
-        ]
-        cube.bottom
-        (if clockwise then cube.right else cube.left);
-  }
+let move_left cube _ = cube
 
-let move_back cube clockwise =
-  {
-    front = cube.front;
-    back = rotate_face cube.back clockwise;
-    right =
-      replace_mapped
-        [
-          (2, if clockwise then 8 else 0);
-          (5, if clockwise then 7 else 1);
-          (8, if clockwise then 6 else 2);
-        ]
-        cube.right
-        (if clockwise then cube.bottom else cube.top);
-    top =
-      replace_mapped
-        [
-          (0, if clockwise then 2 else 6);
-          (1, if clockwise then 5 else 3);
-          (2, if clockwise then 8 else 0);
-        ]
-        cube.top
-        (if clockwise then cube.right else cube.left);
-    left =
-      replace_mapped
-        [
-          (0, if clockwise then 2 else 6);
-          (3, if clockwise then 1 else 7);
-          (6, if clockwise then 0 else 8);
-        ]
-        cube.left
-        (if clockwise then cube.top else cube.bottom);
-    bottom =
-      replace_mapped
-        [
-          (6, if clockwise then 0 else 8);
-          (7, if clockwise then 3 else 5);
-          (8, if clockwise then 6 else 2);
-        ]
-        cube.bottom
-        (if clockwise then cube.left else cube.right);
-  }
+let move_front cube _ = cube
+
+let move_back cube _ = cube
 
 let make_move cube move =
   let f g = g cube move.clockwise in
-  match move.face with
-  | TOP -> f move_up
-  | BOTTOM -> f move_down
+  match move.layer with
+  | TOP -> f move_top
+  | BOTTOM -> f move_bottom
   | RIGHT -> f move_right
   | LEFT -> f move_left
   | FRONT -> f move_front
   | BACK -> f move_back
 
-let rotate_cube cube = 
-  {
-    front = cube.right;
-    right = cube.back;
-    back = cube.left;
-    left = cube.front;
-    top = rotate_face cube.top true;
-    bottom = rotate_face cube.bottom false;
-  }
-
-
-let random_direction () =
+let random_layer () =
   Random.self_init ();
   match Random.int 6 with
   | 0 -> TOP
@@ -237,11 +109,11 @@ let random_bool () =
   if Random.int 2 = 0 then false else true
 
 let random_move () =
-  { face = random_direction (); clockwise = random_bool () }
+  { layer = random_layer (); clockwise = random_bool () }
 
 let move_to_notation move =
   String.cat
-    (match move.face with
+    (match move.layer with
     | TOP -> "U"
     | BOTTOM -> "D"
     | RIGHT -> "R"

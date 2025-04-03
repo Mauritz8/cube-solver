@@ -1,20 +1,37 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
-type stickers = sticker list [@@deriving yojson]
-type cube = {
-  front : stickers;
-  right : stickers;
-  left : stickers;
-  top : stickers;
-  bottom : stickers;
-  back : stickers;
+
+type sticker_row = {
+  fst : sticker;
+  snd : sticker;
+  trd : sticker;
 }
 [@@deriving yojson]
 
-type face = FRONT | BACK | RIGHT | LEFT | TOP | BOTTOM [@@deriving yojson]
+type layer = {
+  front : sticker_row;
+  right : sticker_row;
+  back : sticker_row;
+  left : sticker_row;
+}
+[@@deriving yojson]
+
+type face = {
+  fst : sticker_row;
+  snd : sticker_row;
+  trd : sticker_row;
+}
+[@@deriving yojson]
+
+type cube = {
+  top_face : face;
+  top_layer : layer;
+  middle_layer : layer;
+  bottom_layer : layer;
+  bottom_face : face;
+}
+[@@deriving yojson]
 
 val solved_cube : cube
-val face_to_string : face -> string
 val sticker_to_string : sticker -> string
-val stickers_to_string : stickers -> string
 val cube_to_string : cube -> string

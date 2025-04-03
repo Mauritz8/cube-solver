@@ -1,39 +1,59 @@
-open Ppx_yojson_conv_lib.Yojson_conv.Primitives
-
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
-type stickers = sticker list [@@deriving yojson]
-type cube = {
-  front : stickers;
-  right : stickers;
-  left : stickers;
-  top : stickers;
-  bottom : stickers;
-  back : stickers;
+
+type sticker_row = {
+  fst : sticker;
+  snd : sticker;
+  trd : sticker;
 }
 [@@deriving yojson]
 
-type face = FRONT | BACK | RIGHT | LEFT | TOP | BOTTOM [@@deriving yojson]
+type layer = {
+  front : sticker_row;
+  right : sticker_row;
+  back : sticker_row;
+  left : sticker_row;
+}
+[@@deriving yojson]
 
-let face_one_sticker sticker = List.init 9 (fun _ -> sticker)
+type face = {
+  fst : sticker_row;
+  snd : sticker_row;
+  trd : sticker_row;
+}
+[@@deriving yojson]
 
+type cube = {
+  top_face : face;
+  top_layer : layer;
+  middle_layer : layer;
+  bottom_layer : layer;
+  bottom_face : face;
+}
+[@@deriving yojson]
+
+let solved_cube_layer = {
+  front = { fst = GREEN; snd = GREEN; trd = GREEN; };
+  right = { fst = RED; snd = RED; trd = RED; };
+  back = { fst = BLUE; snd = BLUE; trd = BLUE; };
+  left = { fst = ORANGE; snd = ORANGE; trd = ORANGE; };
+}
 let solved_cube =
   {
-    front = face_one_sticker GREEN;
-    right = face_one_sticker RED;
-    back = face_one_sticker BLUE;
-    left = face_one_sticker ORANGE;
-    top = face_one_sticker WHITE;
-    bottom = face_one_sticker YELLOW;
+    top_face = {
+      fst = { fst = WHITE; snd = WHITE; trd = WHITE; };
+      snd = { fst = WHITE; snd = WHITE; trd = WHITE; };
+      trd = { fst = WHITE; snd = WHITE; trd = WHITE; };
+    };
+    top_layer = solved_cube_layer;
+    middle_layer = solved_cube_layer;
+    bottom_layer = solved_cube_layer;
+    bottom_face = {
+      fst = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
+      snd = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
+      trd = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
+    };
   }
-
-let face_to_string = function
-  | FRONT -> "FRONT"
-  | BACK -> "BACK"
-  | RIGHT -> "RIGHT"
-  | LEFT -> "LEFT"
-  | TOP -> "TOP"
-  | BOTTOM -> "BOTTOM"
 
 let sticker_to_string = function
   | YELLOW -> "Y"
@@ -43,18 +63,4 @@ let sticker_to_string = function
   | GREEN -> "G"
   | ORANGE -> "O"
 
-let stickers_to_string face =
-  let f i x =
-    if i = 2 || i = 5 then String.cat (sticker_to_string x) "\n"
-    else sticker_to_string x
-  in
-  String.concat "" (List.mapi f face)
-
-let cube_to_string cube =
-  let front = stickers_to_string cube.front in
-  let right = stickers_to_string cube.right in
-  let back = stickers_to_string cube.back in
-  let left = stickers_to_string cube.left in
-  let top = stickers_to_string cube.top in
-  let bottom = stickers_to_string cube.bottom in
-  String.concat "\n\n" [ top; front; right; back; left; bottom ]
+let cube_to_string _ = ""
