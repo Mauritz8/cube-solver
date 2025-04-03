@@ -1,5 +1,4 @@
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
-
 open Cube
 open Move
 
@@ -21,8 +20,7 @@ let random_bool () =
   Random.self_init ();
   if Random.int 2 = 0 then false else true
 
-let random_move () =
-  { layer = random_layer (); clockwise = random_bool () }
+let random_move () = { layer = random_layer (); clockwise = random_bool () }
 
 let move_to_notation move =
   String.cat
@@ -41,8 +39,8 @@ let scramble () =
   let rec scramble_helper cube moves = function
     | 0 -> { new_cube = cube; moves = List.rev moves }
     | n ->
-      let move = random_move () in
-      let new_cube = make_move cube move in
-      scramble_helper new_cube ((move_to_notation move) :: moves) (n - 1)
+        let move = random_move () in
+        let new_cube = make_move cube move in
+        scramble_helper new_cube (move_to_notation move :: moves) (n - 1)
   in
   scramble_helper solved_cube [] 20

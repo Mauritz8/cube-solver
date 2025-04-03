@@ -1,11 +1,7 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
 
-type sticker_row = {
-  fst : sticker;
-  snd : sticker;
-  trd : sticker;
-}
+type sticker_row = { fst : sticker; snd : sticker; trd : sticker }
 [@@deriving yojson]
 
 type layer = {
@@ -16,11 +12,7 @@ type layer = {
 }
 [@@deriving yojson]
 
-type face = {
-  fst : sticker_row;
-  snd : sticker_row;
-  trd : sticker_row;
-}
+type face = { fst : sticker_row; snd : sticker_row; trd : sticker_row }
 [@@deriving yojson]
 
 (* TODO: consider if arrays of length three are better than structs *)
@@ -33,27 +25,31 @@ type cube = {
 }
 [@@deriving yojson]
 
-let solved_cube_layer = {
-  front = { fst = GREEN; snd = GREEN; trd = GREEN; };
-  right = { fst = RED; snd = RED; trd = RED; };
-  back = { fst = BLUE; snd = BLUE; trd = BLUE; };
-  left = { fst = ORANGE; snd = ORANGE; trd = ORANGE; };
-}
+let solved_cube_layer =
+  {
+    front = { fst = GREEN; snd = GREEN; trd = GREEN };
+    right = { fst = RED; snd = RED; trd = RED };
+    back = { fst = BLUE; snd = BLUE; trd = BLUE };
+    left = { fst = ORANGE; snd = ORANGE; trd = ORANGE };
+  }
+
 let solved_cube =
   {
-    top_face = {
-      fst = { fst = WHITE; snd = WHITE; trd = WHITE; };
-      snd = { fst = WHITE; snd = WHITE; trd = WHITE; };
-      trd = { fst = WHITE; snd = WHITE; trd = WHITE; };
-    };
+    top_face =
+      {
+        fst = { fst = WHITE; snd = WHITE; trd = WHITE };
+        snd = { fst = WHITE; snd = WHITE; trd = WHITE };
+        trd = { fst = WHITE; snd = WHITE; trd = WHITE };
+      };
     top_layer = solved_cube_layer;
     middle_layer = solved_cube_layer;
     bottom_layer = solved_cube_layer;
-    bottom_face = {
-      fst = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
-      snd = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
-      trd = { fst = YELLOW; snd = YELLOW; trd = YELLOW; };
-    };
+    bottom_face =
+      {
+        fst = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
+        snd = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
+        trd = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
+      };
   }
 
 let sticker_to_string = function

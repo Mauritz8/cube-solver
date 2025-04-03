@@ -3,11 +3,7 @@
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
 
-type sticker_row = {
-  fst : sticker;
-  snd : sticker;
-  trd : sticker;
-}
+type sticker_row = { fst : sticker; snd : sticker; trd : sticker }
 [@@deriving yojson]
 
 type layer = {
@@ -18,11 +14,7 @@ type layer = {
 }
 [@@deriving yojson]
 
-type face = {
-  fst : sticker_row;
-  snd : sticker_row;
-  trd : sticker_row;
-}
+type face = { fst : sticker_row; snd : sticker_row; trd : sticker_row }
 [@@deriving yojson]
 
 type cube = {
