@@ -22,6 +22,8 @@ let cube =
  *)
 
 (* TODO: make test output be more logical and easier to interpret*)
+(* TODO: check that cross edges are also in the right place, 
+   i.e that they have the same color as the face center sticker *)
 let solve_cross_test () =
   let color = WHITE in
   let cross_stickers_expected =

@@ -1,3 +1,5 @@
+(* TODO: make types abstract, i.e only define the name of the types *)
+
 type sticker = YELLOW | WHITE | BLUE | RED | GREEN | ORANGE
 [@@deriving yojson]
 
