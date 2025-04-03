@@ -179,158 +179,262 @@ let move_right_counter_clockwise cube =
 let move_left_clockwise cube =
   {
     top_face = {
-      fst = { cube.top_face.fst with fst = BLUE; };
-      snd = { cube.top_face.snd with fst = ORANGE; };
-      trd = { cube.top_face.trd with fst = ORANGE; };
+      fst = { cube.top_face.fst with fst = cube.bottom_layer.back.trd; };
+      snd = { cube.top_face.snd with fst = cube.middle_layer.back.trd; };
+      trd = { cube.top_face.trd with fst = cube.top_layer.back.trd; };
     };
     top_layer = { cube.top_layer with
-      front = { cube.top_layer.front with fst = WHITE; };
-      left = { fst = ORANGE; snd = WHITE; trd = GREEN; };
-      back = { cube.top_layer.back with trd = YELLOW; };
+      front = { cube.top_layer.front with fst = cube.top_face.fst.fst; };
+      back = { cube.top_layer.back with trd = cube.bottom_face.trd.fst; };
+      left = {
+        fst = cube.bottom_layer.left.fst;
+        snd = cube.middle_layer.left.fst;
+        trd = cube.top_layer.left.fst;
+      };
     };
     middle_layer = { cube.middle_layer with
-      front = { cube.middle_layer.front with fst = BLUE; };
-      left = { fst = GREEN; snd = ORANGE; trd = YELLOW; };
-      back = { cube.middle_layer.back with trd = WHITE; };
+      front = { cube.middle_layer.front with fst = cube.top_face.snd.fst; };
+      back = { cube.middle_layer.back with trd = cube.bottom_face.snd.fst; };
+      left = {
+        fst = cube.bottom_layer.left.snd;
+        snd = cube.middle_layer.left.snd;
+        trd = cube.top_layer.left.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      front = { cube.bottom_layer.front with fst = YELLOW; };
-      left = { fst = GREEN; snd = GREEN; trd = BLUE; };
-      back = { cube.bottom_layer.back with trd = RED; };
+      front = { cube.bottom_layer.front with fst = cube.top_face.trd.fst; };
+      back = { cube.bottom_layer.back with trd = cube.bottom_face.fst.fst };
+      left = {
+        fst = cube.bottom_layer.left.trd;
+        snd = cube.middle_layer.left.trd;
+        trd = cube.top_layer.left.trd;
+      };
     };
     bottom_face = {
-      fst = { cube.bottom_face.fst with fst = RED; };
-      snd = { cube.bottom_face.snd with fst = YELLOW; };
-      trd = { cube.bottom_face.trd with fst = WHITE; };
+      fst = { cube.bottom_face.fst with fst = cube.top_layer.front.fst; };
+      snd = { cube.bottom_face.snd with fst = cube.middle_layer.front.fst; };
+      trd = { cube.bottom_face.trd with fst = cube.bottom_layer.front.fst; };
     };
   }
 
 let move_left_counter_clockwise cube =
   {
     top_face = {
-      fst = { cube.top_face.fst with fst = RED; };
-      snd = { cube.top_face.snd with fst = YELLOW; };
-      trd = { cube.top_face.trd with fst = WHITE; };
+      fst = { cube.top_face.fst with fst = cube.top_layer.front.fst; };
+      snd = { cube.top_face.snd with fst = cube.middle_layer.front.fst; };
+      trd = { cube.top_face.trd with fst = cube.bottom_layer.front.fst; };
     };
     top_layer = { cube.top_layer with
-      front = { cube.top_layer.front with fst = RED; };
-      left = { fst = BLUE; snd = GREEN; trd = GREEN; };
-      back = { cube.top_layer.back with trd = YELLOW; };
+      front = { cube.top_layer.front with fst = cube.bottom_face.fst.fst; };
+      back = { cube.top_layer.back with trd = cube.top_face.trd.fst; };
+      left = {
+        fst = cube.top_layer.left.trd;
+        snd = cube.middle_layer.left.trd;
+        trd = cube.bottom_layer.left.trd;
+      };
     };
     middle_layer = { cube.middle_layer with
-      front = { cube.middle_layer.front with fst = WHITE; };
-      left = { fst = YELLOW; snd = ORANGE; trd = GREEN; };
-      back = { cube.middle_layer.back with trd = BLUE; };
+      front = { cube.middle_layer.front with fst = cube.bottom_face.snd.fst; };
+      back = { cube.middle_layer.back with trd = cube.top_face.snd.fst; };
+      left = {
+        fst = cube.top_layer.left.snd;
+        snd = cube.middle_layer.left.snd;
+        trd = cube.bottom_layer.left.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      front = { cube.bottom_layer.front with fst = YELLOW; };
-      left = { fst = GREEN; snd = WHITE; trd = ORANGE; };
-      back = { cube.bottom_layer.back with trd = WHITE; };
+      front = { cube.bottom_layer.front with fst = cube.bottom_face.trd.fst; };
+      back = { cube.bottom_layer.back with trd = cube.top_face.fst.fst };
+      left = {
+        fst = cube.top_layer.left.fst;
+        snd = cube.middle_layer.left.fst;
+        trd = cube.bottom_layer.left.fst;
+      };
     };
     bottom_face = {
-      fst = { cube.bottom_face.fst with fst = BLUE; };
-      snd = { cube.bottom_face.snd with fst = ORANGE; };
-      trd = { cube.bottom_face.trd with fst = ORANGE; };
+      fst = { cube.bottom_face.fst with fst = cube.bottom_layer.back.trd; };
+      snd = { cube.bottom_face.snd with fst = cube.middle_layer.back.trd; };
+      trd = { cube.bottom_face.trd with fst = cube.top_layer.back.trd; };
     };
   }
 
 let move_front_clockwise cube =
   {
     top_face = { cube.top_face with
-      trd = { fst = GREEN; snd = GREEN; trd = BLUE; };
+      trd = {
+        fst = cube.bottom_layer.left.trd;
+        snd = cube.middle_layer.left.trd;
+        trd = cube.top_layer.left.trd;
+      };
     };
     top_layer = { cube.top_layer with
-      front = { fst = WHITE; snd = YELLOW; trd = RED; };
-      left = { cube.top_layer.left with trd = RED; };
-      right = { cube.top_layer.right with fst = YELLOW; };
+      left = { cube.top_layer.left with trd = cube.bottom_face.fst.fst; };
+      right = { cube.top_layer.right with fst = cube.top_face.trd.fst; };
+      front = {
+        fst = cube.bottom_layer.front.fst;
+        snd = cube.middle_layer.front.fst;
+        trd = cube.top_layer.front.fst;
+      };
     };
     middle_layer = { cube.middle_layer with
-      front = { fst = BLUE; snd = GREEN; trd = BLUE; };
-      left = { cube.middle_layer.left with trd = RED; };
-      right = { cube.middle_layer.right with fst = ORANGE; };
+      left = { cube.middle_layer.left with trd = cube.bottom_face.fst.snd; };
+      right = { cube.middle_layer.right with fst = cube.top_face.trd.snd; };
+      front = {
+        fst = cube.bottom_layer.front.snd;
+        snd = cube.middle_layer.front.snd;
+        trd = cube.top_layer.front.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      front = { fst = YELLOW; snd = ORANGE; trd = RED; };
-      left = { cube.bottom_layer.left with trd = GREEN; };
-      right = { cube.bottom_layer.right with fst = YELLOW; };
+      left = { cube.bottom_layer.left with trd = cube.bottom_face.fst.trd; };
+      right = { cube.bottom_layer.right with fst = cube.top_face.trd.trd; };
+      front = {
+        fst = cube.bottom_layer.front.trd;
+        snd = cube.middle_layer.front.trd;
+        trd = cube.top_layer.front.trd;
+      };
     };
     bottom_face = { cube.bottom_face with
-      fst = { fst = ORANGE; snd = YELLOW; trd = GREEN; };
+      fst = {
+        fst = cube.bottom_layer.right.fst;
+        snd = cube.middle_layer.right.fst;
+        trd = cube.top_layer.right.fst;
+      };
     };
   }
 
 let move_front_counter_clockwise cube =
   {
     top_face = { cube.top_face with
-      trd = { fst = GREEN; snd = YELLOW; trd = ORANGE; };
+      trd = {
+        fst = cube.top_layer.right.fst;
+        snd = cube.middle_layer.right.fst;
+        trd = cube.bottom_layer.right.fst;
+      };
     };
     top_layer = { cube.top_layer with
-      front = { fst = RED; snd = ORANGE; trd = YELLOW; };
-      left = { cube.top_layer.left with trd = YELLOW; };
-      right = { cube.top_layer.right with fst = GREEN; };
+      left = { cube.top_layer.left with trd = cube.top_face.trd.trd; };
+      right = { cube.top_layer.right with fst = cube.bottom_face.fst.trd; };
+      front = {
+        fst = cube.top_layer.front.trd;
+        snd = cube.middle_layer.front.trd;
+        trd = cube.bottom_layer.front.trd;
+      };
     };
     middle_layer = { cube.middle_layer with
-      front = { fst = BLUE; snd = GREEN; trd = BLUE; };
-      left = { cube.middle_layer.left with trd = ORANGE; };
-      right = { cube.middle_layer.right with fst = RED; };
+      left = { cube.middle_layer.left with trd = cube.top_face.trd.snd; };
+      right = { cube.middle_layer.right with fst = cube.bottom_face.fst.snd; };
+      front = {
+        fst = cube.top_layer.front.snd;
+        snd = cube.middle_layer.front.snd;
+        trd = cube.bottom_layer.front.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      front = { fst = RED; snd = YELLOW; trd = WHITE; };
-      left = { cube.bottom_layer.left with trd = YELLOW; };
-      right = { cube.bottom_layer.right with fst = RED; };
+      left = { cube.bottom_layer.left with trd = cube.top_face.trd.fst; };
+      right = { cube.bottom_layer.right with fst = cube.bottom_face.fst.fst; };
+      front = {
+        fst = cube.top_layer.front.fst;
+        snd = cube.middle_layer.front.fst;
+        trd = cube.bottom_layer.front.fst;
+      };
     };
     bottom_face = { cube.bottom_face with
-      fst = { fst = BLUE; snd = GREEN; trd = GREEN; };
+      fst = {
+        fst = cube.top_layer.left.trd;
+        snd = cube.middle_layer.left.trd;
+        trd = cube.bottom_layer.left.trd;
+      };
     };
   }
 
 let move_back_clockwise cube =
   {
     top_face = { cube.top_face with
-      fst = { fst = BLUE; snd = YELLOW; trd = BLUE; };
+      fst = {
+        fst = cube.top_layer.right.trd;
+        snd = cube.middle_layer.right.trd;
+        trd = cube.bottom_layer.right.trd;
+      };
     };
     top_layer = { cube.top_layer with
-      back = { fst = WHITE; snd = RED; trd = WHITE; };
-      left = { cube.top_layer.left with fst = RED; };
-      right = { cube.top_layer.right with trd = ORANGE; };
+      left = { cube.top_layer.left with fst = cube.top_face.fst.trd; };
+      right = { cube.top_layer.right with trd = cube.bottom_face.trd.trd; };
+      back = {
+        fst = cube.bottom_layer.back.fst;
+        snd = cube.middle_layer.back.fst;
+        trd = cube.top_layer.back.fst;
+      };
     };
     middle_layer = { cube.middle_layer with
-      back = { fst = BLUE; snd = BLUE; trd = RED; };
-      left = { cube.middle_layer.left with fst = GREEN; };
-      right = { cube.middle_layer.right with trd = WHITE; };
+      left = { cube.middle_layer.left with fst = cube.top_face.fst.snd; };
+      right = { cube.middle_layer.right with trd = cube.bottom_face.trd.snd; };
+      back = {
+        fst = cube.bottom_layer.back.snd;
+        snd = cube.middle_layer.back.snd;
+        trd = cube.top_layer.back.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      back = { fst = BLUE; snd = ORANGE; trd = ORANGE; };
-      left = { cube.bottom_layer.left with fst = WHITE; };
-      right = { cube.bottom_layer.right with trd = YELLOW; };
+      left = { cube.bottom_layer.left with fst = cube.top_face.fst.fst; };
+      right = { cube.bottom_layer.right with trd = cube.bottom_face.trd.fst; };
+      back = {
+        fst = cube.bottom_layer.back.trd;
+        snd = cube.middle_layer.back.trd;
+        trd = cube.top_layer.back.trd;
+      };
     };
     bottom_face = { cube.bottom_face with
-      trd = { fst = GREEN; snd = WHITE; trd = ORANGE; };
+      trd = {
+        fst = cube.top_layer.left.fst;
+        snd = cube.middle_layer.left.fst;
+        trd = cube.bottom_layer.left.fst;
+      };
     };
   }
 
 let move_back_counter_clockwise cube =
   {
     top_face = { cube.top_face with
-      fst = { fst = ORANGE; snd = WHITE; trd = GREEN; };
+      fst = {
+        fst = cube.bottom_layer.left.fst;
+        snd = cube.middle_layer.left.fst;
+        trd = cube.top_layer.left.fst;
+      };
     };
     top_layer = { cube.top_layer with
-      back = { fst = ORANGE; snd = ORANGE; trd = BLUE; };
-      left = { cube.top_layer.left with fst = YELLOW; };
-      right = { cube.top_layer.right with trd = WHITE; };
+      left = { cube.top_layer.left with fst = cube.bottom_face.trd.fst; };
+      right = { cube.top_layer.right with trd = cube.top_face.fst.fst; };
+      back = {
+        fst = cube.top_layer.back.trd;
+        snd = cube.middle_layer.back.trd;
+        trd = cube.bottom_layer.back.trd;
+      };
     };
     middle_layer = { cube.middle_layer with
-      back = { fst = RED; snd = BLUE; trd = BLUE; };
-      left = { cube.middle_layer.left with fst = WHITE; };
-      right = { cube.middle_layer.right with trd = GREEN; };
+      left = { cube.middle_layer.left with fst = cube.bottom_face.trd.snd; };
+      right = { cube.middle_layer.right with trd = cube.top_face.fst.snd; };
+      back = {
+        fst = cube.top_layer.back.snd;
+        snd = cube.middle_layer.back.snd;
+        trd = cube.bottom_layer.back.snd;
+      };
     };
     bottom_layer = { cube.bottom_layer with
-      back = { fst = WHITE; snd = RED; trd = WHITE; };
-      left = { cube.bottom_layer.left with fst = ORANGE; };
-      right = { cube.bottom_layer.right with trd = RED; };
+      left = { cube.bottom_layer.left with fst = cube.bottom_face.trd.trd; };
+      right = { cube.bottom_layer.right with trd = cube.top_face.fst.trd; };
+      back = {
+        fst = cube.top_layer.back.fst;
+        snd = cube.middle_layer.back.fst;
+        trd = cube.bottom_layer.back.fst;
+      };
     };
     bottom_face = { cube.bottom_face with
-      trd = { fst = BLUE; snd = YELLOW; trd = BLUE; };
+      trd = {
+        fst = cube.bottom_layer.right.trd;
+        snd = cube.middle_layer.right.trd;
+        trd = cube.top_layer.right.trd;
+      };
     };
   }
 

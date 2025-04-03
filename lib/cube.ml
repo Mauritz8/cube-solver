@@ -23,6 +23,7 @@ type face = {
 }
 [@@deriving yojson]
 
+(* TODO: consider if arrays of length three are better than structs *)
 type cube = {
   top_face : face;
   top_layer : layer;
