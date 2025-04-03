@@ -3,13 +3,65 @@ open Rubik.Solve
 
 let cube =
   {
-    front = [ RED; BLUE; RED; YELLOW; GREEN; ORANGE; WHITE; BLUE; YELLOW ];
-    back = [ WHITE; RED; ORANGE; RED; BLUE; ORANGE; WHITE; BLUE; BLUE ];
-    right = [ GREEN; ORANGE; BLUE; YELLOW; RED; YELLOW; ORANGE; RED; BLUE ];
-    left = [ GREEN; YELLOW; BLUE; WHITE; ORANGE; GREEN; ORANGE; GREEN; GREEN ];
-    top = [ WHITE; GREEN; RED; BLUE; WHITE; GREEN; YELLOW; ORANGE; YELLOW ];
-    bottom = [ RED; RED; GREEN; WHITE; YELLOW; WHITE; YELLOW; WHITE; ORANGE ];
+    top_face = {
+      fst = { fst = WHITE; snd = GREEN; trd = RED; };
+      snd = { fst = BLUE; snd = WHITE; trd = GREEN; };
+      trd = { fst = YELLOW; snd = ORANGE; trd = YELLOW; };
+    };
+    top_layer = {
+      front = { fst = RED; snd = BLUE; trd = RED; };
+      right = { fst = GREEN; snd = ORANGE; trd = BLUE; };
+      back = { fst = WHITE; snd = RED; trd = ORANGE; };
+      left = { fst = GREEN; snd = YELLOW; trd = BLUE; };
+    };
+    middle_layer = {
+      front = { fst = YELLOW; snd = GREEN; trd = ORANGE; };
+      right = { fst = YELLOW; snd = RED; trd = YELLOW; };
+      back = { fst = RED; snd = BLUE; trd = ORANGE; };
+      left = { fst = WHITE; snd = ORANGE; trd = GREEN; };
+    };
+    bottom_layer = {
+      front = { fst = WHITE; snd = BLUE; trd = YELLOW; };
+      right = { fst = ORANGE; snd = RED; trd = BLUE; };
+      back = { fst = WHITE; snd = BLUE; trd = BLUE; };
+      left = { fst = ORANGE; snd = GREEN; trd = GREEN; };
+    };
+    bottom_face = {
+      fst = { fst = RED; snd = RED; trd = GREEN; };
+      snd = { fst = WHITE; snd = YELLOW; trd = WHITE; };
+      trd = { fst = YELLOW; snd = WHITE; trd = ORANGE; };
+    };
   }
+
+
+let cube_cross_solved_testable =
+  let cross_solved cube1 cube2 =
+    cube1.top_face.fst.snd == cube2.top_face.fst.snd &&
+    cube1.top_face.snd.fst == cube2.top_face.snd.fst &&
+    cube1.top_face.snd.snd == cube2.top_face.snd.snd &&
+    cube1.top_face.snd.trd == cube2.top_face.snd.trd &&
+    cube1.top_face.trd.snd == cube2.top_face.trd.snd &&
+
+    cube1.top_layer.front.snd == cube2.top_layer.front.snd &&
+    cube1.top_layer.left.snd == cube2.top_layer.left.snd &&
+    cube1.top_layer.right.snd == cube2.top_layer.right.snd &&
+    cube1.top_layer.back.snd == cube2.top_layer.back.snd
+  in
+  Alcotest.testable Utils.cube_pretty_printer cross_solved
+
+let expected = { cube with
+  top_face = {
+    fst = { cube.top_face.fst with snd = WHITE };
+    snd = { fst = WHITE; snd = WHITE; trd = WHITE };
+    trd = { cube.top_face.trd with snd = WHITE };
+  };
+  top_layer = {
+    front = { cube.top_layer.front with snd = GREEN };
+    left = { cube.top_layer.left with snd = ORANGE };
+    right = { cube.top_layer.right with snd = RED };
+    back = { cube.top_layer.back with snd = BLUE };
+  };
+}
 
 (* TODO: make more tests, for example:
      1. cross is already solved
@@ -21,23 +73,12 @@ let cube =
      5. solve all four edges #3
  *)
 
-(* TODO: make test output be more logical and easier to interpret*)
-(* TODO: check that cross edges are also in the right place, 
-   i.e that they have the same color as the face center sticker *)
 let solve_cross_test () =
-  let color = WHITE in
-  let cross_stickers_expected =
-    List.map sticker_to_string [color; color; color; color; color] in
-
   let actual = solve_cross cube in
-  let cross_sticker_indexes = [1; 3; 4; 5; 7] in
-  let sticker_is_cross i _ = List.mem i cross_sticker_indexes in
-  let cross_stickers = List.filteri sticker_is_cross actual.top in
-  let cross_stickers_str = List.map sticker_to_string cross_stickers in
-  Alcotest.(check (list string))
+  Alcotest.(check cube_cross_solved_testable)
     "cross solved"
-    (cross_stickers_expected)
-    (cross_stickers_str)
+    expected
+    actual
 
 let () =
   let open Alcotest in
