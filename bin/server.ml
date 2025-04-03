@@ -17,6 +17,8 @@ let () =
   Dream.run @@ Dream.logger @@ cors_middleware
   @@ Dream.router
        [
+         Dream.get "/api/solved_cube" (fun _ ->
+             yojson_of_cube solved_cube |> Yojson.Safe.to_string |> Dream.json);
          Dream.post "/api/move" (fun req ->
              let%lwt body = Dream.body req in
              let data =

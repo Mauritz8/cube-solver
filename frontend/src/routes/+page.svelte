@@ -4,13 +4,15 @@
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import Api from '$lib/api.ts';
   import { create_cube } from '$lib/threejs.js';
-  import { solved_cube } from '$lib/cube.ts';
 
 
   let scramble_moves = "";
 
-  let cube = solved_cube;
-  let cube_three_js = create_cube(cube);
+
+
+  let cube;
+  let cube_three_js;
+
   const scene = new THREE.Scene();
 
   onMount(() => {
@@ -30,7 +32,14 @@
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    scene.add(cube_three_js);
+    Api.solved_cube()
+    .then(res => res.json()
+    .then(json => {
+      cube = json;
+      cube_three_js = create_cube(cube);
+      scene.add(cube_three_js);
+    }));
+
 
     camera.position.x = 3;
     camera.position.y = 2;

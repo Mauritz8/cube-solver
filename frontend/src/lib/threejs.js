@@ -33,19 +33,78 @@ function create_cubie(x, y, z, colors) {
   return cubie;
 }
 
+function right_color(cube, y, z) {
+  const layer = y == -1 ? cube.bottom_layer :
+    y == 0 ? cube.middle_layer :
+    cube.top_layer;
+  const face = layer.right;
+  return z == -1 ? face.trd :
+    z == 0 ? face.snd :
+    face.fst;
+}
+
+function left_color(cube, y, z) {
+  const layer = y == -1 ? cube.bottom_layer :
+    y == 0 ? cube.middle_layer :
+    cube.top_layer;
+  const face = layer.left;
+  return z == -1 ? face.trd :
+    z == 0 ? face.snd :
+    face.fst;
+}
+
+function top_color(cube, x, z) {
+  const face = cube.top_face;
+  const row = z == -1 ? face.fst :
+    z == 0 ? face.snd :
+    face.trd;
+  return x == -1 ? row.fst :
+    x == 0 ? row.snd :
+    row.trd;
+}
+
+function bottom_color(cube, x, z) {
+  const face = cube.bottom_face;
+  const row = z == -1 ? face.trd :
+    z == 0 ? face.snd :
+    face.fst;
+  return x == -1 ? row.fst :
+    x == 0 ? row.snd :
+    row.trd;
+}
+
+function front_color(cube, x, y) {
+  const layer = y == -1 ? cube.bottom_layer :
+    y == 0 ? cube.middle_layer :
+    cube.top_layer;
+  const face = layer.front;
+  return x == -1 ? face.fst :
+    x == 0 ? face.snd :
+    face.trd;
+}
+
+function back_color(cube, x, y) {
+  const layer = y == -1 ? cube.bottom_layer :
+    y == 0 ? cube.middle_layer :
+    cube.top_layer;
+  const face = layer.back;
+  return x == -1 ? face.trd :
+    x == 0 ? face.snd :
+    face.fst;
+}
+
 export function create_cube(cube) {
   let cube_three_js = new THREE.Group();
   for (let x = -1; x <= 1; x++) {
     for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
-        const color = (face, index) => sticker_to_color(face.at(index));
         const colors = [
-          x === 1 ? color(cube.right, 3 * (1 - y) + 1 - z) : null,
-          x === -1 ? color(cube.left, 3 * (1 - y) + 1 + z) : null,
-          y === 1 ? color(cube.top, 3 * (1 + z) + 1 + x) : null,
-          y === -1 ? color(cube.bottom, 3 * (1 - z) + 1 + x) : null,
-          z === 1 ? color(cube.front, 3 * (1 - y) + 1 + x) : null,
-          z === -1 ? color(cube.back, 3 * (1 - y) + 1 - x) : null,
+          x === 1 ? sticker_to_color(right_color(cube, y, z)) : null,
+          x === -1 ? sticker_to_color(left_color(cube, y, z)) : null,
+          y === 1 ? sticker_to_color(top_color(cube, x, z)) : null,
+          y === -1 ? sticker_to_color(bottom_color(cube, x, z)) : null,
+          z === 1 ? sticker_to_color(front_color(cube, x, y)) : null,
+          z === -1 ? sticker_to_color(back_color(cube, x, y)) : null,
         ];
         cube_three_js.add(create_cubie(x, y, z, colors));
       }

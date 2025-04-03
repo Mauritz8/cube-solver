@@ -1,5 +1,9 @@
 const base = 'http://localhost:8080';
 
+async function solved_cube() {
+  return await fetch(`${base}/api/solved_cube`);
+}
+
 async function move(cube, direction, clockwise: boolean) {
   const body = {
     move: {
@@ -19,12 +23,4 @@ async function scramble() {
   return await fetch(`${base}/api/scramble`);
 }
 
-async function rotate_right(cube) {
-  return await fetch(`${base}/api/rotate`, {
-    method: 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cube),
-  });
-}
-
-export default { move, scramble, rotate_right };
+export default { move, scramble, solved_cube };
