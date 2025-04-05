@@ -1,20 +1,16 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-  import Api from '$lib/api.ts';
+  import { type Cube, cubeFromJson } from '$lib/cube'
+  import Api from '$lib/api';
   import { create_cube } from '$lib/threejs.js';
 
 
   let scramble_moves = "";
-
-
-
-  let cube;
-  let cube_three_js;
-
+  let cube: Cube;
+  let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
-
   onMount(() => {
     const scene_height = 500;
     const scene_width = 500;
@@ -24,9 +20,9 @@
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(scene_width, scene_height);
     renderer.setClearColor(0x000000, 0);
-    const cube_container = document.getElementById("cube_container");
-    cube_container.style.width =  scene_width;
-    cube_container.style.height = scene_height;
+    const cube_container = document.getElementById("cube_container")!;
+    cube_container.style.width =  scene_width.toString();
+    cube_container.style.height = scene_height.toString();
     cube_container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -35,7 +31,7 @@
     Api.solved_cube()
     .then(res => res.json()
     .then(json => {
-      cube = json;
+      cube = cubeFromJson(json);
       cube_three_js = create_cube(cube);
       scene.add(cube_three_js);
     }));
@@ -53,7 +49,7 @@
     renderer.setAnimationLoop(animate);
   });
 
-  function update_cube(new_cube) {
+  function update_cube(new_cube: Cube) {
     scene.remove(cube_three_js);
     cube = new_cube;
     cube_three_js = create_cube(cube);
@@ -65,7 +61,7 @@
       .then(res => res.json()
       .then(json => {
         scramble_moves = json.moves.join(" ");
-        update_cube(json.new_cube)
+        update_cube(cubeFromJson(json.new_cube))
       }));
   }
 </script>
