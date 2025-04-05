@@ -1,6 +1,7 @@
 open Rubik.Cube
 open Rubik.Move
 open Rubik.Scramble
+open Rubik.Solve
 
 type make_move_req_body = { move : move; cube : cube } [@@deriving yojson]
 
@@ -29,4 +30,9 @@ let () =
          Dream.get "/api/scramble" (fun _ ->
              let scramble = scramble () in
              yojson_of_scramble scramble |> Yojson.Safe.to_string |> Dream.json);
+         Dream.post "/api/solve" (fun req ->
+             let%lwt body = Dream.body req in
+             let cube = cube_of_yojson (Yojson.Safe.from_string body) in
+             let solution = solve_cross cube in
+             yojson_of_solution solution |> Yojson.Safe.to_string |> Dream.json);
        ]

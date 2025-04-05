@@ -530,3 +530,14 @@ let make_move cube move =
   | FRONT, false -> move_front_counter_clockwise cube
   | BACK, true -> move_back_clockwise cube
   | BACK, false -> move_back_counter_clockwise cube
+
+let move_to_notation move =
+  String.cat
+    (match move.layer with
+    | TOP -> "U"
+    | BOTTOM -> "D"
+    | RIGHT -> "R"
+    | LEFT -> "L"
+    | FRONT -> "F"
+    | BACK -> "B")
+    (if move.clockwise then "" else "'")

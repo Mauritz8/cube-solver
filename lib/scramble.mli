@@ -1,8 +1,4 @@
 open Cube
-open Move
 
-type moves = string list [@@deriving yojson]
-type scramble = { new_cube : cube; moves : moves } [@@deriving yojson]
-
-val moves_string : move list -> string
+type scramble = { new_cube : cube; moves : string list } [@@deriving yojson]
 val scramble : unit -> scramble

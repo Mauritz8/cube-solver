@@ -82,7 +82,7 @@ let expected =
 
 let solve_cross_test () =
   let actual = solve_cross cube in
-  Alcotest.(check cube_cross_solved_testable) "cross solved" expected actual
+  Alcotest.(check cube_cross_solved_testable) "cross solved" expected actual.cube
 
 let () =
   let open Alcotest in

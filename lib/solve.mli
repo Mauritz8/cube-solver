@@ -1,3 +1,4 @@
 open Cube
 
-val solve_cross : cube -> cube
+type solution = { cube : cube; moves : string list } [@@deriving yojson]
+val solve_cross : cube -> solution

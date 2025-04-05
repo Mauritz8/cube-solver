@@ -8,6 +8,7 @@
 
 
   let scramble_moves: string[] = [];
+  let solution_moves: string[] = [];
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
@@ -58,11 +59,20 @@
 
   function scramble() {
     Api.scramble()
-      .then(res => res.json()
+      .then(res => res.json())
       .then(json => {
         scramble_moves = json.moves;
         update_cube(cubeFromJson(json.new_cube))
-      }));
+      });
+  }
+
+  function solve() {
+    Api.solve(cube)
+      .then(res => res.json())
+      .then(json => {
+        solution_moves = json.moves; 
+        update_cube(cubeFromJson(json.cube));
+      });
   }
 </script>
 
@@ -73,12 +83,15 @@
   <div id="scramble">
     <p>{scramble_moves.join(" ")}</p>
   </div>
+  <div id="solution">
+    <p>{solution_moves.join(" ")}</p>
+  </div>
 
   <div id="cube_container"></div>
 
   <div id="control_panel">
     <button type="button" onclick={scramble}>Scramble</button>
-    <button type="button">Solve</button>
+    <button type="button" onclick={solve}>Solve</button>
   </div>
 </div>
 
@@ -96,6 +109,11 @@
   }
 
   #scramble {
+    color: #E0E5EC;
+    font-size: 36px;
+  }
+
+  #solution {
     color: #E0E5EC;
     font-size: 36px;
   }

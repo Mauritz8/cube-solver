@@ -38,11 +38,31 @@ function stickerFromJson(json: any): Sticker {
   return sticker;
 }
 
+function stickerToJson(sticker: Sticker) {
+  const sticker_to_color_map = new Map<Sticker, string[]>([
+    [Sticker.BLUE, ["BLUE"]],
+    [Sticker.GREEN, ["GREEN"]],
+    [Sticker.RED, ["RED"]],
+    [Sticker.YELLOW, ["YELLOW"]],
+    [Sticker.WHITE, ["WHITE"]],
+    [Sticker.ORANGE, ["ORANGE"]],
+  ]);
+  return sticker_to_color_map.get(sticker);
+}
+
 function rowFromJson(json: any): StickerRow {
   return {
     fst: stickerFromJson(json.fst),
     snd: stickerFromJson(json.snd),
     trd: stickerFromJson(json.trd),
+  };
+}
+
+function rowToJson(row: StickerRow) {
+  return {
+    fst: stickerToJson(row.fst),
+    snd: stickerToJson(row.snd),
+    trd: stickerToJson(row.trd),
   };
 }
 
@@ -55,11 +75,28 @@ function layerFromJson(json: any): Layer {
   };
 }
 
+function layerToJson(layer: Layer) {
+  return {
+    front: rowToJson(layer.front),
+    right: rowToJson(layer.right),
+    back: rowToJson(layer.back),
+    left: rowToJson(layer.left),
+  };
+}
+
 function faceFromJson(json: any): Face {
   return {
     fst: rowFromJson(json.fst),
     snd: rowFromJson(json.snd),
     trd: rowFromJson(json.trd),
+  };
+}
+
+function faceToJson(face: Face) {
+  return {
+    fst: rowToJson(face.fst),
+    snd: rowToJson(face.snd),
+    trd: rowToJson(face.trd),
   };
 }
 
@@ -70,5 +107,15 @@ export function cubeFromJson(json: any): Cube {
     middle_layer: layerFromJson(json.middle_layer), 
     bottom_layer: layerFromJson(json.bottom_layer), 
     bottom_face: faceFromJson(json.bottom_face), 
+  }
+}
+
+export function cubeToJson(cube: Cube) {
+  return {
+    top_face: faceToJson(cube.top_face), 
+    top_layer: layerToJson(cube.top_layer), 
+    middle_layer: layerToJson(cube.middle_layer), 
+    bottom_layer: layerToJson(cube.bottom_layer), 
+    bottom_face: faceToJson(cube.bottom_face), 
   }
 }
