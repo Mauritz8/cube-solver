@@ -4,10 +4,10 @@
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { type Cube, cubeFromJson } from '$lib/cube'
   import Api from '$lib/api';
-  import { create_cube } from '$lib/threejs.js';
+  import { create_cube } from '$lib/threejs';
 
 
-  let scramble_moves = "";
+  let scramble_moves: string[] = [];
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
@@ -60,7 +60,7 @@
     Api.scramble()
       .then(res => res.json()
       .then(json => {
-        scramble_moves = json.moves.join(" ");
+        scramble_moves = json.moves;
         update_cube(cubeFromJson(json.new_cube))
       }));
   }
@@ -71,7 +71,7 @@
   <h1 id="title">Rubik's Cube</h1>
 
   <div id="scramble">
-    <p>{scramble_moves}</p>
+    <p>{scramble_moves.join(" ")}</p>
   </div>
 
   <div id="cube_container"></div>
