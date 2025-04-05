@@ -56,15 +56,90 @@ let cube_with_cross_solved =
       };
   }
 
-(* TODO: make more tests, for example:
-     1. cross is already solved
-     2. only one edge is not solved
-     
-     tests for multiple different scrambles to really make sure it works
-     3. solve all four edges #1
-     4. solve all four edges #2
-     5. solve all four edges #3
- *)
+let solve_cross_already_solved () =
+  let cube =
+    {
+      top_face =
+        {
+          fst = { fst = BLUE; snd = WHITE; trd = YELLOW };
+          snd = { fst = WHITE; snd = WHITE; trd = WHITE };
+          trd = { fst = WHITE; snd = WHITE; trd = RED };
+        };
+      top_layer =
+        {
+          front = { fst = BLUE; snd = GREEN; trd = GREEN };
+          right = { fst = YELLOW; snd = RED; trd = BLUE };
+          back = { fst = RED; snd = BLUE; trd = YELLOW };
+          left = { fst = ORANGE; snd = ORANGE; trd = RED };
+        };
+      middle_layer =
+        {
+          front = { fst = YELLOW; snd = GREEN; trd = BLUE };
+          right = { fst = ORANGE; snd = RED; trd = RED };
+          back = { fst = BLUE; snd = BLUE; trd = RED };
+          left = { fst = YELLOW; snd = ORANGE; trd = BLUE };
+        };
+      bottom_layer =
+        {
+          front = { fst = YELLOW; snd = RED; trd = GREEN };
+          right = { fst = ORANGE; snd = ORANGE; trd = ORANGE };
+          back = { fst = BLUE; snd = YELLOW; trd = WHITE };
+          left = { fst = RED; snd = ORANGE; trd = GREEN };
+        };
+      bottom_face =
+        {
+          fst = { fst = ORANGE; snd = GREEN; trd = WHITE };
+          snd = { fst = GREEN; snd = YELLOW; trd = YELLOW };
+          trd = { fst = GREEN; snd = GREEN; trd = WHITE };
+        };
+    }
+  in
+  let solution = solve_cross cube in
+  Alcotest.(check cube_cross_solved_testable)
+    "cross solved" cube_with_cross_solved solution.cube
+
+(* all edges are one the correct face but need to swap places with each other *)
+let solve_cross_edges_needs_to_swap () =
+  let cube =
+    {
+      top_face =
+        {
+          fst = { fst = RED; snd = WHITE; trd = RED };
+          snd = { fst = WHITE; snd = WHITE; trd = WHITE };
+          trd = { fst = GREEN; snd = WHITE; trd = GREEN };
+        };
+      top_layer =
+        {
+          front = { fst = ORANGE; snd = BLUE; trd = YELLOW };
+          right = { fst = RED; snd = ORANGE; trd = WHITE };
+          back = { fst = GREEN; snd = RED; trd = YELLOW };
+          left = { fst = BLUE; snd = GREEN; trd = WHITE };
+        };
+      middle_layer =
+        {
+          front = { fst = YELLOW; snd = GREEN; trd = ORANGE };
+          right = { fst = BLUE; snd = RED; trd = YELLOW };
+          back = { fst = ORANGE; snd = BLUE; trd = YELLOW };
+          left = { fst = BLUE; snd = ORANGE; trd = RED };
+        };
+      bottom_layer =
+        {
+          front = { fst = YELLOW; snd = YELLOW; trd = BLUE };
+          right = { fst = RED; snd = RED; trd = WHITE };
+          back = { fst = ORANGE; snd = RED; trd = YELLOW };
+          left = { fst = ORANGE; snd = GREEN; trd = ORANGE };
+        };
+      bottom_face =
+        {
+          fst = { fst = BLUE; snd = GREEN; trd = WHITE };
+          snd = { fst = ORANGE; snd = YELLOW; trd = BLUE };
+          trd = { fst = GREEN; snd = GREEN; trd = BLUE };
+        };
+    }
+  in
+  let solution = solve_cross cube in
+  Alcotest.(check cube_cross_solved_testable)
+    "cross solved" cube_with_cross_solved solution.cube
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 let solve_cross_test_1 () =
@@ -154,9 +229,15 @@ let solve_cross_test_2 () =
 
 let () =
   let open Alcotest in
-  run "Solve"
+  run "Solve cross"
     [
-      ( "cross",
+      ( "edge cases",
+        [
+          test_case "already solved" `Quick solve_cross_already_solved;
+          test_case "only edges need to swap" `Quick
+            solve_cross_edges_needs_to_swap;
+        ] );
+      ( "full scramble",
         [
           test_case "#1" `Quick solve_cross_test_1;
           test_case "#2" `Quick solve_cross_test_2;
