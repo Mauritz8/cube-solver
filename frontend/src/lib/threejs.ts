@@ -47,9 +47,9 @@ function left_color(cube: Cube, y: number, z: number) {
     y == 0 ? cube.middle_layer :
     cube.top_layer;
   const face = layer.left;
-  return z == -1 ? face.trd :
+  return z == -1 ? face.fst :
     z == 0 ? face.snd :
-    face.fst;
+    face.trd;
 }
 
 function top_color(cube: Cube, x: number, z: number) {
