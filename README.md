@@ -3,14 +3,14 @@ A 3D Rubik's Cube simulator with built-in solving guidance. Use the "Scramble"
 button to randomize the cube, then select "Solve" to display a step-by-step 
 solution.
 
-## 🛠️ Tech Stack
+## Tech Stack
 * **Frontend:** Svelte
 * **Backend:** OCaml with Dream
 
-## ⚡ Quick Start
+## Usage
 
 1. Backend
-```
+```bash
 # install dependencies
 opam install . --deps-only --with-test --with-doc
 
@@ -22,7 +22,7 @@ dune exec ./bin/server.exe
 ```
 
 2. Frontend
-```
+```bash
 cd frontend
 
 # install dependencies
