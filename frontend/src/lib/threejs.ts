@@ -23,8 +23,9 @@ function create_cubie(x: number, y: number, z: number, colors: (number | null)[]
   const materials = colors.map(c => c ? colorMaterial(c) : seeThrough);
 
   const gap = 0.02;
+  const size = 1 - gap;
   const cubie = new THREE.Mesh(
-    new THREE.BoxGeometry(1 - gap, 1 - gap, 1 - gap),
+    new THREE.BoxGeometry(size, size, size),
     materials
   );
   cubie.position.set(x, y, z);
@@ -96,6 +97,8 @@ export function create_cube(cube: Cube) {
   for (let x = -1; x <= 1; x++) {
     for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
+        // TODO: refactor
+        // the {direction}_color functions are difficult to understand
         const colors = [
           x === 1 ? sticker_color(right_color(cube, y, z)) : null,
           x === -1 ? sticker_color(left_color(cube, y, z)) : null,
