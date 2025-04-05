@@ -8,10 +8,9 @@ type make_move_req_body = { move : move; cube : cube } [@@deriving yojson]
 let cors_middleware handler request =
   let%lwt response = handler request in
   Dream.add_header response "Access-Control-Allow-Origin" "*";
-  Dream.add_header response "Access-Control-Allow-Methods"
-    "GET, POST, PUT, DELETE, OPTIONS";
+  Dream.add_header response "Access-Control-Allow-Methods" "GET, POST, OPTIONS";
   Dream.add_header response "Access-Control-Allow-Headers" "Content-Type";
-  Dream.set_status response `OK;
+  if Dream.method_ request = `OPTIONS then Dream.set_status response `OK else ();
   Lwt.return response
 
 let () =
@@ -33,6 +32,9 @@ let () =
          Dream.post "/api/solve" (fun req ->
              let%lwt body = Dream.body req in
              let cube = cube_of_yojson (Yojson.Safe.from_string body) in
-             let solution = solve_cross cube in
-             yojson_of_solution solution |> Yojson.Safe.to_string |> Dream.json);
+             match solve_cross cube with
+             | Error e -> Dream.respond e ~status:`Internal_Server_Error
+             | Ok solution ->
+                 yojson_of_solution solution
+                 |> Yojson.Safe.to_string |> Dream.json);
        ]

@@ -94,9 +94,11 @@ let solve_cross_already_solved () =
         };
     }
   in
-  let solution = solve_cross cube in
-  Alcotest.(check cube_cross_solved_testable)
-    "cross solved" cube_with_cross_solved solution.cube
+  match solve_cross cube with
+  | Error e -> failwith e
+  | Ok solution ->
+      Alcotest.(check cube_cross_solved_testable)
+        "cross solved" cube_with_cross_solved solution.cube
 
 (* all edges are one the correct face but need to swap places with each other *)
 let solve_cross_edges_needs_to_swap () =
@@ -137,9 +139,11 @@ let solve_cross_edges_needs_to_swap () =
         };
     }
   in
-  let solution = solve_cross cube in
-  Alcotest.(check cube_cross_solved_testable)
-    "cross solved" cube_with_cross_solved solution.cube
+  match solve_cross cube with
+  | Error e -> failwith e
+  | Ok solution ->
+      Alcotest.(check cube_cross_solved_testable)
+        "cross solved" cube_with_cross_solved solution.cube
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 let solve_cross_test_1 () =
@@ -180,9 +184,11 @@ let solve_cross_test_1 () =
         };
     }
   in
-  let solution = solve_cross cube in
-  Alcotest.(check cube_cross_solved_testable)
-    "cross solved" cube_with_cross_solved solution.cube
+  match solve_cross cube with
+  | Error e -> failwith e
+  | Ok solution ->
+      Alcotest.(check cube_cross_solved_testable)
+        "cross solved" cube_with_cross_solved solution.cube
 
 (* Scramble: D2 B2 F' D' L' B U F B' L' F2 L2 F2 D L2 U2 B2 U' R2 L F' R' B F2 U *)
 let solve_cross_test_2 () =
@@ -223,9 +229,11 @@ let solve_cross_test_2 () =
         };
     }
   in
-  let solution = solve_cross cube in
-  Alcotest.(check cube_cross_solved_testable)
-    "cross solved" cube_with_cross_solved solution.cube
+  match solve_cross cube with
+  | Error e -> failwith e
+  | Ok solution ->
+      Alcotest.(check cube_cross_solved_testable)
+        "cross solved" cube_with_cross_solved solution.cube
 
 let () =
   let open Alcotest in

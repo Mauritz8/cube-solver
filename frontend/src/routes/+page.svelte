@@ -8,6 +8,7 @@
 
 
   let scramble_moves: string[] = [];
+  let solution_error = "";
   let solution_moves: string[] = [];
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
@@ -57,21 +58,28 @@
     scene.add(cube_three_js);
   }
 
-  function scramble() {
+  async function scramble() {
     Api.scramble()
       .then(res => res.json())
       .then(json => {
         scramble_moves = json.moves;
+        solution_error = "";
+        solution_moves = [];
         update_cube(cubeFromJson(json.new_cube))
       });
   }
 
-  function solve() {
+  async function solve() {
     Api.solve(cube)
-      .then(res => res.json())
-      .then(json => {
-        solution_moves = json.moves; 
-        update_cube(cubeFromJson(json.cube));
+      .then(res => {
+        if (res.status == 500) {
+          res.text().then(error => solution_error = error);
+        } else {
+          res.json().then(json => {
+            solution_moves = json.moves; 
+            update_cube(cubeFromJson(json.cube));
+          });
+        }
       });
   }
 </script>
@@ -83,8 +91,13 @@
   <div id="scramble">
     <p>{scramble_moves.join(" ")}</p>
   </div>
+
   <div id="solution">
-    <p>{solution_moves.join(" ")}</p>
+    {#if solution_error !== ""}
+      <p>{solution_error}</p>
+    {:else}
+      <p>{solution_moves.join(" ")}</p>
+    {/if}
   </div>
 
   <div id="cube_container"></div>
