@@ -99,6 +99,11 @@
       current_move_index--;
     }
   }
+
+  function disable_solve_btn() {
+    return solution_moves.length > 0 || solution_error !== "";
+  }
+
 </script>
 
 
@@ -137,7 +142,12 @@
 
   <div id="control_panel">
     <button type="button" onclick={scramble}>Scramble</button>
-    <button type="button" onclick={solve}>Solve</button>
+    <button
+      type="button"
+      class={disable_solve_btn() ? "btn-disabled" : ""}
+      onclick={solve}
+      disabled={disable_solve_btn()}
+    >Solve</button>
   </div>
 </div>
 
@@ -205,5 +215,9 @@
 
   button:hover {
     background-color: #3A6B8F;
+  }
+
+  .btn-disabled {
+    pointer-events: none;
   }
 </style>
