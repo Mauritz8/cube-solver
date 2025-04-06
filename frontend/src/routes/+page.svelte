@@ -15,21 +15,19 @@
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
   onMount(() => {
-    const scene_height = 500;
-    const scene_width = 500;
-    const camera = new THREE.PerspectiveCamera(
-      50, scene_width / scene_height, 0.1, 2000);
-
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 2000);
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(scene_width, scene_height);
+    renderer.setSize(500, 500);
     renderer.setClearColor(0x000000, 0);
+
     const cube_container = document.getElementById("cube_container")!;
-    cube_container.style.width =  scene_width.toString();
-    cube_container.style.height = scene_height.toString();
     cube_container.appendChild(renderer.domElement);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+    camera.position.x = 3;
+    camera.position.y = 2;
+    camera.position.z = 7;
+    new OrbitControls(camera, renderer.domElement);
+    renderer.setAnimationLoop(() => renderer.render(scene, camera));
 
     Api.solved_cube()
     .then(res => res.json()
@@ -38,18 +36,6 @@
       cube_three_js = create_cube(cube);
       scene.add(cube_three_js);
     }));
-
-
-    camera.position.x = 3;
-    camera.position.y = 2;
-    camera.position.z = 7;
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    renderer.setAnimationLoop(animate);
   });
 
   function update_cube(new_cube: Cube) {
