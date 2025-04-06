@@ -116,7 +116,7 @@
     {:else if solution_moves.length > 0}
       <h2 id="info-header">Solution</h2>
       <button class="move-btn" onclick={move_prev} aria-label="Make previous move">
-        <span class="fas fa-arrow-left"></span>
+        <span class="fa-solid fa-arrow-left"></span>
       </button>
       {#each solution_moves as move, i}
         {#if i === current_move_index}
@@ -128,7 +128,7 @@
         <span id="move-indicator"></span>
       {/if}
       <button class="move-btn" onclick={move_next} aria-label="Make next move">
-        <span class="fas fa-arrow-right"></span>
+        <span class="fa-solid fa-arrow-right"></span>
       </button>
     {:else if scramble_moves.length > 0}
       <h2 id="info-header">Scramble</h2>
@@ -178,36 +178,29 @@
     font-size: 2em;
   }
 
-  .move-btn {
-    margin: 0;
-  }
-
   #move-indicator {
-    font-size: 30px;
-    border-left: 5px solid #2A4D6E;
+    border-left: 0.2em solid #3A6B8F;
     height: 1em;
-    margin: 0 0.5em !important;
   }
 
   #cube_container {
     display: inline-block;
     background-color: #1E2A4A;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0.3em;
   }
 
   #control_panel {
     display: flex;
     justify-content: center;
-    gap: 50px;
+    gap: 2em;
   }
 
   button {
-    padding: 10px;
-    margin: 1em;
-    font-size: 36px;
+    padding: 0.3em;
+    margin: 0.5em;
+    font-size: 2em;
     border: none;
-    border-radius: 5px;
+    border-radius: 0.2em;
     cursor: pointer;
     background-color: #2A4D6E;
     color: #E0E5EC;

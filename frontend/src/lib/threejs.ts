@@ -14,13 +14,9 @@ function sticker_color(sticker: Sticker) {
 }
 
 function create_cubie(x: number, y: number, z: number, colors: (number | null)[]) {
-  const seeThrough = new THREE.MeshBasicMaterial({
-    color: 0x222222,
-    transparent: true,
-    opacity: 0.5
-  });
+  const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
   const colorMaterial = (c: number) => new THREE.MeshBasicMaterial({ color: c });
-  const materials = colors.map(c => c ? colorMaterial(c) : seeThrough);
+  const materials = colors.map(c => c ? colorMaterial(c) : black);
 
   const gap = 0.02;
   const size = 1 - gap;
