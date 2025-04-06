@@ -14,11 +14,24 @@ async function solve(cube: Cube) {
   return await fetch(`${base}/api/solve`, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(cubeToJson(cube))
   });
 }
 
-export default { solved_cube, scramble, solve };
+async function move(move: string, cube: Cube) {
+  const body = {
+    move: move,
+    cube: cubeToJson(cube),
+  };
+  return await fetch(`${base}/api/move`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body)
+  });
+}
+
+export default { solved_cube, scramble, solve, move };

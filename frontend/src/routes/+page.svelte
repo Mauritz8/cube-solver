@@ -7,9 +7,10 @@
   import { create_cube } from '$lib/threejs';
 
 
-  let scramble_moves: string[] = [];
-  let solution_error = "";
-  let solution_moves: string[] = [];
+  let scramble_moves: string[] = $state([]);
+  let solution_error = $state("");
+  let solution_moves: string[] = $state([]);
+  let current_move_index = $state(0);
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
@@ -65,6 +66,7 @@
         scramble_moves = json.moves;
         solution_error = "";
         solution_moves = [];
+        current_move_index = 0;
         update_cube(cubeFromJson(json.new_cube))
       });
   }
@@ -77,10 +79,39 @@
         } else {
           res.json().then(json => {
             solution_moves = json.moves; 
+            current_move_index = solution_moves.length;
             update_cube(cubeFromJson(json.cube));
           });
         }
       });
+  }
+
+  async function make_move(move: string) {
+    Api.move(move, cube)
+      .then(res => res.json())
+      .then(json => {
+          update_cube(cubeFromJson(json));
+      });
+  }
+
+  async function move_next() {
+    if (current_move_index >= solution_moves.length) return;
+    const move = solution_moves.at(current_move_index);
+    if (move) {
+      await make_move(move);
+      current_move_index++;
+    }
+  }
+
+  async function move_prev() {
+    const index = current_move_index - 1;
+    if (index < 0) return;
+    const move = solution_moves.at(index);
+    if (move) {
+      const undo_move = move.length === 1 ? move + "'" : move[0];
+      await make_move(undo_move);
+      current_move_index--;
+    }
   }
 </script>
 
@@ -93,11 +124,21 @@
       <p id="solution-error">{solution_error}</p>
     {:else if solution_moves.length > 0}
       <h2 id="info-header">Solution</h2>
-      <span class="fas fa-solid fa-arrow-left"></span>
-      {#each solution_moves as move}
+      <button class="move-btn" onclick={move_prev} aria-label="Make previous move">
+        <span class="fas fa-arrow-left"></span>
+      </button>
+      {#each solution_moves as move, i}
+        {#if i === current_move_index}
+          <span>|</span>
+        {/if}
         <span>{move}</span>
       {/each}
-      <span class="fas fa-solid fa-arrow-right"></span>
+      {#if current_move_index === solution_moves.length}
+        <span>|</span>
+      {/if}
+      <button class="move-btn" onclick={move_next} aria-label="Make next move">
+        <span class="fas fa-arrow-right"></span>
+      </button>
     {:else if scramble_moves.length > 0}
       <h2 id="info-header">Scramble</h2>
       {#each scramble_moves as move}
@@ -139,6 +180,10 @@
   #info > span {
     margin: 0 0.2em;
     font-size: 2em;
+  }
+
+  .move-btn {
+    margin: 0;
   }
 
   #cube_container {
