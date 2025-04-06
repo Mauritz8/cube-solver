@@ -86,17 +86,23 @@
 
 
 <div id="container">
-  <h1 id="title">Rubik's Cube</h1>
+  <h1 id="title">Rubik's Cube Solver</h1>
 
-  <div id="scramble">
-    <p>{scramble_moves.join(" ")}</p>
-  </div>
-
-  <div id="solution">
+  <div id="info">
     {#if solution_error !== ""}
-      <p>{solution_error}</p>
-    {:else}
-      <p>{solution_moves.join(" ")}</p>
+      <p id="solution-error">{solution_error}</p>
+    {:else if solution_moves.length > 0}
+      <h2 id="info-header">Solution</h2>
+      <span class="fas fa-solid fa-arrow-left"></span>
+      {#each solution_moves as move}
+        <span>{move}</span>
+      {/each}
+      <span class="fas fa-solid fa-arrow-right"></span>
+    {:else if scramble_moves.length > 0}
+      <h2 id="info-header">Scramble</h2>
+      {#each scramble_moves as move}
+        <span>{move}</span>
+      {/each}
     {/if}
   </div>
 
@@ -118,17 +124,21 @@
   #title {
     display: inline-block;
     color: #E0E5EC;
-    font-size: 48px;
+    font-size: 3em;
   }
 
-  #scramble {
+  #info {
     color: #E0E5EC;
-    font-size: 36px;
+    margin: 1em 1em;
   }
 
-  #solution {
-    color: #E0E5EC;
-    font-size: 36px;
+  #info-header, #solution-error {
+    font-size: 2.5em;
+  }
+
+  #info > span {
+    margin: 0 0.2em;
+    font-size: 2em;
   }
 
   #cube_container {

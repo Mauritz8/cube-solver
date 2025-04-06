@@ -26,4 +26,3 @@ type cube = {
 
 val solved_cube : cube
 val sticker_to_string : sticker -> string
-val cube_to_string : cube -> string

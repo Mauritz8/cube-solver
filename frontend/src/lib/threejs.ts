@@ -98,7 +98,7 @@ export function create_cube(cube: Cube) {
     for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
         // TODO: refactor
-        // the {direction}_color functions are difficult to understand
+        // The {direction}_color functions are difficult to understand
         const colors = [
           x === 1 ? sticker_color(right_color(cube, y, z)) : null,
           x === -1 ? sticker_color(left_color(cube, y, z)) : null,
