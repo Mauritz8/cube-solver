@@ -24,8 +24,8 @@
     cube_container.appendChild(renderer.domElement);
 
     camera.position.x = 3;
-    camera.position.y = 2;
-    camera.position.z = 7;
+    camera.position.y = 3;
+    camera.position.z = 5;
     new OrbitControls(camera, renderer.domElement);
     renderer.setAnimationLoop(() => renderer.render(scene, camera));
 
@@ -136,17 +136,23 @@
     {/if}
   </div>
 
-  <div id="cube_container"></div>
-
-  <div id="control_panel">
-    <button type="button" onclick={scramble}>Scramble</button>
-    <button
-      type="button"
-      class={disable_solve_btn() ? "btn-disabled" : ""}
-      onclick={solve}
-      disabled={disable_solve_btn()}
-    >Solve</button>
+  <div id="cube_and_controls">
+    <div id="cube_container"></div>
+    <div id="action_btns_container">
+      <button
+        type="button"
+        onclick={scramble}
+        style="margin-top: 0;"
+      >Scramble</button>
+      <button
+        type="button"
+        class={disable_solve_btn() ? "btn-disabled" : ""}
+        onclick={solve}
+        disabled={disable_solve_btn()}
+      >Solve</button>
+    </div>
   </div>
+
 </div>
 
 <style>
@@ -181,16 +187,19 @@
     height: 1em;
   }
 
+  #cube_and_controls {
+    display: flex;
+    justify-content: center;
+  }
+
+  #action_btns_container > button {
+    display: block;
+  }
+
   #cube_container {
     display: inline-block;
     background-color: #1E2A4A;
     border-radius: 0.3em;
-  }
-
-  #control_panel {
-    display: flex;
-    justify-content: center;
-    gap: 2em;
   }
 
   button {
