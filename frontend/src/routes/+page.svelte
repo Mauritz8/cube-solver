@@ -52,7 +52,6 @@
         scramble_moves = json.moves;
         solution_error = "";
         solution_moves = [];
-        current_move_index = 0;
         update_cube(cubeFromJson(json.new_cube))
       });
   }
@@ -65,8 +64,7 @@
         } else {
           res.json().then(json => {
             solution_moves = json.moves; 
-            current_move_index = solution_moves.length;
-            update_cube(cubeFromJson(json.cube));
+            current_move_index = 0;
           });
         }
       });
