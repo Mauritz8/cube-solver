@@ -115,12 +115,12 @@
       </button>
       {#each solution_moves as move, i}
         {#if i === current_move_index}
-          <span>|</span>
+          <span id="move-indicator"></span>
         {/if}
         <span>{move}</span>
       {/each}
       {#if current_move_index === solution_moves.length}
-        <span>|</span>
+        <span id="move-indicator"></span>
       {/if}
       <button class="move-btn" onclick={move_next} aria-label="Make next move">
         <span class="fas fa-arrow-right"></span>
@@ -170,6 +170,13 @@
 
   .move-btn {
     margin: 0;
+  }
+
+  #move-indicator {
+    font-size: 30px;
+    border-left: 5px solid #2A4D6E;
+    height: 1em;
+    margin: 0 0.5em !important;
   }
 
   #cube_container {
