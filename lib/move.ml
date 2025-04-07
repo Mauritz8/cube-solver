@@ -544,10 +544,10 @@ let move_to_notation move =
 
 let notation_to_move notation =
   let error_message = "Invalid move notation" in
-  if String.length notation = 0 then
-    Error error_message
+  if String.length notation = 0 then Error error_message
   else
-    let layer = match notation.[0] with
+    let layer =
+      match notation.[0] with
       | 'U' -> Some TOP
       | 'D' -> Some BOTTOM
       | 'R' -> Some RIGHT
@@ -556,11 +556,12 @@ let notation_to_move notation =
       | 'B' -> Some BACK
       | _ -> None
     in
-    let clockwise = match String.length notation with
+    let clockwise =
+      match String.length notation with
       | 1 -> Some true
       | 2 -> Some false
       | _ -> None
     in
-    match layer, clockwise with
+    match (layer, clockwise) with
     | Some l, Some c -> Ok { layer = l; clockwise = c }
     | _, _ -> Error error_message

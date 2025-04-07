@@ -8,7 +8,8 @@ type make_move_req_body = { move : string; cube : cube } [@@deriving yojson]
 
 let cors_middleware handler request =
   let%lwt response = handler request in
-  Dream.add_header response "Access-Control-Allow-Origin" "http://localhost:5173";
+  Dream.add_header response "Access-Control-Allow-Origin"
+    "http://localhost:5173";
   Dream.add_header response "Access-Control-Allow-Methods" "GET, POST, OPTIONS";
   Dream.add_header response "Access-Control-Allow-Headers" "Content-Type";
   if Dream.method_ request = `OPTIONS then Dream.set_status response `OK else ();
@@ -26,7 +27,7 @@ let () =
                body |> Yojson.Safe.from_string |> make_move_req_body_of_yojson
              in
              match notation_to_move data.move with
-             | Error e ->  Dream.respond e ~status:`Bad_Request
+             | Error e -> Dream.respond e ~status:`Bad_Request
              | Ok move ->
                  let new_cube = make_move data.cube move in
                  yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);

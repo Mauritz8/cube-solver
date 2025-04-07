@@ -17,47 +17,46 @@ let cross_is_solved cube cross_color =
   let is_cross_color sticker = sticker == cross_color in
   let is_cross = List.for_all is_cross_color cross_edges in
   let is_matching_edges =
-    cube.top_layer.front.snd == cube.middle_layer.front.snd && 
-    cube.top_layer.right.snd == cube.middle_layer.right.snd && 
-    cube.top_layer.left.snd == cube.middle_layer.left.snd && 
-    cube.top_layer.back.snd == cube.middle_layer.back.snd
+    cube.top_layer.front.snd == cube.middle_layer.front.snd
+    && cube.top_layer.right.snd == cube.middle_layer.right.snd
+    && cube.top_layer.left.snd == cube.middle_layer.left.snd
+    && cube.top_layer.back.snd == cube.middle_layer.back.snd
   in
   is_cross && is_matching_edges
 
-
 let solve_cross_next_moves cube cross_color =
-  if cube.middle_layer.front.fst == cross_color
+  if
+    cube.middle_layer.front.fst == cross_color
     && cube.middle_layer.left.trd == cube.middle_layer.left.snd
-  then
-    Ok [ { layer = LEFT; clockwise = false } ]
-  else if cube.middle_layer.front.trd == cross_color
+  then Ok [ { layer = LEFT; clockwise = false } ]
+  else if
+    cube.middle_layer.front.trd == cross_color
     && cube.middle_layer.right.fst == cube.middle_layer.right.snd
-  then
-    Ok [ { layer = RIGHT; clockwise = true } ]
-  else if cube.middle_layer.right.fst == cross_color
+  then Ok [ { layer = RIGHT; clockwise = true } ]
+  else if
+    cube.middle_layer.right.fst == cross_color
     && cube.middle_layer.front.trd == cube.middle_layer.front.snd
-  then
-    Ok [ { layer = FRONT; clockwise = false } ]
-  else if cube.middle_layer.right.trd == cross_color
+  then Ok [ { layer = FRONT; clockwise = false } ]
+  else if
+    cube.middle_layer.right.trd == cross_color
     && cube.middle_layer.back.fst == cube.middle_layer.back.snd
-  then
-    Ok [ { layer = BACK; clockwise = true } ]
-  else if cube.middle_layer.left.fst == cross_color
+  then Ok [ { layer = BACK; clockwise = true } ]
+  else if
+    cube.middle_layer.left.fst == cross_color
     && cube.middle_layer.back.trd == cube.middle_layer.back.snd
-  then
-    Ok [ { layer = BACK; clockwise = false } ]
-  else if cube.middle_layer.left.trd == cross_color
+  then Ok [ { layer = BACK; clockwise = false } ]
+  else if
+    cube.middle_layer.left.trd == cross_color
     && cube.middle_layer.front.fst == cube.middle_layer.front.snd
-  then
-    Ok [ { layer = FRONT; clockwise = true } ]
-  else if cube.middle_layer.back.fst == cross_color
+  then Ok [ { layer = FRONT; clockwise = true } ]
+  else if
+    cube.middle_layer.back.fst == cross_color
     && cube.middle_layer.right.trd == cube.middle_layer.right.snd
-  then
-    Ok [ { layer = RIGHT; clockwise = false } ]
-  else if cube.middle_layer.back.trd == cross_color
+  then Ok [ { layer = RIGHT; clockwise = false } ]
+  else if
+    cube.middle_layer.back.trd == cross_color
     && cube.middle_layer.left.fst == cube.middle_layer.left.snd
-  then
-    Ok [ { layer = LEFT; clockwise = true } ]
+  then Ok [ { layer = LEFT; clockwise = true } ]
   else if cube.bottom_face.fst.snd == cross_color then
     let edge = cube.bottom_layer.front.snd in
     let center = cube.middle_layer.front.snd in
@@ -80,85 +79,82 @@ let solve_cross_next_moves cube cross_color =
     else Ok [ { layer = BOTTOM; clockwise = true } ]
   else if cube.middle_layer.front.fst == cross_color then
     Ok
-    [
-      { layer = LEFT; clockwise = true };
-      { layer = BOTTOM; clockwise = true };
-      { layer = LEFT; clockwise = false };
-    ]
+      [
+        { layer = LEFT; clockwise = true };
+        { layer = BOTTOM; clockwise = true };
+        { layer = LEFT; clockwise = false };
+      ]
   else if cube.middle_layer.front.trd == cross_color then
     Ok
-    [
-      { layer = RIGHT; clockwise = false };
-      { layer = BOTTOM; clockwise = true };
-      { layer = RIGHT; clockwise = true };
-    ]
+      [
+        { layer = RIGHT; clockwise = false };
+        { layer = BOTTOM; clockwise = true };
+        { layer = RIGHT; clockwise = true };
+      ]
   else if cube.middle_layer.back.fst == cross_color then
     Ok
-    [
-      { layer = RIGHT; clockwise = true };
-      { layer = BOTTOM; clockwise = true };
-      { layer = RIGHT; clockwise = false };
-    ]
+      [
+        { layer = RIGHT; clockwise = true };
+        { layer = BOTTOM; clockwise = true };
+        { layer = RIGHT; clockwise = false };
+      ]
   else if cube.middle_layer.back.trd == cross_color then
     Ok
-    [
-      { layer = LEFT; clockwise = false };
-      { layer = BOTTOM; clockwise = true };
-      { layer = LEFT; clockwise = true };
-    ]
+      [
+        { layer = LEFT; clockwise = false };
+        { layer = BOTTOM; clockwise = true };
+        { layer = LEFT; clockwise = true };
+      ]
   else if cube.middle_layer.right.fst == cross_color then
     Ok
-    [
-      { layer = FRONT; clockwise = true };
-      { layer = BOTTOM; clockwise = true };
-      { layer = FRONT; clockwise = false };
-    ]
+      [
+        { layer = FRONT; clockwise = true };
+        { layer = BOTTOM; clockwise = true };
+        { layer = FRONT; clockwise = false };
+      ]
   else if cube.middle_layer.right.trd == cross_color then
     Ok
-    [
-      { layer = BACK; clockwise = false };
-      { layer = BOTTOM; clockwise = true };
-      { layer = BACK; clockwise = true };
-    ]
+      [
+        { layer = BACK; clockwise = false };
+        { layer = BOTTOM; clockwise = true };
+        { layer = BACK; clockwise = true };
+      ]
   else if cube.middle_layer.left.fst == cross_color then
     Ok
-    [
-      { layer = BACK; clockwise = true };
-      { layer = BOTTOM; clockwise = true };
-      { layer = BACK; clockwise = false };
-    ]
+      [
+        { layer = BACK; clockwise = true };
+        { layer = BOTTOM; clockwise = true };
+        { layer = BACK; clockwise = false };
+      ]
   else if cube.middle_layer.left.trd == cross_color then
     Ok
-    [
-      { layer = FRONT; clockwise = false };
-      { layer = BOTTOM; clockwise = true };
-      { layer = FRONT; clockwise = true };
-    ]
-
-  else if cube.bottom_layer.front.snd == cross_color
+      [
+        { layer = FRONT; clockwise = false };
+        { layer = BOTTOM; clockwise = true };
+        { layer = FRONT; clockwise = true };
+      ]
+  else if
+    cube.bottom_layer.front.snd == cross_color
     && cube.bottom_face.fst.snd == cube.middle_layer.front.snd
-  then
-    Ok [ { layer = FRONT; clockwise = true } ]
-  else if cube.bottom_layer.right.snd == cross_color
+  then Ok [ { layer = FRONT; clockwise = true } ]
+  else if
+    cube.bottom_layer.right.snd == cross_color
     && cube.bottom_face.snd.trd == cube.middle_layer.right.snd
-  then
-    Ok [ { layer = RIGHT; clockwise = true } ]
-  else if cube.bottom_layer.left.snd == cross_color
+  then Ok [ { layer = RIGHT; clockwise = true } ]
+  else if
+    cube.bottom_layer.left.snd == cross_color
     && cube.bottom_face.snd.fst == cube.middle_layer.left.snd
-  then
-    Ok [ { layer = LEFT; clockwise = true } ]
-  else if cube.bottom_layer.back.snd == cross_color
+  then Ok [ { layer = LEFT; clockwise = true } ]
+  else if
+    cube.bottom_layer.back.snd == cross_color
     && cube.bottom_face.trd.snd == cube.middle_layer.back.snd
-  then
-    Ok [ { layer = BACK; clockwise = true } ]
-  else if cube.bottom_layer.front.snd == cross_color
-  || cube.bottom_layer.right.snd == cross_color
-  || cube.bottom_layer.left.snd == cross_color
-  || cube.bottom_layer.back.snd == cross_color
-  then
-    Ok [ { layer = BOTTOM; clockwise = true } ]
-
-
+  then Ok [ { layer = BACK; clockwise = true } ]
+  else if
+    cube.bottom_layer.front.snd == cross_color
+    || cube.bottom_layer.right.snd == cross_color
+    || cube.bottom_layer.left.snd == cross_color
+    || cube.bottom_layer.back.snd == cross_color
+  then Ok [ { layer = BOTTOM; clockwise = true } ]
   else if cube.top_layer.front.snd == cross_color then
     Ok [ { layer = FRONT; clockwise = true } ]
   else if cube.top_layer.back.snd == cross_color then
