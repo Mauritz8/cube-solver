@@ -204,7 +204,7 @@ let solve_cross_test_2 () =
         {
           front = { fst = WHITE; snd = GREEN; trd = RED };
           right = { fst = WHITE; snd = YELLOW; trd = RED };
-          back = { fst = ORANGE; snd = BLUE; trd = RED };
+          back = { fst = YELLOW; snd = GREEN; trd = RED };
           left = { fst = BLUE; snd = WHITE; trd = ORANGE };
         };
       middle_layer =
