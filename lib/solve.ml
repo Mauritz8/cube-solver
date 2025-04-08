@@ -163,6 +163,14 @@ let solve_cross_next_moves cube cross_color =
     Ok [ { layer = RIGHT; clockwise = true } ]
   else if cube.top_layer.left.snd == cross_color then
     Ok [ { layer = LEFT; clockwise = true } ]
+  else if cube.top_face.fst.snd == cross_color then
+    Ok [ { layer = BACK; clockwise = true } ]
+  else if cube.top_face.snd.fst == cross_color then
+    Ok [ { layer = LEFT; clockwise = true } ]
+  else if cube.top_face.snd.trd == cross_color then
+    Ok [ { layer = RIGHT; clockwise = true } ]
+  else if cube.top_face.trd.snd == cross_color then
+    Ok [ { layer = FRONT; clockwise = true } ]
   else Error "Unable to solve cross: didn't find an edge"
 
 let solve_cross cube =
