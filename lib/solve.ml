@@ -25,7 +25,18 @@ let cross_is_solved cube cross_color =
   is_cross && is_matching_edges
 
 let solve_cross_next_moves cube cross_color =
-  if cube.middle_layer.front.fst == cross_color then
+  if cube.bottom_face.fst.snd == cross_color then
+    let is_matching_edge =
+      cube.bottom_layer.front.snd == cube.middle_layer.front.snd
+    in
+    if is_matching_edge then
+      Ok
+        [
+          { move_type = FRONT; clockwise = true };
+          { move_type = FRONT; clockwise = true };
+        ]
+    else Ok [ { move_type = DOWN; clockwise = true } ]
+  else if cube.middle_layer.front.fst == cross_color then
     let is_matching_edge =
       cube.middle_layer.left.trd == cube.middle_layer.left.snd
     in
@@ -59,17 +70,6 @@ let solve_cross_next_moves cube cross_color =
         { move_type = FRONT; clockwise = true };
         { move_type = DOWN; clockwise = true };
       ]
-  else if cube.bottom_face.fst.snd == cross_color then
-    let is_matching_edge =
-      cube.bottom_layer.front.snd == cube.middle_layer.front.snd
-    in
-    if is_matching_edge then
-      Ok
-        [
-          { move_type = FRONT; clockwise = true };
-          { move_type = FRONT; clockwise = true };
-        ]
-    else Ok [ { move_type = DOWN; clockwise = true } ]
   else if cube.top_layer.front.snd == cross_color then
     Ok [ { move_type = FRONT; clockwise = true } ]
   else if cube.bottom_layer.front.snd == cross_color then
