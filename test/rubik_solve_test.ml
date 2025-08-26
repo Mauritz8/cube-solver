@@ -5,56 +5,21 @@ open Rubik.Solve
    https://ruwix.com/puzzle-scramble-generator/?type=rubiks-cube *)
 (* White on top and green on the front *)
 
-let cube_cross_solved_testable =
-  let cross_solved cube1 cube2 =
-    cube1.top_face.fst.snd == cube2.top_face.fst.snd
-    && cube1.top_face.snd.fst == cube2.top_face.snd.fst
-    && cube1.top_face.snd.snd == cube2.top_face.snd.snd
-    && cube1.top_face.snd.trd == cube2.top_face.snd.trd
-    && cube1.top_face.trd.snd == cube2.top_face.trd.snd
-    && cube1.top_layer.front.snd == cube2.top_layer.front.snd
-    && cube1.top_layer.left.snd == cube2.top_layer.left.snd
-    && cube1.top_layer.right.snd == cube2.top_layer.right.snd
-    && cube1.top_layer.back.snd == cube2.top_layer.back.snd
+let assert_cross_solved cube =
+  let cross_solved =
+    cube.top_face.fst.snd == cube.top_face.snd.fst
+    && cube.top_face.fst.snd == cube.top_face.snd.trd
+    && cube.top_face.fst.snd == cube.top_face.trd.snd
+    && cube.top_layer.front.snd == cube.middle_layer.front.snd
+    && cube.top_layer.right.snd == cube.middle_layer.right.snd
+    && cube.top_layer.back.snd == cube.middle_layer.back.snd
+    && cube.top_layer.left.snd == cube.middle_layer.left.snd
   in
-  Alcotest.testable Utils.cube_pretty_printer cross_solved
 
-let cube_with_cross_solved =
-  {
-    top_face =
-      {
-        fst = { fst = YELLOW; snd = WHITE; trd = YELLOW };
-        snd = { fst = WHITE; snd = WHITE; trd = WHITE };
-        trd = { fst = YELLOW; snd = WHITE; trd = YELLOW };
-      };
-    top_layer =
-      {
-        front = { fst = YELLOW; snd = GREEN; trd = YELLOW };
-        right = { fst = YELLOW; snd = RED; trd = YELLOW };
-        back = { fst = YELLOW; snd = BLUE; trd = YELLOW };
-        left = { fst = YELLOW; snd = ORANGE; trd = YELLOW };
-      };
-    middle_layer =
-      {
-        front = { fst = YELLOW; snd = GREEN; trd = YELLOW };
-        right = { fst = YELLOW; snd = RED; trd = YELLOW };
-        back = { fst = YELLOW; snd = BLUE; trd = YELLOW };
-        left = { fst = YELLOW; snd = ORANGE; trd = YELLOW };
-      };
-    bottom_layer =
-      {
-        front = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-        right = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-        back = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-        left = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-      };
-    bottom_face =
-      {
-        fst = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-        snd = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-        trd = { fst = YELLOW; snd = YELLOW; trd = YELLOW };
-      };
-  }
+  let fail_message =
+    Printf.sprintf "Cross is solved: %s" (Utils.cube_to_string cube)
+  in
+  Alcotest.(check bool) fail_message true cross_solved
 
 let solve_cross_already_solved () =
   let cube =
@@ -96,9 +61,7 @@ let solve_cross_already_solved () =
   in
   match solve_cross cube with
   | Error e -> failwith e
-  | Ok solution ->
-      Alcotest.(check cube_cross_solved_testable)
-        "cross solved" cube_with_cross_solved solution.cube
+  | Ok solution -> assert_cross_solved solution.cube
 
 (* all edges are one the correct face but need to swap places with each other *)
 let solve_cross_edges_needs_to_swap () =
@@ -141,9 +104,7 @@ let solve_cross_edges_needs_to_swap () =
   in
   match solve_cross cube with
   | Error e -> failwith e
-  | Ok solution ->
-      Alcotest.(check cube_cross_solved_testable)
-        "cross solved" cube_with_cross_solved solution.cube
+  | Ok solution -> assert_cross_solved solution.cube
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 let solve_cross_test_1 () =
@@ -186,9 +147,7 @@ let solve_cross_test_1 () =
   in
   match solve_cross cube with
   | Error e -> failwith e
-  | Ok solution ->
-      Alcotest.(check cube_cross_solved_testable)
-        "cross solved" cube_with_cross_solved solution.cube
+  | Ok solution -> assert_cross_solved solution.cube
 
 (* Scramble: D2 B2 F' D' L' B U F B' L' F2 L2 F2 D L2 U2 B2 U' R2 L F' R' B F2 U *)
 let solve_cross_test_2 () =
@@ -231,9 +190,7 @@ let solve_cross_test_2 () =
   in
   match solve_cross cube with
   | Error e -> failwith e
-  | Ok solution ->
-      Alcotest.(check cube_cross_solved_testable)
-        "cross solved" cube_with_cross_solved solution.cube
+  | Ok solution -> assert_cross_solved solution.cube
 
 let () =
   let open Alcotest in

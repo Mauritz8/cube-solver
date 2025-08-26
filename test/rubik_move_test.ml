@@ -3,7 +3,10 @@ open Rubik.Move
 
 let cube_testable =
   let equal cube1 cube2 = cube1 = cube2 in
-  Alcotest.testable Utils.cube_pretty_printer equal
+  let cube_pretty_printer ff cube =
+    Format.fprintf ff "%s" (Utils.cube_to_string cube)
+  in
+  Alcotest.testable cube_pretty_printer equal
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 (* White on top and green on the front *)
@@ -64,7 +67,7 @@ let move_top_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = TOP; clockwise = true } in
+  let actual = make_move cube { move_type = UP; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -87,7 +90,7 @@ let move_top_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = TOP; clockwise = false } in
+  let actual = make_move cube { move_type = UP; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -110,7 +113,7 @@ let move_bottom_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = BOTTOM; clockwise = true } in
+  let actual = make_move cube { move_type = DOWN; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -133,7 +136,7 @@ let move_bottom_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = BOTTOM; clockwise = false } in
+  let actual = make_move cube { move_type = DOWN; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -175,7 +178,7 @@ let move_right_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = RIGHT; clockwise = true } in
+  let actual = make_move cube { move_type = RIGHT; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -217,7 +220,7 @@ let move_right_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = RIGHT; clockwise = false } in
+  let actual = make_move cube { move_type = RIGHT; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -259,7 +262,7 @@ let move_left_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = LEFT; clockwise = true } in
+  let actual = make_move cube { move_type = LEFT; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -301,7 +304,7 @@ let move_left_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = LEFT; clockwise = false } in
+  let actual = make_move cube { move_type = LEFT; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -338,7 +341,7 @@ let move_front_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = FRONT; clockwise = true } in
+  let actual = make_move cube { move_type = FRONT; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -372,7 +375,7 @@ let move_front_counter_clockwise_test () =
         { cube.bottom_face with fst = { fst = BLUE; snd = GREEN; trd = GREEN } };
     }
   in
-  let actual = make_move cube { layer = FRONT; clockwise = false } in
+  let actual = make_move cube { move_type = FRONT; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -409,7 +412,7 @@ let move_back_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { layer = BACK; clockwise = true } in
+  let actual = make_move cube { move_type = BACK; clockwise = true } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -443,7 +446,91 @@ let move_back_counter_clockwise_test () =
         { cube.bottom_face with trd = { fst = BLUE; snd = YELLOW; trd = BLUE } };
     }
   in
-  let actual = make_move cube { layer = BACK; clockwise = false } in
+  let actual = make_move cube { move_type = BACK; clockwise = false } in
+
+  Alcotest.(check cube_testable) "expected cube" expect actual
+
+let rotate_y_clockwise_test () =
+  let expect =
+    {
+      top_face =
+        {
+          fst = { fst = YELLOW; snd = BLUE; trd = WHITE };
+          snd = { fst = ORANGE; snd = WHITE; trd = GREEN };
+          trd = { fst = YELLOW; snd = GREEN; trd = RED };
+        };
+      top_layer =
+        {
+          front = cube.top_layer.right;
+          left = cube.top_layer.front;
+          back = cube.top_layer.left;
+          right = cube.top_layer.back;
+        };
+      middle_layer =
+        {
+          front = cube.middle_layer.right;
+          left = cube.middle_layer.front;
+          back = cube.middle_layer.left;
+          right = cube.middle_layer.back;
+        };
+      bottom_layer =
+        {
+          front = cube.bottom_layer.right;
+          left = cube.bottom_layer.front;
+          back = cube.bottom_layer.left;
+          right = cube.bottom_layer.back;
+        };
+      bottom_face =
+        {
+          fst = { fst = GREEN; snd = WHITE; trd = ORANGE };
+          snd = { fst = RED; snd = YELLOW; trd = WHITE };
+          trd = { fst = RED; snd = WHITE; trd = YELLOW };
+        };
+    }
+  in
+  let actual = make_move cube { move_type = ROTATE_Y; clockwise = true } in
+
+  Alcotest.(check cube_testable) "expected cube" expect actual
+
+let rotate_y_counter_clockwise_test () =
+  let expect =
+    {
+      top_face =
+        {
+          fst = { fst = RED; snd = GREEN; trd = YELLOW };
+          snd = { fst = GREEN; snd = WHITE; trd = ORANGE };
+          trd = { fst = WHITE; snd = BLUE; trd = YELLOW };
+        };
+      top_layer =
+        {
+          front = cube.top_layer.left;
+          left = cube.top_layer.back;
+          back = cube.top_layer.right;
+          right = cube.top_layer.front;
+        };
+      middle_layer =
+        {
+          front = cube.middle_layer.left;
+          left = cube.middle_layer.back;
+          back = cube.middle_layer.right;
+          right = cube.middle_layer.front;
+        };
+      bottom_layer =
+        {
+          front = cube.bottom_layer.left;
+          left = cube.bottom_layer.back;
+          back = cube.bottom_layer.right;
+          right = cube.bottom_layer.front;
+        };
+      bottom_face =
+        {
+          fst = { fst = YELLOW; snd = WHITE; trd = RED };
+          snd = { fst = WHITE; snd = YELLOW; trd = RED };
+          trd = { fst = ORANGE; snd = WHITE; trd = GREEN };
+        };
+    }
+  in
+  let actual = make_move cube { move_type = ROTATE_Y; clockwise = false } in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -471,5 +558,8 @@ let () =
           test_case "Move back clockwise" `Quick move_back_clockwise_test;
           test_case "Move back counter clockwise" `Quick
             move_back_counter_clockwise_test;
+          test_case "Rotate y clockwise" `Quick rotate_y_clockwise_test;
+          test_case "Rotate y counter clockwise" `Quick
+            rotate_y_counter_clockwise_test;
         ] );
     ]

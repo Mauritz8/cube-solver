@@ -1,8 +1,10 @@
 open Cube
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type layer = TOP | BOTTOM | RIGHT | LEFT | FRONT | BACK [@@deriving yojson]
-type move = { layer : layer; clockwise : bool } [@@deriving yojson]
+type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y
+[@@deriving yojson]
+
+type move = { move_type : move_type; clockwise : bool } [@@deriving yojson]
 
 let rotate_face_clockwise face =
   {
@@ -56,14 +58,14 @@ let move_bottom_layer layer clockwise =
       left = layer.front;
     }
 
-let move_top cube clockwise =
+let move_up cube clockwise =
   {
     cube with
     top_face = rotate_face cube.top_face clockwise;
     top_layer = move_top_layer cube.top_layer clockwise;
   }
 
-let move_bottom cube clockwise =
+let move_down cube clockwise =
   {
     cube with
     bottom_face = rotate_face cube.bottom_face clockwise;
@@ -518,10 +520,64 @@ let move_back_counter_clockwise cube =
       };
   }
 
+let rotate_y_clockwise cube =
+  {
+    top_face = rotate_face cube.top_face true;
+    bottom_face = rotate_face cube.bottom_face false;
+    top_layer =
+      {
+        front = cube.top_layer.right;
+        left = cube.top_layer.front;
+        back = cube.top_layer.left;
+        right = cube.top_layer.back;
+      };
+    middle_layer =
+      {
+        front = cube.middle_layer.right;
+        left = cube.middle_layer.front;
+        back = cube.middle_layer.left;
+        right = cube.middle_layer.back;
+      };
+    bottom_layer =
+      {
+        front = cube.bottom_layer.right;
+        left = cube.bottom_layer.front;
+        back = cube.bottom_layer.left;
+        right = cube.bottom_layer.back;
+      };
+  }
+
+let rotate_y_counter_clockwise cube =
+  {
+    top_face = rotate_face cube.top_face false;
+    bottom_face = rotate_face cube.bottom_face true;
+    top_layer =
+      {
+        front = cube.top_layer.left;
+        left = cube.top_layer.back;
+        back = cube.top_layer.right;
+        right = cube.top_layer.front;
+      };
+    middle_layer =
+      {
+        front = cube.middle_layer.left;
+        left = cube.middle_layer.back;
+        back = cube.middle_layer.right;
+        right = cube.middle_layer.front;
+      };
+    bottom_layer =
+      {
+        front = cube.bottom_layer.left;
+        left = cube.bottom_layer.back;
+        back = cube.bottom_layer.right;
+        right = cube.bottom_layer.front;
+      };
+  }
+
 let make_move cube move =
-  match (move.layer, move.clockwise) with
-  | TOP, _ -> move_top cube move.clockwise
-  | BOTTOM, _ -> move_bottom cube move.clockwise
+  match (move.move_type, move.clockwise) with
+  | UP, _ -> move_up cube move.clockwise
+  | DOWN, _ -> move_down cube move.clockwise
   | RIGHT, true -> move_right_clockwise cube
   | RIGHT, false -> move_right_counter_clockwise cube
   | LEFT, true -> move_left_clockwise cube
@@ -530,16 +586,19 @@ let make_move cube move =
   | FRONT, false -> move_front_counter_clockwise cube
   | BACK, true -> move_back_clockwise cube
   | BACK, false -> move_back_counter_clockwise cube
+  | ROTATE_Y, true -> rotate_y_clockwise cube
+  | ROTATE_Y, false -> rotate_y_counter_clockwise cube
 
 let move_to_notation move =
   String.cat
-    (match move.layer with
-    | TOP -> "U"
-    | BOTTOM -> "D"
+    (match move.move_type with
+    | UP -> "U"
+    | DOWN -> "D"
     | RIGHT -> "R"
     | LEFT -> "L"
     | FRONT -> "F"
-    | BACK -> "B")
+    | BACK -> "B"
+    | ROTATE_Y -> "y")
     (if move.clockwise then "" else "'")
 
 let notation_to_move notation =
@@ -548,12 +607,13 @@ let notation_to_move notation =
   else
     let layer =
       match notation.[0] with
-      | 'U' -> Some TOP
-      | 'D' -> Some BOTTOM
+      | 'U' -> Some UP
+      | 'D' -> Some DOWN
       | 'R' -> Some RIGHT
       | 'L' -> Some LEFT
       | 'F' -> Some FRONT
       | 'B' -> Some BACK
+      | 'y' -> Some ROTATE_Y
       | _ -> None
     in
     let clockwise =
@@ -563,5 +623,5 @@ let notation_to_move notation =
       | _ -> None
     in
     match (layer, clockwise) with
-    | Some l, Some c -> Ok { layer = l; clockwise = c }
+    | Some l, Some c -> Ok { move_type = l; clockwise = c }
     | _, _ -> Error error_message

@@ -1,7 +1,7 @@
 open Rubik.Cube
 
-let cube_pretty_printer ff cube =
-  Format.fprintf ff
+let cube_to_string cube =
+  Printf.sprintf
     "\n\
     \         %s %s %s\n\
     \         %s %s %s\n\
