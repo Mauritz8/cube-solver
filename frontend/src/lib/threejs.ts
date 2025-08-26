@@ -14,7 +14,7 @@ function sticker_color(sticker: Sticker) {
 }
 
 function create_cubie(x: number, y: number, z: number, colors: (number | null)[]) {
-  const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const black = new THREE.MeshBasicMaterial({ color: 0x111111 });
   const colorMaterial = (c: number) => new THREE.MeshBasicMaterial({ color: c });
   const materials = colors.map(c => c ? colorMaterial(c) : black);
 

@@ -14,20 +14,25 @@
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1E2A4A);
   onMount(() => {
-    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 2000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(500, 500);
-    renderer.setClearColor(0x000000, 0);
+    const width = 800;
+    const height = 600;
+    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 2000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
 
     const cube_container = document.getElementById("cube_container")!;
     cube_container.appendChild(renderer.domElement);
 
-    camera.position.x = 3;
-    camera.position.y = 3;
-    camera.position.z = 5;
-    new OrbitControls(camera, renderer.domElement);
-    renderer.setAnimationLoop(() => renderer.render(scene, camera));
+    camera.position.set(4, 5, 5);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.01;
+    renderer.setAnimationLoop(() => {
+      controls.update();
+      renderer.render(scene, camera);
+    });
 
     Api.solved_cube()
     .then(res => res.json()
@@ -108,34 +113,6 @@
 <div id="container">
   <h1 id="title">Rubik's Cube Solver</h1>
 
-  <div id="info">
-    {#if solution_error !== ""}
-      <p id="solution-error">{solution_error}</p>
-    {:else if solution_moves.length > 0}
-      <h2 id="info-header">Solution</h2>
-      <button class="move-btn" onclick={move_prev} aria-label="Make previous move">
-        <span class="fa-solid fa-arrow-left"></span>
-      </button>
-      {#each solution_moves as move, i}
-        {#if i === current_move_index}
-          <span id="move-indicator"></span>
-        {/if}
-        <span>{move}</span>
-      {/each}
-      {#if current_move_index === solution_moves.length}
-        <span id="move-indicator"></span>
-      {/if}
-      <button class="move-btn" onclick={move_next} aria-label="Make next move">
-        <span class="fa-solid fa-arrow-right"></span>
-      </button>
-    {:else if scramble_moves.length > 0}
-      <h2 id="info-header">Scramble</h2>
-      {#each scramble_moves as move}
-        <span>{move}</span>
-      {/each}
-    {/if}
-  </div>
-
   <div id="cube_and_controls">
     <div id="cube_container"></div>
     <div id="action_btns_container">
@@ -153,6 +130,38 @@
     </div>
   </div>
 
+  <div id="info">
+    {#if scramble_moves.length > 0}
+      <div>
+        <span style='font-weight: bold;'>Scramble: </span>
+        {#each scramble_moves as move}
+          <span>{move}</span>
+        {/each}
+      </div>
+    {/if}
+    {#if solution_error !== ""}
+      <p id="solution-error">{solution_error}</p>
+    {:else if solution_moves.length > 0}
+      <span style='font-weight: bold;'>Solution</span>
+      <button class="move-btn" onclick={move_prev} aria-label="Make previous move">
+        <span class="fa-solid fa-arrow-left"></span>
+      </button>
+      {#each solution_moves as move, i}
+        {#if i === current_move_index}
+          <span id="move-indicator"></span>
+        {/if}
+        <span>{move}</span>
+      {/each}
+      {#if current_move_index === solution_moves.length}
+        <span id="move-indicator"></span>
+      {/if}
+      <button class="move-btn" onclick={move_next} aria-label="Make next move">
+        <span class="fa-solid fa-arrow-right"></span>
+      </button>
+    {/if}
+  </div>
+
+
 </div>
 
 <style>
@@ -165,7 +174,6 @@
   #title {
     display: inline-block;
     color: #E0E5EC;
-    font-size: 3em;
   }
 
   #info {
@@ -173,11 +181,7 @@
     margin: 1em 1em;
   }
 
-  #info-header, #solution-error {
-    font-size: 2.5em;
-  }
-
-  #info > span {
+  #info span {
     margin: 0 0.2em;
     font-size: 2em;
   }
@@ -194,6 +198,7 @@
 
   #action_btns_container > button {
     display: block;
+    font-size: 2em;
   }
 
   #cube_container {
@@ -205,7 +210,6 @@
   button {
     padding: 0.3em;
     margin: 0.5em;
-    font-size: 2em;
     border: none;
     border-radius: 0.2em;
     cursor: pointer;
