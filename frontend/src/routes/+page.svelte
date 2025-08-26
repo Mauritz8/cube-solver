@@ -22,7 +22,7 @@
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
 
-    const cube_container = document.getElementById("cube_container")!;
+    const cube_container = document.getElementById("cube-container")!;
     cube_container.appendChild(renderer.domElement);
 
     camera.position.set(4, 5, 5);
@@ -50,8 +50,8 @@
     scene.add(cube_three_js);
   }
 
-  async function scramble() {
-    Api.scramble()
+  async function scramble_and_solve() {
+    await Api.scramble()
       .then(res => res.json())
       .then(json => {
         scramble_moves = json.moves;
@@ -59,10 +59,8 @@
         solution_moves = [];
         update_cube(cubeFromJson(json.new_cube))
       });
-  }
 
-  async function solve() {
-    Api.solve(cube)
+    await Api.solve(cube)
       .then(res => {
         if (res.status == 500) {
           res.text().then(error => solution_error = error);
@@ -102,126 +100,289 @@
       current_move_index--;
     }
   }
+function get_move_description(move: string | undefined): string {
+  switch (move) {
+    case "R": return "Turn the right column upwards.";
+    case "R'": return "Turn the right column downwards.";
+    case "R2": return "Turn the right column 180 degrees.";
 
-  function disable_solve_btn() {
-    return solution_moves.length > 0 || solution_error !== "";
+    case "L": return "Turn the left column downwards.";
+    case "L'": return "Turn the left column upwards.";
+    case "L2": return "Turn the left column 180 degrees.";
+
+    case "U": return "Turn the top row to the left.";
+    case "U'": return "Turn the top row to the right.";
+    case "U2": return "Turn the top row 180 degrees.";
+
+    case "D": return "Turn the bottom row to the right.";
+    case "D'": return "Turn the bottom row to the left.";
+    case "D2": return "Turn the bottom row 180 degrees.";
+
+    case "F": return "Turn the front face clockwise.";
+    case "F'": return "Turn the front face counter-clockwise.";
+    case "F2": return "Turn the front face 180 degrees.";
+
+    case "B": return "Turn the back face to the left.";
+    case "B'": return "Turn the back face to the right.";
+    case "B2": return "Turn the back face 180 degrees.";
+
+    case "x": return "Rotate the entire cube: bring the top to the front, and the front to the bottom.";
+    case "x'": return "Rotate the entire cube: bring the top to the back, and the back to the bottom.";
+
+    case "y": return "Rotate the entire cube to the left: the front face becomes left, right becomes front.";
+    case "y'": return "Rotate the entire cube to the right: the front face becomes right, left becomes front.";
+
+    case "z": return "Tilt the entire cube clockwise: top goes right, right goes down.";
+    case "z'": return "Tilt the entire cube counter-clockwise: top goes left, left goes down.";
+
+    default: return `Perform move: ${move}`;
   }
-
+}
 </script>
 
+<div id='main-container'>
 
-<div id="container">
-  <h1 id="title">Rubik's Cube Solver</h1>
+  <header id='title-header'>
+    <h1>Rubik's Cube Solver</h1>
+    <p id='tagline'>Your step-by-step guide to solving any scramble.</p>
+  </header>
 
-  <div id="cube_and_controls">
-    <div id="cube_container"></div>
-    <div id="action_btns_container">
-      <button
-        type="button"
-        onclick={scramble}
-        style="margin-top: 0;"
-      >Scramble</button>
-      <button
-        type="button"
-        class={disable_solve_btn() ? "btn-disabled" : ""}
-        onclick={solve}
-        disabled={disable_solve_btn()}
-      >Solve</button>
-    </div>
-  </div>
+  <main id='layout-container'>
 
-  <div id="info">
-    {#if scramble_moves.length > 0}
-      <div>
-        <span style='font-weight: bold;'>Scramble: </span>
-        {#each scramble_moves as move}
-          <span>{move}</span>
-        {/each}
-      </div>
-    {/if}
-    {#if solution_error !== ""}
-      <p id="solution-error">{solution_error}</p>
-    {:else if solution_moves.length > 0}
-      <span style='font-weight: bold;'>Solution</span>
-      <button class="move-btn" onclick={move_prev} aria-label="Make previous move">
-        <span class="fa-solid fa-arrow-left"></span>
-      </button>
-      {#each solution_moves as move, i}
-        {#if i === current_move_index}
-          <span id="move-indicator"></span>
+    <section id='cube-column'>
+      <div id="cube-container"></div>
+    </section>
+
+    <section id='info-column'>
+
+      <section class='info-card'>
+        <h2>Your Scramble</h2>
+        <div id='scramble-string'>
+          {#if scramble_moves.length === 0}
+            <span>Your scramble will be shown here</span>
+          {:else}
+            <span>{scramble_moves.join(' ')}</span>
+          {/if}
+        </div>
+        <button type="button" onclick={scramble_and_solve} class='btn-secondary' id='scramble-btn'>Scramble</button>
+        <p class='helper-text'>Ensure your physical cube matches the cube on the left before starting.</p>
+      </section>
+
+      <section class='info-card'>
+        {#if solution_error !== ''}
+          <h2>Solution</h2>
+          <div id='error-message'>
+            <div class="error-icon">⚠️</div> 
+            <h3 class="error-title">Could Not Find a Solution</h3>
+            <p class="error-detail">The scramble could not be solved.</p>
+          </div>
+        {:else if solution_moves.length == 0}
+          <h2>Solution</h2>
+          <p>After you scramble, the solution will be shown here</p>
+        {:else if current_move_index >= solution_moves.length}
+          <h2 class='celebration-title'>Cube Solved!</h2>
+          <p class='celebration-subtitle'>Congratulations! You did it! 🎉</p>
+        {:else}
+          <h2>Solution</h2>
+          <div id='progress-group'>
+            <div id='progress-bar'>
+              <div id='progress-fill' style='width: 22%;'></div>
+            </div>
+            <span id='progress-text'>Move {current_move_index + 1} of {solution_moves.length}</span>
+          </div>
+          <span id='stage-tag'>STAGE: White Cross</span>
+          <div id='move-display'>
+            <div id='big-move'>{solution_moves.at(current_move_index)}</div>
+            <p id='move-description'>{get_move_description(solution_moves.at(current_move_index))}</p>
+          </div>
+          <div id='controls-group'>
+            <button class='btn-secondary' onclick={move_prev} aria-label="Previous move">
+              <span class="fa-solid fa-arrow-left"></span>
+            </button>
+            <button class='btn-primary' onclick={move_next} aria-label="Next move">
+              <span class="fa-solid fa-arrow-right"></span>
+            </button>
+          </div>
         {/if}
-        <span>{move}</span>
-      {/each}
-      {#if current_move_index === solution_moves.length}
-        <span id="move-indicator"></span>
-      {/if}
-      <button class="move-btn" onclick={move_next} aria-label="Make next move">
-        <span class="fa-solid fa-arrow-right"></span>
-      </button>
-    {/if}
-  </div>
+      </section>
 
-
+    </section>
+  </main>
 </div>
 
 <style>
-  #container {
-    height: 100vh;
+  #title-header {
+    text-align: center;
+    padding: 3rem 1rem 2rem 1rem;
+    background-color: #0f1525;
+    color: #e2e8f0;
+    border-bottom: 1px solid #2d3b5c;
+  }
+
+  #title-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    color: #e2e8f0;
+    letter-spacing: -0.5px;
+  }
+
+  #title-header #tagline {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0 auto;
+    color: #9aa6c9;
+    max-width: 600px;
+  }
+
+  #layout-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 2rem;
+  }
+
+  #info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-card {
+    background-color: #1E2A4A;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+  }
+
+  .info-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #e2e8f0;
+  }
+
+  .info-card #scramble-string {
+    font-size: 0.9rem;
+    font-family: 'Coursier New', monospace;
     background-color: #0F1525;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 1rem;
+    color: #9AA6C9;
+  }
+
+  .helper-text {
+    font-size: 0.875rem;
+    color: #9AA6C9;
+    margin-top: 0.5rem;
+  }
+
+  #progress-text {
+    font-size: 0.875rem;
+    color: #9AA6C9;
+  }
+
+  #stage-tag {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6db3f2;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  #move-display {
     text-align: center;
   }
 
-  #title {
-    display: inline-block;
-    color: #E0E5EC;
+  #big-move {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #e2e8f0;
+    margin: 0.5rem 0;
+    line-height: 1.1;
   }
 
-  #info {
-    color: #E0E5EC;
-    margin: 1em 1em;
+  #move-description {
+    font-size: 1.1rem;
+    color: #9AA6C9;
+    margin-bottom: 1.5rem;
   }
 
-  #info span {
-    margin: 0 0.2em;
-    font-size: 2em;
+  #controls-group {
+    text-align: center;
   }
 
-  #move-indicator {
-    border-left: 0.2em solid #3A6B8F;
-    height: 1em;
-  }
-
-  #cube_and_controls {
-    display: flex;
-    justify-content: center;
-  }
-
-  #action_btns_container > button {
-    display: block;
-    font-size: 2em;
-  }
-
-  #cube_container {
-    display: inline-block;
+  #error-message {
+    text-align: center;
+    padding: 2rem;
     background-color: #1E2A4A;
-    border-radius: 0.3em;
+    border: 1px solid;
+    border-color: #E53E3E;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(229, 62, 62, 0.25);
   }
 
-  button {
-    padding: 0.3em;
-    margin: 0.5em;
-    border: none;
-    border-radius: 0.2em;
+  .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .error-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #E53E3E;
+      margin: 0 0 0.5rem 0;
+  }
+
+  .error-detail {
+      color: #9AA6C9;
+      margin-bottom: 1.5rem;
+  }
+
+  .celebration-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #6db3f2;
+    margin: 0.5rem 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .celebration-subtitle {
+    font-size: 1.5rem;
+    color: #e2e8f0;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .btn-primary, .btn-secondary {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    background-color: #2A4D6E;
-    color: #E0E5EC;
   }
 
-  button:hover {
-    background-color: #3A6B8F;
+  .btn-primary {
+    background-color: #4c78ce;
+    color: white;
+    border: none;
   }
 
-  .btn-disabled {
-    pointer-events: none;
+  .btn-primary:hover {
+    background-color: #6db3f2;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: #4c78ce;
+    border: 2px solid #4c78ce;
+  }
+
+  .btn-secondary:hover {
+    background-color: #4c78ce;
+    color: white;
   }
 </style>
