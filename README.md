@@ -1,11 +1,11 @@
 # cube-solver: Interactive 3D Rubik's Cube Solver
-A 3D Rubik's Cube simulator with built-in solving guidance. Use the "Scramble"
-button to randomize the cube, then select "Solve" to display a step-by-step 
-solution.
+A 3D Rubik's Cube simulator with built-in solving guidance.
+
+<img width="1917" height="964" alt="image" src="https://github.com/user-attachments/assets/09f36e22-cb45-4abc-9a78-f3850bee3506" />
 
 ## Tech Stack
 * **Frontend:** Svelte
-* **Backend:** OCaml with Dream
+* **Backend:** OCaml with the Dream framework
 
 ## Usage
 
