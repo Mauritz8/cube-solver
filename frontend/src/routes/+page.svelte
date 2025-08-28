@@ -100,43 +100,43 @@
       current_move_index--;
     }
   }
+
 function get_move_description(move: string | undefined): string {
-  switch (move) {
-    case "R": return "Turn the right column upwards.";
-    case "R'": return "Turn the right column downwards.";
-    case "R2": return "Turn the right column 180 degrees.";
-
-    case "L": return "Turn the left column downwards.";
-    case "L'": return "Turn the left column upwards.";
-    case "L2": return "Turn the left column 180 degrees.";
-
-    case "U": return "Turn the top row to the left.";
-    case "U'": return "Turn the top row to the right.";
-    case "U2": return "Turn the top row 180 degrees.";
-
-    case "D": return "Turn the bottom row to the right.";
-    case "D'": return "Turn the bottom row to the left.";
-    case "D2": return "Turn the bottom row 180 degrees.";
-
-    case "F": return "Turn the front face clockwise.";
-    case "F'": return "Turn the front face counter-clockwise.";
-    case "F2": return "Turn the front face 180 degrees.";
-
-    case "B": return "Turn the back face to the left.";
-    case "B'": return "Turn the back face to the right.";
-    case "B2": return "Turn the back face 180 degrees.";
-
-    case "x": return "Rotate the entire cube: bring the top to the front, and the front to the bottom.";
-    case "x'": return "Rotate the entire cube: bring the top to the back, and the back to the bottom.";
-
-    case "y": return "Rotate the entire cube to the left: the front face becomes left, right becomes front.";
-    case "y'": return "Rotate the entire cube to the right: the front face becomes right, left becomes front.";
-
-    case "z": return "Tilt the entire cube clockwise: top goes right, right goes down.";
-    case "z'": return "Tilt the entire cube counter-clockwise: top goes left, left goes down.";
-
-    default: return `Perform move: ${move}`;
+  if (!move) {
+    return '';
   }
+
+  switch (move) {
+    case "x": return "Rotate the cube forward around the X-axis";
+    case "y": return "Rotate the cube clockwise around the Y-axis.";
+  }
+
+  const move_face_map = new Map<string, string>([
+    ['R', 'right'],
+    ['L', 'left'],
+    ['U', 'top'],
+    ['D', 'bottom'],
+    ['F', 'front'],
+    ['B', 'back'],
+  ]);
+
+  const face = move_face_map.get(move.charAt(0));
+  if (!face) {
+    return '';
+  }
+
+  if (move.length == 1) {
+    return `Turn the ${face} face clockwise.`;
+  }
+  if (move.length == 2 && move.charAt(1) == '2') {
+    return `Turn the ${face} face twice.`;
+  }
+
+  if (move.length == 2 && move.charAt(1) == "'") {
+    return `Turn the ${face} face counter-clockwise.`;
+  }
+
+  return '';
 }
 </script>
 
