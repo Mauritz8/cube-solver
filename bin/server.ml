@@ -27,7 +27,10 @@ let () =
                body |> Yojson.Safe.from_string |> make_move_req_body_of_yojson
              in
              match notation_to_move data.move with
-             | Error e -> Dream.respond e ~status:`Bad_Request
+             | Error e ->
+                 Dream.error (fun log ->
+                     log ~request:req "Invalid move notation: %s" e);
+                 Dream.respond e ~status:`Bad_Request
              | Ok move ->
                  let new_cube = make_move data.cube move in
                  yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);
@@ -37,8 +40,11 @@ let () =
          Dream.post "/api/solve" (fun req ->
              let%lwt body = Dream.body req in
              let cube = cube_of_yojson (Yojson.Safe.from_string body) in
-             match solve_cross cube with
-             | Error e -> Dream.respond e ~status:`Internal_Server_Error
+             match solve cube with
+             | Error e ->
+                 Dream.error (fun log ->
+                     log ~request:req "Error solving cube: %s" e);
+                 Dream.respond e ~status:`Internal_Server_Error
              | Ok solution ->
                  yojson_of_solution solution
                  |> Yojson.Safe.to_string |> Dream.json);
