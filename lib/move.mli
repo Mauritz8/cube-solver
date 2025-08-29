@@ -1,6 +1,6 @@
 open Cube
 
-type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y
+type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y | ROTATE_X
 [@@deriving yojson]
 
 type move = { move_type : move_type; clockwise : bool } [@@deriving yojson]

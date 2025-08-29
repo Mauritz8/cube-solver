@@ -4,9 +4,11 @@ open Rubik.Move
 let cube_testable =
   let equal cube1 cube2 = cube1 = cube2 in
   let cube_pretty_printer ff cube =
-    Format.fprintf ff "%s" (Utils.cube_to_string cube)
+    Format.fprintf ff "%s" (cube_to_string cube)
   in
   Alcotest.testable cube_pretty_printer equal
+
+(* TODO: once double moves are supported, make the scramble with program code instead of manually setting the state. *)
 
 (* Scramble: D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L *)
 (* White on top and green on the front *)
@@ -534,6 +536,90 @@ let rotate_y_counter_clockwise_test () =
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
+let rotate_x_clockwise_test () =
+  let expect =
+    {
+      top_face =
+        {
+          fst = { fst = RED; snd = BLUE; trd = RED };
+          snd = { fst = YELLOW; snd = GREEN; trd = ORANGE };
+          trd = { fst = WHITE; snd = BLUE; trd = YELLOW };
+        };
+      top_layer =
+        {
+          front = { fst = RED; snd = RED; trd = GREEN };
+          right = { fst = ORANGE; snd = YELLOW; trd = GREEN };
+          back = { fst = YELLOW; snd = ORANGE; trd = YELLOW };
+          left = { fst = BLUE; snd = GREEN; trd = GREEN };
+        };
+      middle_layer =
+        {
+          front = { fst = WHITE; snd = YELLOW; trd = WHITE };
+          right = { fst = RED; snd = RED; trd = ORANGE };
+          back = { fst = GREEN; snd = WHITE; trd = BLUE };
+          left = { fst = YELLOW; snd = ORANGE; trd = GREEN };
+        };
+      bottom_layer =
+        {
+          front = { fst = YELLOW; snd = WHITE; trd = ORANGE };
+          right = { fst = BLUE; snd = YELLOW; trd = BLUE };
+          back = { fst = RED; snd = GREEN; trd = WHITE };
+          left = { fst = GREEN; snd = WHITE; trd = ORANGE };
+        };
+      bottom_face =
+        {
+          fst = { fst = BLUE; snd = BLUE; trd = WHITE };
+          snd = { fst = ORANGE; snd = BLUE; trd = RED };
+          trd = { fst = ORANGE; snd = RED; trd = WHITE };
+        };
+      }
+  in
+  let actual = make_move cube { move_type = ROTATE_X; clockwise = true } in
+
+  Alcotest.(check cube_testable) "expected cube" expect actual
+
+let rotate_x_counter_clockwise_test () =
+  let expect =
+    {
+      top_face =
+        {
+          fst = { fst = BLUE; snd = BLUE; trd = WHITE };
+          snd = { fst = ORANGE; snd = BLUE; trd = RED };
+          trd = { fst = ORANGE; snd = RED; trd = WHITE };
+        };
+      top_layer =
+        {
+          front = { fst = WHITE; snd = GREEN; trd = RED };
+          right = { fst = BLUE; snd = YELLOW; trd = BLUE };
+          back = { fst = ORANGE; snd = WHITE; trd = YELLOW };
+          left = { fst = ORANGE; snd = WHITE; trd = GREEN };
+        };
+      middle_layer =
+        {
+          front = { fst = BLUE; snd = WHITE; trd = GREEN };
+          right = { fst = ORANGE; snd = RED; trd = RED };
+          back = { fst = WHITE; snd = YELLOW; trd = WHITE };
+          left = { fst = GREEN; snd = ORANGE; trd = YELLOW };
+        };
+      bottom_layer =
+        {
+          front = { fst = YELLOW; snd = ORANGE; trd = YELLOW };
+          right = { fst = GREEN; snd = YELLOW; trd = ORANGE };
+          back = { fst = GREEN; snd = RED; trd = RED };
+          left = { fst = GREEN; snd = GREEN; trd = BLUE };
+        };
+      bottom_face =
+        {
+          fst = { fst = RED; snd = BLUE; trd = RED };
+          snd = { fst = YELLOW; snd = GREEN; trd = ORANGE };
+          trd = { fst = WHITE; snd = BLUE; trd = YELLOW };
+        };
+      }
+  in
+  let actual = make_move cube { move_type = ROTATE_X; clockwise = false } in
+
+  Alcotest.(check cube_testable) "expected cube" expect actual
+
 let () =
   let open Alcotest in
   run "Cube"
@@ -561,5 +647,8 @@ let () =
           test_case "Rotate y clockwise" `Quick rotate_y_clockwise_test;
           test_case "Rotate y counter clockwise" `Quick
             rotate_y_counter_clockwise_test;
+          test_case "Rotate x clockwise" `Quick rotate_x_clockwise_test;
+          test_case "Rotate x counter clockwise" `Quick
+            rotate_x_counter_clockwise_test;
         ] );
     ]

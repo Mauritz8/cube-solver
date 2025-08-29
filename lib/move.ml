@@ -1,7 +1,9 @@
 open Cube
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y
+(* TODO: support double moves, e.g. U2, R2, etc *)
+
+type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y | ROTATE_X
 [@@deriving yojson]
 
 type move = { move_type : move_type; clockwise : bool } [@@deriving yojson]
@@ -574,6 +576,200 @@ let rotate_y_counter_clockwise cube =
       };
   }
 
+let rotate_x_clockwise cube =
+  {
+    top_face =
+      {
+        fst = cube.top_layer.front;
+        snd = cube.middle_layer.front;
+        trd = cube.bottom_layer.front;
+      };
+    bottom_face =
+      {
+        fst =
+          {
+            fst = cube.bottom_layer.back.trd;
+            snd = cube.bottom_layer.back.snd;
+            trd = cube.bottom_layer.back.fst;
+          };
+        snd =
+          {
+            fst = cube.middle_layer.back.trd;
+            snd = cube.middle_layer.back.snd;
+            trd = cube.middle_layer.back.fst;
+          };
+        trd =
+          {
+            fst = cube.top_layer.back.trd;
+            snd = cube.top_layer.back.snd;
+            trd = cube.top_layer.back.fst;
+          };
+      };
+    top_layer =
+      {
+        front = cube.bottom_face.fst;
+        back =
+          {
+            fst = cube.top_face.trd.trd;
+            snd = cube.top_face.trd.snd;
+            trd = cube.top_face.trd.fst;
+          };
+        left =
+          {
+            fst = cube.top_layer.left.trd;
+            snd = cube.middle_layer.left.trd;
+            trd = cube.bottom_layer.left.trd;
+          };
+        right =
+          {
+            fst = cube.bottom_layer.right.fst;
+            snd = cube.middle_layer.right.fst;
+            trd = cube.top_layer.right.fst;
+          };
+      };
+    middle_layer =
+      {
+        front = cube.bottom_face.snd;
+        back =
+          {
+            fst = cube.top_face.snd.trd;
+            snd = cube.top_face.snd.snd;
+            trd = cube.top_face.snd.fst;
+          };
+        left =
+          {
+            fst = cube.top_layer.left.snd;
+            snd = cube.middle_layer.left.snd;
+            trd = cube.bottom_layer.left.snd;
+          };
+        right =
+          {
+            fst = cube.bottom_layer.right.snd;
+            snd = cube.middle_layer.right.snd;
+            trd = cube.top_layer.right.snd;
+          };
+      };
+    bottom_layer =
+      {
+        front = cube.bottom_face.trd;
+        back =
+          {
+            fst = cube.top_face.fst.trd;
+            snd = cube.top_face.fst.snd;
+            trd = cube.top_face.fst.fst;
+          };
+        left =
+          {
+            fst = cube.top_layer.left.fst;
+            snd = cube.middle_layer.left.fst;
+            trd = cube.bottom_layer.left.fst;
+          };
+        right =
+          {
+            fst = cube.bottom_layer.right.trd;
+            snd = cube.middle_layer.right.trd;
+            trd = cube.top_layer.right.trd;
+          };
+      };
+  }
+
+let rotate_x_counter_clockwise cube =
+  {
+    bottom_face =
+      {
+        fst = cube.top_layer.front;
+        snd = cube.middle_layer.front;
+        trd = cube.bottom_layer.front;
+      };
+    top_face =
+      {
+        fst =
+          {
+            fst = cube.bottom_layer.back.trd;
+            snd = cube.bottom_layer.back.snd;
+            trd = cube.bottom_layer.back.fst;
+          };
+        snd =
+          {
+            fst = cube.middle_layer.back.trd;
+            snd = cube.middle_layer.back.snd;
+            trd = cube.middle_layer.back.fst;
+          };
+        trd =
+          {
+            fst = cube.top_layer.back.trd;
+            snd = cube.top_layer.back.snd;
+            trd = cube.top_layer.back.fst;
+          };
+      };
+    top_layer =
+      {
+        front = cube.top_face.fst;
+        back =
+          {
+            fst = cube.bottom_face.trd.trd;
+            snd = cube.bottom_face.trd.snd;
+            trd = cube.bottom_face.trd.fst;
+          };
+        left =
+          {
+            fst = cube.bottom_layer.left.fst;
+            snd = cube.middle_layer.left.fst;
+            trd = cube.top_layer.left.fst;
+          };
+        right =
+          {
+            fst = cube.top_layer.right.trd;
+            snd = cube.middle_layer.right.trd;
+            trd = cube.bottom_layer.right.trd;
+          };
+      };
+    middle_layer =
+      {
+        front = cube.top_face.snd;
+        back =
+          {
+            fst = cube.bottom_face.snd.trd;
+            snd = cube.bottom_face.snd.snd;
+            trd = cube.bottom_face.snd.fst;
+          };
+        left =
+          {
+            fst = cube.bottom_layer.left.snd;
+            snd = cube.middle_layer.left.snd;
+            trd = cube.top_layer.left.snd;
+          };
+        right =
+          {
+            fst = cube.top_layer.right.snd;
+            snd = cube.middle_layer.right.snd;
+            trd = cube.bottom_layer.right.snd;
+          };
+      };
+    bottom_layer =
+      {
+        front = cube.top_face.trd;
+        back =
+          {
+            fst = cube.bottom_face.fst.trd;
+            snd = cube.bottom_face.fst.snd;
+            trd = cube.bottom_face.fst.fst;
+          };
+        left =
+          {
+            fst = cube.bottom_layer.left.trd;
+            snd = cube.middle_layer.left.trd;
+            trd = cube.top_layer.left.trd;
+          };
+        right =
+          {
+            fst = cube.top_layer.right.fst;
+            snd = cube.middle_layer.right.fst;
+            trd = cube.bottom_layer.right.fst;
+          };
+      };
+  }
+
 let make_move cube move =
   match (move.move_type, move.clockwise) with
   | UP, _ -> move_up cube move.clockwise
@@ -588,6 +784,8 @@ let make_move cube move =
   | BACK, false -> move_back_counter_clockwise cube
   | ROTATE_Y, true -> rotate_y_clockwise cube
   | ROTATE_Y, false -> rotate_y_counter_clockwise cube
+  | ROTATE_X, true -> rotate_x_clockwise cube
+  | ROTATE_X, false -> rotate_x_counter_clockwise cube
 
 let move_to_notation move =
   String.cat
@@ -598,7 +796,8 @@ let move_to_notation move =
     | LEFT -> "L"
     | FRONT -> "F"
     | BACK -> "B"
-    | ROTATE_Y -> "y")
+    | ROTATE_Y -> "y"
+    | ROTATE_X -> "x")
     (if move.clockwise then "" else "'")
 
 let notation_to_move notation =
@@ -614,6 +813,7 @@ let notation_to_move notation =
       | 'F' -> Some FRONT
       | 'B' -> Some BACK
       | 'y' -> Some ROTATE_Y
+      | 'x' -> Some ROTATE_X
       | _ -> None
     in
     let clockwise =
