@@ -825,3 +825,12 @@ let notation_to_move notation =
     match (layer, clockwise) with
     | Some l, Some c -> Ok { move_type = l; clockwise = c }
     | _, _ -> Error error_message
+
+let execute_scramble scramble = 
+  let scramble_moves =
+    String.split_on_char ' ' scramble
+    |> List.map (fun move_notation ->
+           Result.get_ok (notation_to_move move_notation))
+  in
+  List.fold_left make_move solved_cube scramble_moves
+

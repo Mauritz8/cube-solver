@@ -27,3 +27,8 @@ type cube = {
 val solved_cube : cube
 val sticker_to_string : sticker -> string
 val cube_to_string : cube -> string
+val cross_top_face_is_solved : cube -> bool
+val cross_bottom_face_is_solved : cube -> bool
+val corners_top_layer_are_solved : cube -> bool
+val corners_bottom_layer_are_solved : cube -> bool
+val edges_second_layer_are_solved : cube -> bool

@@ -5,6 +5,7 @@ open Rubik.Scramble
 open Rubik.Solve
 
 type make_move_req_body = { move : string; cube : cube } [@@deriving yojson]
+type solution_body = { moves : string list } [@@deriving yojson]
 
 let cors_middleware handler request =
   let%lwt response = handler request in
@@ -46,6 +47,7 @@ let () =
                      log ~request:req "Error solving cube: %s" e);
                  Dream.respond e ~status:`Internal_Server_Error
              | Ok solution ->
-                 yojson_of_solution solution
+                 let solution_body = { moves = List.map move_to_notation solution.moves } in
+                 yojson_of_solution_body solution_body
                  |> Yojson.Safe.to_string |> Dream.json);
        ]
