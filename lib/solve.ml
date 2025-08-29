@@ -9,8 +9,7 @@ let solve_cross_next_moves cube =
     let is_matching_edge =
       cube.bottom_layer.front.snd == cube.middle_layer.front.snd
     in
-    if is_matching_edge then [ FRONT_CLOCKWISE; FRONT_CLOCKWISE ]
-    else [ DOWN_CLOCKWISE ]
+    if is_matching_edge then [ FRONT_TWICE ] else [ DOWN_CLOCKWISE ]
   else if cube.middle_layer.front.fst == cross_color then
     let is_matching_edge =
       cube.middle_layer.left.trd == cube.middle_layer.left.snd
@@ -26,7 +25,7 @@ let solve_cross_next_moves cube =
   else if
     cube.top_face.trd.snd == cross_color
     && cube.top_layer.front.snd != cube.middle_layer.front.snd
-  then [ FRONT_CLOCKWISE; FRONT_CLOCKWISE; DOWN_CLOCKWISE ]
+  then [ FRONT_TWICE ]
   else if cube.top_layer.front.snd == cross_color then [ FRONT_CLOCKWISE ]
   else if cube.bottom_layer.front.snd == cross_color then [ FRONT_CLOCKWISE ]
   else [ ROTATE_Y_CLOCKWISE ]
@@ -72,13 +71,7 @@ let solve_corners_first_layer_next_moves cube =
       cube.bottom_layer.left.trd == cube.middle_layer.front.snd
     in
     if in_right_position then
-      [
-        DOWN_CLOCKWISE;
-        LEFT_CLOCKWISE;
-        DOWN_CLOCKWISE;
-        DOWN_CLOCKWISE;
-        LEFT_COUNTER_CLOCKWISE;
-      ]
+      [ DOWN_CLOCKWISE; LEFT_CLOCKWISE; DOWN_TWICE; LEFT_COUNTER_CLOCKWISE ]
     else [ DOWN_CLOCKWISE ]
   else if cube.bottom_face.fst.trd == cross_color then
     let in_right_position =
@@ -88,8 +81,7 @@ let solve_corners_first_layer_next_moves cube =
       [
         DOWN_COUNTER_CLOCKWISE;
         RIGHT_COUNTER_CLOCKWISE;
-        DOWN_CLOCKWISE;
-        DOWN_CLOCKWISE;
+        DOWN_TWICE;
         RIGHT_CLOCKWISE;
       ]
     else [ DOWN_CLOCKWISE ]
@@ -201,7 +193,7 @@ let solve cube =
             List.fold_left make_move cross_solved_cube
               moves_to_solve_corners_first_layer
           in
-          let flip_cube_moves = [ ROTATE_X_CLOCKWISE; ROTATE_X_CLOCKWISE ] in
+          let flip_cube_moves = [ ROTATE_X_TWICE ] in
           let cube_after_flip =
             List.fold_left make_move corners_first_layer_solved_cube
               flip_cube_moves

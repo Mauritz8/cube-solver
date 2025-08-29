@@ -142,8 +142,12 @@ function get_move_description(move: string | undefined): string {
   }
 
   switch (move) {
-    case "x": return "Rotate the cube forward around the X-axis";
+    case "x": return "Rotate the cube forward around the X-axis.";
+    case "x'": return "Rotate the cube backwards around the X-axis.";
+    case "x2": return "Rotate the cube 180 degrees around the X-axis.";
     case "y": return "Rotate the cube clockwise around the Y-axis.";
+    case "y'": return "Rotate the cube counter-clockwise around the Y-axis.";
+    case "y2": return "Rotate the cube 180 degrees around the Y-axis.";
   }
 
   const move_face_map = new Map<string, string>([
