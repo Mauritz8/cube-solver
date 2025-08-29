@@ -1,7 +1,7 @@
 open Cube
 open Move
 
-type solution = { moves : move list }
+type solution_step = { name : string; moves : move list }
 
 let solve_cross_next_moves cube =
   let cross_color = cube.top_face.snd.snd in
@@ -208,8 +208,15 @@ let solve cube =
           in
           solve_edges_second_layer cube_after_flip
           |> Result.map (fun moves_to_solve_edges_second_layer ->
-                 {
-                   moves =
-                     moves_to_solve_cross @ moves_to_solve_corners_first_layer
-                     @ flip_cube_moves @ moves_to_solve_edges_second_layer;
-                 })))
+                 [
+                   { name = "White Cross"; moves = moves_to_solve_cross };
+                   {
+                     name = "Corners in the First Layer";
+                     moves = moves_to_solve_corners_first_layer;
+                   };
+                   { name = "Flip the Cube"; moves = flip_cube_moves };
+                   {
+                     name = "Edges in the Second Layer";
+                     moves = moves_to_solve_edges_second_layer;
+                   };
+                 ])))

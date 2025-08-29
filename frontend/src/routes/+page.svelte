@@ -6,10 +6,13 @@
   import Api from '$lib/api';
   import { create_cube } from '$lib/threejs';
 
+  type SolutionStep = { name: string; moves: string[] };
+  type Solution = { steps: SolutionStep[]; }
 
   let scramble_moves: string[] = $state([]);
   let solution_error = $state("");
-  let solution_moves: string[] = $state([]);
+  let solution: Solution = $state({ steps: [] });
+  let current_step_index = $state(0);
   let current_move_index = $state(0);
   let cube: Cube;
   let cube_three_js: THREE.Group<THREE.Object3DEventMap>;
@@ -56,7 +59,7 @@
       .then(json => {
         scramble_moves = json.moves;
         solution_error = "";
-        solution_moves = [];
+        solution = { steps: [] };
       });
 
     let new_cube = cube;
@@ -75,8 +78,9 @@
           res.text().then(error => solution_error = error);
         } else {
           res.json().then(json => {
-            solution_moves = json.moves; 
+            solution = json;
             current_move_index = 0;
+            current_step_index = 0;
           });
         }
       });
@@ -91,23 +95,45 @@
   }
 
   async function move_next() {
-    if (current_move_index >= solution_moves.length) return;
-    const move = solution_moves.at(current_move_index);
-    if (move) {
-      await make_move(move);
+    const current_step = solution.steps.at(current_step_index);
+    if (!current_step) return;
+    const move = current_step.moves.at(current_move_index);
+    if (!move) return;
+    await make_move(move);
+
+    if (current_move_index === current_step.moves.length - 1
+        && current_step_index < solution.steps.length - 1) {
+      current_step_index++;
+      current_move_index = 0;
+    } else if (current_move_index < current_step.moves.length) {
       current_move_index++;
     }
   }
 
   async function move_prev() {
-    const index = current_move_index - 1;
-    if (index < 0) return;
-    const move = solution_moves.at(index);
-    if (move) {
-      const undo_move = move.length === 1 ? move + "'" : move[0];
-      await make_move(undo_move);
-      current_move_index--;
+    let undo_step_index = current_step_index;
+    let undo_move_index = current_move_index - 1;
+    let move = solution.steps.at(undo_step_index)?.moves.at(undo_move_index);
+    if (current_move_index === 0 && current_step_index > 0) {
+      const prev_step = solution.steps.at(current_step_index - 1);
+      if (!prev_step) return;
+      undo_step_index = current_step_index - 1;
+      undo_move_index = prev_step.moves.length - 1;
+      move = prev_step.moves.at(undo_move_index);
     }
+    if (!move) return;
+
+    let undo_move;
+    if (move.charAt(move.length - 1) === '2') {
+      undo_move = move;
+    } else if (move.charAt(move.length - 1) == "'") {
+      undo_move = move.substring(0, move.length - 1);
+    } else {
+      undo_move = move + "'";
+    }
+    await make_move(undo_move);
+    current_step_index = undo_step_index;
+    current_move_index = undo_move_index;
   }
 
 function get_move_description(move: string | undefined): string {
@@ -185,10 +211,12 @@ function get_move_description(move: string | undefined): string {
             <h3 class="error-title">Could Not Find a Solution</h3>
             <p class="error-detail">The scramble could not be solved.</p>
           </div>
-        {:else if solution_moves.length == 0}
+        {:else if solution.steps.length === 0}
           <h2>Solution</h2>
           <p>After you scramble, the solution will be shown here</p>
-        {:else if current_move_index >= solution_moves.length}
+        {:else if solution.steps.at(current_step_index) !== undefined
+          && current_move_index >= solution.steps.at(current_step_index)!.moves.length
+          && current_step_index === solution.steps.length - 1}
           <h2 class='celebration-title'>Cube Solved!</h2>
           <p class='celebration-subtitle'>Congratulations! You did it! 🎉</p>
         {:else}
@@ -197,12 +225,12 @@ function get_move_description(move: string | undefined): string {
             <div id='progress-bar'>
               <div id='progress-fill' style='width: 22%;'></div>
             </div>
-            <span id='progress-text'>Move {current_move_index + 1} of {solution_moves.length}</span>
+            <span id='progress-text'>Move {current_move_index + 1} of {solution.steps.at(current_step_index)?.moves.length}</span>
           </div>
-          <span id='stage-tag'>STAGE: White Cross</span>
+          <span id='stage-tag'>STAGE: {solution.steps.at(current_step_index)?.name}</span>
           <div id='move-display'>
-            <div id='big-move'>{solution_moves.at(current_move_index)}</div>
-            <p id='move-description'>{get_move_description(solution_moves.at(current_move_index))}</p>
+            <div id='big-move'>{solution.steps.at(current_step_index)?.moves.at(current_move_index)}</div>
+            <p id='move-description'>{get_move_description(solution.steps.at(current_step_index)?.moves.at(current_move_index))}</p>
           </div>
           <div id='controls-group'>
             <button class='btn-secondary' onclick={move_prev} aria-label="Previous move">

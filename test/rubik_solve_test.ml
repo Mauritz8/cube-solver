@@ -163,7 +163,10 @@ let solve_cube_test scramble =
   match solve cube with
   | Error e -> failwith e
   | Ok solution ->
-      let solved_cube = List.fold_left make_move cube solution.moves in
+      let all_moves =
+        List.fold_left (fun moves step -> moves @ step.moves) [] solution
+      in
+      let solved_cube = List.fold_left make_move cube all_moves in
       assert_first_two_layers_are_solved solved_cube;
       ()
 

@@ -15,7 +15,6 @@ type layer = {
 type face = { fst : sticker_row; snd : sticker_row; trd : sticker_row }
 [@@deriving yojson]
 
-(* TODO: consider if arrays of length three are better than structs *)
 type cube = {
   top_face : face;
   top_layer : layer;

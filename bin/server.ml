@@ -7,6 +7,11 @@ open Rubik.Solve
 type make_move_req_body = { move : string; cube : cube } [@@deriving yojson]
 type move_list_body = { moves : string list } [@@deriving yojson]
 
+type solution_body_step = { name : string; moves : string list }
+[@@deriving yojson]
+
+type solution_body = { steps : solution_body_step list } [@@deriving yojson]
+
 let cors_middleware handler request =
   let%lwt response = handler request in
   Dream.add_header response "Access-Control-Allow-Origin"
@@ -37,10 +42,10 @@ let () =
                  yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);
          Dream.get "/api/scramble" (fun _ ->
              let scramble = scramble () in
-             let scramble_json =
+             let scramble_body =
                { moves = List.map move_to_notation scramble }
              in
-             yojson_of_move_list_body scramble_json
+             yojson_of_move_list_body scramble_body
              |> Yojson.Safe.to_string |> Dream.json);
          Dream.post "/api/solve" (fun req ->
              let%lwt body = Dream.body req in
@@ -50,10 +55,20 @@ let () =
                  Dream.error (fun log ->
                      log ~request:req "Error solving cube: %s" e);
                  Dream.respond e ~status:`Internal_Server_Error
-             | Ok solution ->
-                 let solution_json =
-                   { moves = List.map move_to_notation solution.moves }
+             | Ok solution_steps ->
+                 let solution_step_to_body_format =
+                  fun (solution_step : solution_step) ->
+                   {
+                     name = solution_step.name;
+                     moves = List.map move_to_notation solution_step.moves;
+                   }
                  in
-                 yojson_of_move_list_body solution_json
+                 let solution_body =
+                   {
+                     steps =
+                       List.map solution_step_to_body_format solution_steps;
+                   }
+                 in
+                 yojson_of_solution_body solution_body
                  |> Yojson.Safe.to_string |> Dream.json);
        ]
