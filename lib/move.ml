@@ -1,12 +1,8 @@
 open Cube
-open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 (* TODO: support double moves, e.g. U2, R2, etc *)
-
 type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y | ROTATE_X
-[@@deriving yojson]
-
-type move = { move_type : move_type; clockwise : bool } [@@deriving yojson]
+type move = { move_type : move_type; clockwise : bool }
 
 let rotate_face_clockwise face =
   {

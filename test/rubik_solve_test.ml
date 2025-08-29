@@ -191,5 +191,7 @@ let () =
             solve_cube_test "L B' D F D' D' B' R' F R R R' F D' D' L U' R D U'" );
           test_case "scramble #4" `Quick (fun () ->
             solve_cube_test "B' R' L B' F F' R' B B' D' D R D L' B' B U L' U D'" );
+          test_case "scramble #5" `Quick (fun () ->
+            solve_cube_test "D' R' U' L B D' F L' B F U' U L R D' D' F' U' L L" );
         ] );
     ]

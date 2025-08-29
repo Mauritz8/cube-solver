@@ -1,8 +1,5 @@
-open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 open Cube
 open Move
-
-type scramble = { new_cube : cube; moves : string list } [@@deriving yojson]
 
 let random_face_turn () =
   Random.self_init ();
@@ -24,10 +21,10 @@ let random_face_turn () =
 
 let scramble () =
   let rec scramble_helper cube moves = function
-    | 0 -> { new_cube = cube; moves = List.rev moves }
+    | 0 -> List.rev moves
     | n ->
         let move = random_face_turn () in
         let new_cube = make_move cube move in
-        scramble_helper new_cube (move_to_notation move :: moves) (n - 1)
+        scramble_helper new_cube (move :: moves) (n - 1)
   in
   scramble_helper solved_cube [] 20

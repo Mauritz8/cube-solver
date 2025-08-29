@@ -1,8 +1,7 @@
-open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 open Cube
 open Move
 
-type solution = { moves : move list } [@@deriving yojson]
+type solution = { moves : move list }
 
 let solve_cross_next_moves cube =
   let cross_color = cube.top_face.snd.snd in
@@ -192,26 +191,26 @@ let solve_step error_condition error_msg step_solved get_next_moves cube =
   solve_step_helper cube []
 
 let solve_cross =
-  let error_condition = fun moves -> List.length moves > 100 in
+  let error_condition = fun moves -> List.length moves > 500 in
   let error_msg =
-    "Unable to solve cross: didn't find a solution with less than 100 moves."
+    "Unable to solve cross: didn't find a solution with less than 500 moves."
   in
   solve_step error_condition error_msg cross_top_face_is_solved solve_cross_next_moves
 
 let solve_corners_first_layer =
-  let error_condition = fun moves -> List.length moves > 100 in
+  let error_condition = fun moves -> List.length moves > 500 in
   let error_msg =
     "Unable to solve corners in the first layer: didn't find a solution with \
-     less than 100 moves."
+     less than 500 moves."
   in
   solve_step error_condition error_msg corners_top_layer_are_solved
     solve_corners_first_layer_next_moves
 
 let solve_edges_second_layer =
-  let error_condition = fun moves -> List.length moves > 100 in
+  let error_condition = fun moves -> List.length moves > 500 in
   let error_msg =
     "Unable to solve edges in the second layer: didn't find a solution with \
-     less than 100 moves."
+     less than 500 moves."
   in
   solve_step error_condition error_msg edges_second_layer_are_solved
     solve_edges_second_layer_next_moves

@@ -57,8 +57,17 @@
         scramble_moves = json.moves;
         solution_error = "";
         solution_moves = [];
-        update_cube(cubeFromJson(json.new_cube))
       });
+
+    let new_cube = cube;
+    for (const move of scramble_moves) {
+      await Api.move(move, new_cube)
+        .then(res => res.json())
+        .then(json => {
+          new_cube = cubeFromJson(json);
+        });
+    }
+    update_cube(new_cube)
 
     await Api.solve(cube)
       .then(res => {
