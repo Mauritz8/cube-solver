@@ -129,7 +129,22 @@ let solve_corners_first_layer_next_moves cube =
 
 let solve_edges_second_layer_next_moves cube =
   let rec solve_edges_second_layer_next_moves_helper cube moves n =
-    if n == 4 then
+    if (cube.top_face.fst.snd == YELLOW || cube.top_layer.back.snd == YELLOW)
+      && (cube.top_face.snd.fst == YELLOW || cube.top_layer.left.snd == YELLOW)
+      && (cube.top_face.snd.trd == YELLOW || cube.top_layer.right.snd == YELLOW)
+      && (cube.top_face.trd.snd == YELLOW || cube.top_layer.front.snd == YELLOW)
+    then
+      moves @ [
+        { move_type = UP; clockwise = true; };
+        { move_type = RIGHT; clockwise = true; };
+        { move_type = UP; clockwise = true; };
+        { move_type = RIGHT; clockwise = false; };
+        { move_type = UP; clockwise = false; };
+        { move_type = FRONT; clockwise = false; };
+        { move_type = UP; clockwise = false; };
+        { move_type = FRONT; clockwise = true; };
+      ]
+    else if n == 4 then
       moves @ [ { move_type = ROTATE_Y; clockwise = true } ]
     else if cube.top_layer.front.snd == cube.middle_layer.front.snd
       && cube.top_face.trd.snd == cube.middle_layer.right.snd
