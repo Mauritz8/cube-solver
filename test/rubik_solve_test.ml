@@ -2,9 +2,6 @@ open Rubik.Cube
 open Rubik.Move
 open Rubik.Solve
 
-(* TODO: have ~50 tests that solve the full cube,
-   and assert that state is correct after every step.
-   Use a scramble instead of manually setting up cube state. *)
 (* TODO: add more tests for edge cases within steps.
    Set up the cube state manually. *)
 
@@ -162,9 +159,9 @@ let solve_cube_test scramble =
   let cube = execute_scramble scramble in
   match solve cube with
   | Error e -> failwith e
-  | Ok solution ->
+  | Ok solution_steps ->
       let all_moves =
-        List.fold_left (fun moves step -> moves @ step.moves) [] solution
+        List.fold_left (fun moves step -> moves @ step.moves) [] solution_steps
       in
       let solved_cube = List.fold_left make_move cube all_moves in
       assert_first_two_layers_are_solved solved_cube;
@@ -200,5 +197,155 @@ let () =
           test_case "scramble #5" `Quick (fun () ->
               solve_cube_test
                 "D' R' U' L B D' F L' B F U' U L R D' D' F' U' L L");
+          test_case "scramble #6" `Quick (fun () ->
+              solve_cube_test
+                "L2 F' D2 R2 D2 F' D2 B' L2 B2 L2 D' L' D2 B' D' F' R' D' U2");
+          test_case "scramble #7" `Quick (fun () ->
+              solve_cube_test
+                "F' R' D2 F2 D2 R2 B2 U2 R' D2 R' D2 B' D' F' L' D2 U' B' L");
+          test_case "scramble #8" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 L2 F' D2 F' L2 F2 D2 F' D' B' D2 R' F2 D' L' D2 U'");
+          test_case "scramble #9" `Quick (fun () ->
+              solve_cube_test
+                "R2 D R2 U' L2 D2 R2 U' R2 D' F2 R' B' L2 D2 U' F' L' D2 U2");
+          test_case "scramble #10" `Quick (fun () ->
+              solve_cube_test
+                "U2 L2 F2 L2 U' L2 D' B2 D2 F2 U' R' F' L' D' F' L2 D' B' D2");
+          test_case "scramble #11" `Quick (fun () ->
+              solve_cube_test
+                "F2 R2 U2 F2 D' L2 F2 D2 F2 D' L2 F' L' B2 R' D' L' D2 F' L2");
+          test_case "scramble #12" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 R2 D' B2 D' R2 D' L2 F2 L' F' D' R' D2 F L F2 D");
+          test_case "scramble #13" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 L' B2 L' F2 R' D2 R2 D2 F' D' L2 B' D2 U' L' B2");
+          test_case "scramble #14" `Quick (fun () ->
+              solve_cube_test
+                "U2 B2 U2 F2 L2 D' F2 D' B2 D' L2 F' D' F2 U' R D' F' L' D'");
+          test_case "scramble #15" `Quick (fun () ->
+              solve_cube_test
+                "R2 D' F2 D' F2 D2 F2 U' L2 U' F2 R' F' D L' D2 F2 L2 F' D");
+          test_case "scramble #16" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 R2 U2 B2 L' B2 L' F2 R' F2 D' L2 F' D' R' U' B' L' D2");
+          test_case "scramble #17" `Quick (fun () ->
+              solve_cube_test
+                "B2 L2 D2 F2 D' F2 D' L2 D' R2 U2 R' B L' D' R2 F' D' R' U'");
+          test_case "scramble #18" `Quick (fun () ->
+              solve_cube_test
+                "F2 R2 D' F2 D2 B2 D' L2 D' B2 U' F' R D' F' U2 B L' F2 D2");
+          test_case "scramble #19" `Quick (fun () ->
+              solve_cube_test
+                "U2 F' R2 F' L2 F' R2 B' D2 L2 F2 R' D' L2 D2 B' D' L' F2");
+          test_case "scramble #20" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 R2 D' L2 D' R2 F2 U' R' D' F' D2 L' F2 L2 D' U");
+          test_case "scramble #21" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 L2 F2 D' L2 D' F2 D' L2 U' B' L' D' F' L2 B' R' D2 U'");
+          test_case "scramble #22" `Quick (fun () ->
+              solve_cube_test
+                "B2 D2 R2 D' F2 D' L2 D2 L2 U' R2 B' L' F' U2 B' D' R' F2 U");
+          test_case "scramble #23" `Quick (fun () ->
+              solve_cube_test
+                "F2 L2 D' L2 D' F2 U2 F2 D' F2 U' L' D2 F' D' L' D' B' L2 U'");
+          test_case "scramble #24" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' L2 D' L2 F2 D' F2 U2 B' R' F' D' L' D2 B' D U2");
+          test_case "scramble #25" `Quick (fun () ->
+              solve_cube_test
+                "D2 R2 D2 F2 D' F2 D' R2 U' L2 U' F' L' D' F2 U' B' L' F' D");
+          test_case "scramble #26" `Quick (fun () ->
+              solve_cube_test
+                "D2 B2 D2 F2 L2 D' L2 D F2 D' R2 U' B' R D' F L' D2 F' U");
+          test_case "scramble #27" `Quick (fun () ->
+              solve_cube_test
+                "F2 D' F2 D' L2 U' F2 D' L2 F2 U2 R' F' D' L' F2 L2 D2 B' U2");
+          test_case "scramble #28" `Quick (fun () ->
+              solve_cube_test
+                "U2 L2 F2 D' B2 D' F2 D' L2 D' R2 U' F' D2 L' D' F' R' B' D2");
+          test_case "scramble #29" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 R2 D' L2 U' L2 D' R2 U' F2 R' F' D' L B' D2 F' L' U'");
+          test_case "scramble #30" `Quick (fun () ->
+              solve_cube_test
+                "D2 B2 D2 L2 F2 D' F2 D' L2 D' R2 U' F' L' D' R' F' D2 L' U2");
+          test_case "scramble #31" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #32" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' R2 D' L2 U' L2 F' L' D' F' U' B' L' D2 U2");
+          test_case "scramble #33" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #34" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #35" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #36" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #37" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #38" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #39" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #40" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #41" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #42" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #43" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #44" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #45" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #46" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #47" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #48" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #49" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #50" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #51" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #52" `Quick (fun () ->
+              solve_cube_test
+                "F2 D2 F2 D' L2 D' L2 D' F2 U' R2 B' L' D' F' L' D' B' D2 U");
+          test_case "scramble #53" `Quick (fun () ->
+              solve_cube_test
+                "U2 F2 D' L2 D' F2 D' L2 D' F2 U' R' F' D' L' D2 F' L' D' U'");
+          test_case "scramble #54" `Quick (fun () ->
+              solve_cube_test
+                "D2 F2 D2 F2 D' L2 D' L2 U' R2 U' B' L' D' F' L' D2 B' D U'");
+          test_case "scramble #55" `Quick (fun () ->
+              solve_cube_test
+                "R2 D2 F2 D' F2 D' L2 D' F2 U' R2 B' L' D' F' L' D2 B' D U'");
         ] );
     ]
