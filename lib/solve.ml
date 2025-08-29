@@ -9,48 +9,27 @@ let solve_cross_next_moves cube =
     let is_matching_edge =
       cube.bottom_layer.front.snd == cube.middle_layer.front.snd
     in
-    if is_matching_edge then
-        [
-          { move_type = FRONT; clockwise = true };
-          { move_type = FRONT; clockwise = true };
-        ]
-    else [ { move_type = DOWN; clockwise = true } ]
+    if is_matching_edge then [ FRONT_CLOCKWISE; FRONT_CLOCKWISE ]
+    else [ DOWN_CLOCKWISE ]
   else if cube.middle_layer.front.fst == cross_color then
     let is_matching_edge =
       cube.middle_layer.left.trd == cube.middle_layer.left.snd
     in
-    if is_matching_edge then [ { move_type = LEFT; clockwise = false } ]
-    else
-        [
-          { move_type = LEFT; clockwise = true };
-          { move_type = DOWN; clockwise = true };
-          { move_type = LEFT; clockwise = false };
-        ]
+    if is_matching_edge then [ LEFT_COUNTER_CLOCKWISE ]
+    else [ LEFT_CLOCKWISE; DOWN_CLOCKWISE; LEFT_COUNTER_CLOCKWISE ]
   else if cube.middle_layer.front.trd == cross_color then
     let is_matching_edge =
       cube.middle_layer.right.fst == cube.middle_layer.right.snd
     in
-    if is_matching_edge then [ { move_type = RIGHT; clockwise = true } ]
-    else
-        [
-          { move_type = RIGHT; clockwise = false };
-          { move_type = DOWN; clockwise = true };
-          { move_type = RIGHT; clockwise = true };
-        ]
+    if is_matching_edge then [ RIGHT_CLOCKWISE ]
+    else [ RIGHT_COUNTER_CLOCKWISE; DOWN_CLOCKWISE; RIGHT_CLOCKWISE ]
   else if
     cube.top_face.trd.snd == cross_color
     && cube.top_layer.front.snd != cube.middle_layer.front.snd
-  then
-      [
-        { move_type = FRONT; clockwise = true };
-        { move_type = FRONT; clockwise = true };
-        { move_type = DOWN; clockwise = true };
-      ]
-  else if cube.top_layer.front.snd == cross_color then
-    [ { move_type = FRONT; clockwise = true } ]
-  else if cube.bottom_layer.front.snd == cross_color then
-    [ { move_type = FRONT; clockwise = true } ]
-  else [ { move_type = ROTATE_Y; clockwise = true } ]
+  then [ FRONT_CLOCKWISE; FRONT_CLOCKWISE; DOWN_CLOCKWISE ]
+  else if cube.top_layer.front.snd == cross_color then [ FRONT_CLOCKWISE ]
+  else if cube.bottom_layer.front.snd == cross_color then [ FRONT_CLOCKWISE ]
+  else [ ROTATE_Y_CLOCKWISE ]
 
 let solve_corners_first_layer_next_moves cube =
   let cross_color = cube.top_face.snd.snd in
@@ -59,130 +38,125 @@ let solve_corners_first_layer_next_moves cube =
       cube.bottom_layer.left.trd == cube.middle_layer.left.snd
     in
     if in_right_position then
-        [
-          { move_type = DOWN; clockwise = true };
-          { move_type = LEFT; clockwise = true };
-          { move_type = DOWN; clockwise = false };
-          { move_type = LEFT; clockwise = false };
-        ]
-    else [ { move_type = DOWN; clockwise = true } ]
+      [
+        DOWN_CLOCKWISE;
+        LEFT_CLOCKWISE;
+        DOWN_COUNTER_CLOCKWISE;
+        LEFT_COUNTER_CLOCKWISE;
+      ]
+    else [ DOWN_CLOCKWISE ]
   else if cube.bottom_layer.front.trd == cross_color then
     let in_right_position =
       cube.bottom_layer.right.fst == cube.middle_layer.right.snd
     in
     if in_right_position then
-        [
-          { move_type = DOWN; clockwise = false };
-          { move_type = RIGHT; clockwise = false };
-          { move_type = DOWN; clockwise = true };
-          { move_type = RIGHT; clockwise = true };
-        ]
-    else [ { move_type = DOWN; clockwise = true } ]
+      [
+        DOWN_COUNTER_CLOCKWISE;
+        RIGHT_COUNTER_CLOCKWISE;
+        DOWN_CLOCKWISE;
+        RIGHT_CLOCKWISE;
+      ]
+    else [ DOWN_CLOCKWISE ]
   else if
     cube.top_layer.front.fst == cross_color
     || cube.top_face.trd.fst == cross_color
        && cube.top_layer.front.fst <> cube.top_layer.front.snd
-  then
-      [
-        { move_type = LEFT; clockwise = true };
-        { move_type = DOWN; clockwise = false };
-        { move_type = LEFT; clockwise = false };
-      ]
+  then [ LEFT_CLOCKWISE; DOWN_COUNTER_CLOCKWISE; LEFT_COUNTER_CLOCKWISE ]
   else if
     cube.top_layer.front.trd == cross_color
     || cube.top_face.trd.trd == cross_color
        && cube.top_layer.front.trd <> cube.top_layer.front.snd
-  then
-      [
-        { move_type = RIGHT; clockwise = false };
-        { move_type = DOWN; clockwise = true };
-        { move_type = RIGHT; clockwise = true };
-      ]
+  then [ RIGHT_COUNTER_CLOCKWISE; DOWN_CLOCKWISE; RIGHT_CLOCKWISE ]
   else if cube.bottom_face.fst.fst == cross_color then
     let in_right_position =
       cube.bottom_layer.left.trd == cube.middle_layer.front.snd
     in
     if in_right_position then
-        [
-          { move_type = DOWN; clockwise = true };
-          { move_type = LEFT; clockwise = true };
-          { move_type = DOWN; clockwise = true };
-          { move_type = DOWN; clockwise = true };
-          { move_type = LEFT; clockwise = false };
-        ]
-    else [ { move_type = DOWN; clockwise = true } ]
+      [
+        DOWN_CLOCKWISE;
+        LEFT_CLOCKWISE;
+        DOWN_CLOCKWISE;
+        DOWN_CLOCKWISE;
+        LEFT_COUNTER_CLOCKWISE;
+      ]
+    else [ DOWN_CLOCKWISE ]
   else if cube.bottom_face.fst.trd == cross_color then
     let in_right_position =
       cube.bottom_layer.right.fst == cube.middle_layer.front.snd
     in
     if in_right_position then
-        [
-          { move_type = DOWN; clockwise = false };
-          { move_type = RIGHT; clockwise = false };
-          { move_type = DOWN; clockwise = true };
-          { move_type = DOWN; clockwise = true };
-          { move_type = RIGHT; clockwise = true };
-        ]
-    else [ { move_type = DOWN; clockwise = true } ]
-  else [ { move_type = ROTATE_Y; clockwise = true } ]
+      [
+        DOWN_COUNTER_CLOCKWISE;
+        RIGHT_COUNTER_CLOCKWISE;
+        DOWN_CLOCKWISE;
+        DOWN_CLOCKWISE;
+        RIGHT_CLOCKWISE;
+      ]
+    else [ DOWN_CLOCKWISE ]
+  else [ ROTATE_Y_CLOCKWISE ]
 
 let solve_edges_second_layer_next_moves cube =
   let rec solve_edges_second_layer_next_moves_helper cube moves n =
-    if (cube.top_face.fst.snd == YELLOW || cube.top_layer.back.snd == YELLOW)
+    if
+      (cube.top_face.fst.snd == YELLOW || cube.top_layer.back.snd == YELLOW)
       && (cube.top_face.snd.fst == YELLOW || cube.top_layer.left.snd == YELLOW)
       && (cube.top_face.snd.trd == YELLOW || cube.top_layer.right.snd == YELLOW)
       && (cube.top_face.trd.snd == YELLOW || cube.top_layer.front.snd == YELLOW)
     then
-      moves @ [
-        { move_type = UP; clockwise = true; };
-        { move_type = RIGHT; clockwise = true; };
-        { move_type = UP; clockwise = true; };
-        { move_type = RIGHT; clockwise = false; };
-        { move_type = UP; clockwise = false; };
-        { move_type = FRONT; clockwise = false; };
-        { move_type = UP; clockwise = false; };
-        { move_type = FRONT; clockwise = true; };
-      ]
-    else if n == 4 then
-      moves @ [ { move_type = ROTATE_Y; clockwise = true } ]
-    else if cube.top_layer.front.snd == cube.middle_layer.front.snd
+      moves
+      @ [
+          UP_CLOCKWISE;
+          RIGHT_CLOCKWISE;
+          UP_CLOCKWISE;
+          RIGHT_COUNTER_CLOCKWISE;
+          UP_COUNTER_CLOCKWISE;
+          FRONT_COUNTER_CLOCKWISE;
+          UP_COUNTER_CLOCKWISE;
+          FRONT_CLOCKWISE;
+        ]
+    else if n == 4 then moves @ [ ROTATE_Y_CLOCKWISE ]
+    else if
+      cube.top_layer.front.snd == cube.middle_layer.front.snd
       && cube.top_face.trd.snd == cube.middle_layer.right.snd
     then
-      moves @ [
-        { move_type = UP; clockwise = true; };
-        { move_type = RIGHT; clockwise = true; };
-        { move_type = UP; clockwise = true; };
-        { move_type = RIGHT; clockwise = false; };
-        { move_type = UP; clockwise = false; };
-        { move_type = FRONT; clockwise = false; };
-        { move_type = UP; clockwise = false; };
-        { move_type = FRONT; clockwise = true; };
-      ]
-    else if cube.top_layer.front.snd == cube.middle_layer.front.snd
+      moves
+      @ [
+          UP_CLOCKWISE;
+          RIGHT_CLOCKWISE;
+          UP_CLOCKWISE;
+          RIGHT_COUNTER_CLOCKWISE;
+          UP_COUNTER_CLOCKWISE;
+          FRONT_COUNTER_CLOCKWISE;
+          UP_COUNTER_CLOCKWISE;
+          FRONT_CLOCKWISE;
+        ]
+    else if
+      cube.top_layer.front.snd == cube.middle_layer.front.snd
       && cube.top_face.trd.snd == cube.middle_layer.left.snd
     then
-      moves @ [
-        { move_type = UP; clockwise = false; };
-        { move_type = LEFT; clockwise = false; };
-        { move_type = UP; clockwise = false; };
-        { move_type = LEFT; clockwise = true; };
-        { move_type = UP; clockwise = true; };
-        { move_type = FRONT; clockwise = true; };
-        { move_type = UP; clockwise = true; };
-        { move_type = FRONT; clockwise = false; };
-      ]
+      moves
+      @ [
+          UP_COUNTER_CLOCKWISE;
+          LEFT_COUNTER_CLOCKWISE;
+          UP_COUNTER_CLOCKWISE;
+          LEFT_CLOCKWISE;
+          UP_CLOCKWISE;
+          FRONT_CLOCKWISE;
+          UP_CLOCKWISE;
+          FRONT_COUNTER_CLOCKWISE;
+        ]
     else
-      let move = { move_type = UP; clockwise = true } in
+      let move = UP_CLOCKWISE in
       let new_cube = make_move cube move in
-      solve_edges_second_layer_next_moves_helper new_cube (moves @ [ move ]) (n + 1)
-  in solve_edges_second_layer_next_moves_helper cube [] 0
+      solve_edges_second_layer_next_moves_helper new_cube (moves @ [ move ])
+        (n + 1)
+  in
+  solve_edges_second_layer_next_moves_helper cube [] 0
 
 let solve_step error_condition error_msg step_solved get_next_moves cube =
   let rec solve_step_helper cube moves =
-    if error_condition moves then
-      Error error_msg
-    else if step_solved cube then
-      Ok moves
+    if error_condition moves then Error error_msg
+    else if step_solved cube then Ok moves
     else
       let next_moves = get_next_moves cube in
       let cube_after_moves = List.fold_left make_move cube next_moves in
@@ -195,7 +169,8 @@ let solve_cross =
   let error_msg =
     "Unable to solve cross: didn't find a solution with less than 500 moves."
   in
-  solve_step error_condition error_msg cross_top_face_is_solved solve_cross_next_moves
+  solve_step error_condition error_msg cross_top_face_is_solved
+    solve_cross_next_moves
 
 let solve_corners_first_layer =
   let error_condition = fun moves -> List.length moves > 500 in
@@ -217,16 +192,20 @@ let solve_edges_second_layer =
 
 let solve cube =
   Result.bind (solve_cross cube) (fun moves_to_solve_cross ->
-      let cross_solved_cube = List.fold_left make_move cube moves_to_solve_cross in
+      let cross_solved_cube =
+        List.fold_left make_move cube moves_to_solve_cross
+      in
       Result.bind (solve_corners_first_layer cross_solved_cube)
         (fun moves_to_solve_corners_first_layer ->
-          let corners_first_layer_solved_cube = List.fold_left make_move cross_solved_cube moves_to_solve_corners_first_layer  in
-          let flip_cube_moves =
-            [
-              { move_type = ROTATE_X; clockwise = true };
-              { move_type = ROTATE_X; clockwise = true };
-            ] in
-          let cube_after_flip = List.fold_left make_move corners_first_layer_solved_cube flip_cube_moves in
+          let corners_first_layer_solved_cube =
+            List.fold_left make_move cross_solved_cube
+              moves_to_solve_corners_first_layer
+          in
+          let flip_cube_moves = [ ROTATE_X_CLOCKWISE; ROTATE_X_CLOCKWISE ] in
+          let cube_after_flip =
+            List.fold_left make_move corners_first_layer_solved_cube
+              flip_cube_moves
+          in
           solve_edges_second_layer cube_after_flip
           |> Result.map (fun moves_to_solve_edges_second_layer ->
                  {

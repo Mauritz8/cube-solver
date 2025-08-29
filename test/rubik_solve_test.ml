@@ -2,11 +2,11 @@ open Rubik.Cube
 open Rubik.Move
 open Rubik.Solve
 
-(* TODO: have 5-10 tests that solve the full cube,
+(* TODO: have ~50 tests that solve the full cube,
    and assert that state is correct after every step.
    Use a scramble instead of manually setting up cube state. *)
 (* TODO: add more tests for edge cases within steps.
-   Set up the cube state manually. *)  
+   Set up the cube state manually. *)
 
 let assert_cross_top_face_is_solved cube =
   let fail_message =
@@ -16,10 +16,10 @@ let assert_cross_top_face_is_solved cube =
 
 let assert_first_two_layers_are_solved cube =
   let fail_message =
-    Printf.sprintf "First two layers are solved: %s"
-      (cube_to_string cube)
+    Printf.sprintf "First two layers are solved: %s" (cube_to_string cube)
   in
-  let first_two_layers_are_solved = cross_bottom_face_is_solved cube
+  let first_two_layers_are_solved =
+    cross_bottom_face_is_solved cube
     && corners_bottom_layer_are_solved cube
     && edges_second_layer_are_solved cube
   in
@@ -156,7 +156,7 @@ let solve_edges_second_layer_inserted_wrong_position () =
   | Ok moves ->
       let solved_cube = List.fold_left make_move cube moves in
       assert_first_two_layers_are_solved solved_cube;
-  ()
+      ()
 
 let solve_cube_test scramble =
   let cube = execute_scramble scramble in
@@ -165,7 +165,7 @@ let solve_cube_test scramble =
   | Ok solution ->
       let solved_cube = List.fold_left make_move cube solution.moves in
       assert_first_two_layers_are_solved solved_cube;
-  ()
+      ()
 
 let () =
   let open Alcotest in
@@ -179,19 +179,23 @@ let () =
         ] );
       ( "edges second layer",
         [
-          test_case "edges inserted wrong position" `Quick solve_edges_second_layer_inserted_wrong_position;
+          test_case "edges inserted wrong position" `Quick
+            solve_edges_second_layer_inserted_wrong_position;
         ] );
       ( "full solve",
         [
           test_case "scramble #1" `Quick (fun () ->
-            solve_cube_test "D' R F D L F L' U L F U L' U B' L' U B R D L'" );
+              solve_cube_test "D' R F D L F L' U L F U L' U B' L' U B R D L'");
           test_case "scramble #2" `Quick (fun () ->
-            solve_cube_test "B F L U L' U L' U R' F L' F' L B' L D' B U L F'" );
+              solve_cube_test "B F L U L' U L' U R' F L' F' L B' L D' B U L F'");
           test_case "scramble #3" `Quick (fun () ->
-            solve_cube_test "L B' D F D' D' B' R' F R R R' F D' D' L U' R D U'" );
+              solve_cube_test
+                "L B' D F D' D' B' R' F R R R' F D' D' L U' R D U'");
           test_case "scramble #4" `Quick (fun () ->
-            solve_cube_test "B' R' L B' F F' R' B B' D' D R D L' B' B U L' U D'" );
+              solve_cube_test
+                "B' R' L B' F F' R' B B' D' D R D L' B' B U L' U D'");
           test_case "scramble #5" `Quick (fun () ->
-            solve_cube_test "D' R' U' L B D' F L' B F U' U L R D' D' F' U' L L" );
+              solve_cube_test
+                "D' R' U' L B D' F L' B F U' U L R D' D' F' U' L L");
         ] );
     ]

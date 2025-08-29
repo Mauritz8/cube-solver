@@ -69,7 +69,7 @@ let move_top_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = UP; clockwise = true } in
+  let actual = make_move cube UP_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -92,7 +92,7 @@ let move_top_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = UP; clockwise = false } in
+  let actual = make_move cube UP_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -115,7 +115,7 @@ let move_bottom_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = DOWN; clockwise = true } in
+  let actual = make_move cube DOWN_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -138,7 +138,7 @@ let move_bottom_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = DOWN; clockwise = false } in
+  let actual = make_move cube DOWN_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -180,7 +180,7 @@ let move_right_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = RIGHT; clockwise = true } in
+  let actual = make_move cube RIGHT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -222,7 +222,7 @@ let move_right_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = RIGHT; clockwise = false } in
+  let actual = make_move cube RIGHT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -264,7 +264,7 @@ let move_left_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = LEFT; clockwise = true } in
+  let actual = make_move cube LEFT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -306,7 +306,7 @@ let move_left_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = LEFT; clockwise = false } in
+  let actual = make_move cube LEFT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -343,7 +343,7 @@ let move_front_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = FRONT; clockwise = true } in
+  let actual = make_move cube FRONT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -377,7 +377,7 @@ let move_front_counter_clockwise_test () =
         { cube.bottom_face with fst = { fst = BLUE; snd = GREEN; trd = GREEN } };
     }
   in
-  let actual = make_move cube { move_type = FRONT; clockwise = false } in
+  let actual = make_move cube FRONT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -414,7 +414,7 @@ let move_back_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = BACK; clockwise = true } in
+  let actual = make_move cube BACK_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -448,7 +448,7 @@ let move_back_counter_clockwise_test () =
         { cube.bottom_face with trd = { fst = BLUE; snd = YELLOW; trd = BLUE } };
     }
   in
-  let actual = make_move cube { move_type = BACK; clockwise = false } in
+  let actual = make_move cube BACK_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -490,7 +490,7 @@ let rotate_y_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = ROTATE_Y; clockwise = true } in
+  let actual = make_move cube ROTATE_Y_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -532,7 +532,7 @@ let rotate_y_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube { move_type = ROTATE_Y; clockwise = false } in
+  let actual = make_move cube ROTATE_Y_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -572,9 +572,9 @@ let rotate_x_clockwise_test () =
           snd = { fst = ORANGE; snd = BLUE; trd = RED };
           trd = { fst = ORANGE; snd = RED; trd = WHITE };
         };
-      }
+    }
   in
-  let actual = make_move cube { move_type = ROTATE_X; clockwise = true } in
+  let actual = make_move cube ROTATE_X_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -614,9 +614,9 @@ let rotate_x_counter_clockwise_test () =
           snd = { fst = YELLOW; snd = GREEN; trd = ORANGE };
           trd = { fst = WHITE; snd = BLUE; trd = YELLOW };
         };
-      }
+    }
   in
-  let actual = make_move cube { move_type = ROTATE_X; clockwise = false } in
+  let actual = make_move cube ROTATE_X_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 

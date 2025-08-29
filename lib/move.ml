@@ -1,8 +1,23 @@
 open Cube
 
 (* TODO: support double moves, e.g. U2, R2, etc *)
-type move_type = UP | DOWN | RIGHT | LEFT | FRONT | BACK | ROTATE_Y | ROTATE_X
-type move = { move_type : move_type; clockwise : bool }
+type move =
+  | UP_CLOCKWISE
+  | UP_COUNTER_CLOCKWISE
+  | DOWN_CLOCKWISE
+  | DOWN_COUNTER_CLOCKWISE
+  | RIGHT_CLOCKWISE
+  | RIGHT_COUNTER_CLOCKWISE
+  | LEFT_CLOCKWISE
+  | LEFT_COUNTER_CLOCKWISE
+  | FRONT_CLOCKWISE
+  | FRONT_COUNTER_CLOCKWISE
+  | BACK_CLOCKWISE
+  | BACK_COUNTER_CLOCKWISE
+  | ROTATE_Y_CLOCKWISE
+  | ROTATE_Y_COUNTER_CLOCKWISE
+  | ROTATE_X_CLOCKWISE
+  | ROTATE_X_COUNTER_CLOCKWISE
 
 let rotate_face_clockwise face =
   {
@@ -767,66 +782,66 @@ let rotate_x_counter_clockwise cube =
   }
 
 let make_move cube move =
-  match (move.move_type, move.clockwise) with
-  | UP, _ -> move_up cube move.clockwise
-  | DOWN, _ -> move_down cube move.clockwise
-  | RIGHT, true -> move_right_clockwise cube
-  | RIGHT, false -> move_right_counter_clockwise cube
-  | LEFT, true -> move_left_clockwise cube
-  | LEFT, false -> move_left_counter_clockwise cube
-  | FRONT, true -> move_front_clockwise cube
-  | FRONT, false -> move_front_counter_clockwise cube
-  | BACK, true -> move_back_clockwise cube
-  | BACK, false -> move_back_counter_clockwise cube
-  | ROTATE_Y, true -> rotate_y_clockwise cube
-  | ROTATE_Y, false -> rotate_y_counter_clockwise cube
-  | ROTATE_X, true -> rotate_x_clockwise cube
-  | ROTATE_X, false -> rotate_x_counter_clockwise cube
+  match move with
+  | UP_CLOCKWISE -> move_up cube true
+  | UP_COUNTER_CLOCKWISE -> move_up cube false
+  | DOWN_CLOCKWISE -> move_down cube true
+  | DOWN_COUNTER_CLOCKWISE -> move_down cube false
+  | RIGHT_CLOCKWISE -> move_right_clockwise cube
+  | RIGHT_COUNTER_CLOCKWISE -> move_right_counter_clockwise cube
+  | LEFT_CLOCKWISE -> move_left_clockwise cube
+  | LEFT_COUNTER_CLOCKWISE -> move_left_counter_clockwise cube
+  | FRONT_CLOCKWISE -> move_front_clockwise cube
+  | FRONT_COUNTER_CLOCKWISE -> move_front_counter_clockwise cube
+  | BACK_CLOCKWISE -> move_back_clockwise cube
+  | BACK_COUNTER_CLOCKWISE -> move_back_counter_clockwise cube
+  | ROTATE_Y_CLOCKWISE -> rotate_y_clockwise cube
+  | ROTATE_Y_COUNTER_CLOCKWISE -> rotate_y_counter_clockwise cube
+  | ROTATE_X_CLOCKWISE -> rotate_x_clockwise cube
+  | ROTATE_X_COUNTER_CLOCKWISE -> rotate_x_counter_clockwise cube
 
-let move_to_notation move =
-  String.cat
-    (match move.move_type with
-    | UP -> "U"
-    | DOWN -> "D"
-    | RIGHT -> "R"
-    | LEFT -> "L"
-    | FRONT -> "F"
-    | BACK -> "B"
-    | ROTATE_Y -> "y"
-    | ROTATE_X -> "x")
-    (if move.clockwise then "" else "'")
+let move_to_notation = function
+  | UP_CLOCKWISE -> "U"
+  | UP_COUNTER_CLOCKWISE -> "U'"
+  | DOWN_CLOCKWISE -> "D"
+  | DOWN_COUNTER_CLOCKWISE -> "D'"
+  | RIGHT_CLOCKWISE -> "R"
+  | RIGHT_COUNTER_CLOCKWISE -> "R'"
+  | LEFT_CLOCKWISE -> "L"
+  | LEFT_COUNTER_CLOCKWISE -> "L'"
+  | FRONT_CLOCKWISE -> "F"
+  | FRONT_COUNTER_CLOCKWISE -> "F'"
+  | BACK_CLOCKWISE -> "B"
+  | BACK_COUNTER_CLOCKWISE -> "B'"
+  | ROTATE_Y_CLOCKWISE -> "y"
+  | ROTATE_Y_COUNTER_CLOCKWISE -> "y'"
+  | ROTATE_X_CLOCKWISE -> "x"
+  | ROTATE_X_COUNTER_CLOCKWISE -> "x'"
 
 let notation_to_move notation =
-  let error_message = "Invalid move notation" in
-  if String.length notation = 0 then Error error_message
-  else
-    let layer =
-      match notation.[0] with
-      | 'U' -> Some UP
-      | 'D' -> Some DOWN
-      | 'R' -> Some RIGHT
-      | 'L' -> Some LEFT
-      | 'F' -> Some FRONT
-      | 'B' -> Some BACK
-      | 'y' -> Some ROTATE_Y
-      | 'x' -> Some ROTATE_X
-      | _ -> None
-    in
-    let clockwise =
-      match String.length notation with
-      | 1 -> Some true
-      | 2 -> Some false
-      | _ -> None
-    in
-    match (layer, clockwise) with
-    | Some l, Some c -> Ok { move_type = l; clockwise = c }
-    | _, _ -> Error error_message
+  match notation with
+  | "U" -> Ok UP_CLOCKWISE
+  | "U'" -> Ok UP_COUNTER_CLOCKWISE
+  | "D" -> Ok DOWN_CLOCKWISE
+  | "D'" -> Ok DOWN_COUNTER_CLOCKWISE
+  | "R" -> Ok RIGHT_CLOCKWISE
+  | "R'" -> Ok RIGHT_COUNTER_CLOCKWISE
+  | "L" -> Ok LEFT_CLOCKWISE
+  | "L'" -> Ok LEFT_COUNTER_CLOCKWISE
+  | "F" -> Ok FRONT_CLOCKWISE
+  | "F'" -> Ok FRONT_COUNTER_CLOCKWISE
+  | "B" -> Ok BACK_CLOCKWISE
+  | "B'" -> Ok BACK_COUNTER_CLOCKWISE
+  | "y" -> Ok ROTATE_Y_CLOCKWISE
+  | "y'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
+  | "x" -> Ok ROTATE_X_CLOCKWISE
+  | "x'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
+  | _ -> Error "Invalid move notation"
 
-let execute_scramble scramble = 
+let execute_scramble scramble =
   let scramble_moves =
     String.split_on_char ' ' scramble
     |> List.map (fun move_notation ->
            Result.get_ok (notation_to_move move_notation))
   in
   List.fold_left make_move solved_cube scramble_moves
-

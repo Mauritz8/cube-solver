@@ -3,21 +3,24 @@ open Move
 
 let random_face_turn () =
   Random.self_init ();
-  match Random.int 6 with
-  | 0 -> UP
-  | 1 -> DOWN
-  | 2 -> RIGHT
-  | 3 -> LEFT
-  | 4 -> FRONT
-  | 5 -> BACK
+  match Random.int 16 with
+  | 0 -> UP_CLOCKWISE
+  | 1 -> UP_COUNTER_CLOCKWISE
+  | 2 -> DOWN_CLOCKWISE
+  | 3 -> DOWN_COUNTER_CLOCKWISE
+  | 4 -> RIGHT_CLOCKWISE
+  | 5 -> RIGHT_COUNTER_CLOCKWISE
+  | 6 -> LEFT_CLOCKWISE
+  | 7 -> LEFT_COUNTER_CLOCKWISE
+  | 8 -> FRONT_CLOCKWISE
+  | 9 -> FRONT_COUNTER_CLOCKWISE
+  | 10 -> BACK_CLOCKWISE
+  | 11 -> BACK_COUNTER_CLOCKWISE
+  | 12 -> ROTATE_Y_CLOCKWISE
+  | 13 -> ROTATE_Y_COUNTER_CLOCKWISE
+  | 14 -> ROTATE_X_CLOCKWISE
+  | 15 -> ROTATE_X_COUNTER_CLOCKWISE
   | _ -> failwith "unreachable state"
-
-let random_bool () =
-  Random.self_init ();
-  if Random.int 2 = 0 then false else true
-
-let random_face_turn () =
-  { move_type = random_face_turn (); clockwise = random_bool () }
 
 let scramble () =
   let rec scramble_helper cube moves = function

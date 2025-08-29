@@ -37,8 +37,11 @@ let () =
                  yojson_of_cube new_cube |> Yojson.Safe.to_string |> Dream.json);
          Dream.get "/api/scramble" (fun _ ->
              let scramble = scramble () in
-             let scramble_json = { moves = List.map move_to_notation scramble } in
-             yojson_of_move_list_body scramble_json |> Yojson.Safe.to_string |> Dream.json);
+             let scramble_json =
+               { moves = List.map move_to_notation scramble }
+             in
+             yojson_of_move_list_body scramble_json
+             |> Yojson.Safe.to_string |> Dream.json);
          Dream.post "/api/solve" (fun req ->
              let%lwt body = Dream.body req in
              let cube = cube_of_yojson (Yojson.Safe.from_string body) in
@@ -48,7 +51,9 @@ let () =
                      log ~request:req "Error solving cube: %s" e);
                  Dream.respond e ~status:`Internal_Server_Error
              | Ok solution ->
-                 let solution_json = { moves = List.map move_to_notation solution.moves } in
+                 let solution_json =
+                   { moves = List.map move_to_notation solution.moves }
+                 in
                  yojson_of_move_list_body solution_json
                  |> Yojson.Safe.to_string |> Dream.json);
        ]
