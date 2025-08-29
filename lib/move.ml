@@ -1,23 +1,30 @@
 open Cube
 
-(* TODO: support double moves, e.g. U2, R2, etc *)
 type move =
   | UP_CLOCKWISE
   | UP_COUNTER_CLOCKWISE
+  | UP_TWICE
   | DOWN_CLOCKWISE
   | DOWN_COUNTER_CLOCKWISE
+  | DOWN_TWICE
   | RIGHT_CLOCKWISE
   | RIGHT_COUNTER_CLOCKWISE
+  | RIGHT_TWICE
   | LEFT_CLOCKWISE
   | LEFT_COUNTER_CLOCKWISE
+  | LEFT_TWICE
   | FRONT_CLOCKWISE
   | FRONT_COUNTER_CLOCKWISE
+  | FRONT_TWICE
   | BACK_CLOCKWISE
   | BACK_COUNTER_CLOCKWISE
+  | BACK_TWICE
   | ROTATE_Y_CLOCKWISE
   | ROTATE_Y_COUNTER_CLOCKWISE
+  | ROTATE_Y_TWICE
   | ROTATE_X_CLOCKWISE
   | ROTATE_X_COUNTER_CLOCKWISE
+  | ROTATE_X_TWICE
 
 let rotate_face_clockwise face =
   {
@@ -71,14 +78,14 @@ let move_bottom_layer layer clockwise =
       left = layer.front;
     }
 
-let move_up cube clockwise =
+let move_up clockwise cube =
   {
     cube with
     top_face = rotate_face cube.top_face clockwise;
     top_layer = move_top_layer cube.top_layer clockwise;
   }
 
-let move_down cube clockwise =
+let move_down clockwise cube =
   {
     cube with
     bottom_face = rotate_face cube.bottom_face clockwise;
@@ -783,59 +790,83 @@ let rotate_x_counter_clockwise cube =
 
 let make_move cube move =
   match move with
-  | UP_CLOCKWISE -> move_up cube true
-  | UP_COUNTER_CLOCKWISE -> move_up cube false
-  | DOWN_CLOCKWISE -> move_down cube true
-  | DOWN_COUNTER_CLOCKWISE -> move_down cube false
+  | UP_CLOCKWISE -> move_up true cube
+  | UP_COUNTER_CLOCKWISE -> move_up false cube
+  | UP_TWICE -> cube |> move_up true |> move_up true
+  | DOWN_CLOCKWISE -> move_down true cube
+  | DOWN_COUNTER_CLOCKWISE -> move_down false cube
+  | DOWN_TWICE -> cube |> move_down true |> move_down true
   | RIGHT_CLOCKWISE -> move_right_clockwise cube
   | RIGHT_COUNTER_CLOCKWISE -> move_right_counter_clockwise cube
+  | RIGHT_TWICE -> cube |> move_right_clockwise |> move_right_clockwise
   | LEFT_CLOCKWISE -> move_left_clockwise cube
   | LEFT_COUNTER_CLOCKWISE -> move_left_counter_clockwise cube
+  | LEFT_TWICE -> cube |> move_left_clockwise |> move_left_clockwise
   | FRONT_CLOCKWISE -> move_front_clockwise cube
   | FRONT_COUNTER_CLOCKWISE -> move_front_counter_clockwise cube
+  | FRONT_TWICE -> cube |> move_front_clockwise |> move_front_clockwise
   | BACK_CLOCKWISE -> move_back_clockwise cube
   | BACK_COUNTER_CLOCKWISE -> move_back_counter_clockwise cube
+  | BACK_TWICE -> cube |> move_back_clockwise |> move_back_clockwise
   | ROTATE_Y_CLOCKWISE -> rotate_y_clockwise cube
   | ROTATE_Y_COUNTER_CLOCKWISE -> rotate_y_counter_clockwise cube
+  | ROTATE_Y_TWICE -> cube |> rotate_y_clockwise |> rotate_y_clockwise
   | ROTATE_X_CLOCKWISE -> rotate_x_clockwise cube
   | ROTATE_X_COUNTER_CLOCKWISE -> rotate_x_counter_clockwise cube
+  | ROTATE_X_TWICE -> cube |> rotate_x_clockwise |> rotate_x_clockwise
 
 let move_to_notation = function
   | UP_CLOCKWISE -> "U"
   | UP_COUNTER_CLOCKWISE -> "U'"
+  | UP_TWICE -> "U2"
   | DOWN_CLOCKWISE -> "D"
   | DOWN_COUNTER_CLOCKWISE -> "D'"
+  | DOWN_TWICE -> "D2"
   | RIGHT_CLOCKWISE -> "R"
   | RIGHT_COUNTER_CLOCKWISE -> "R'"
+  | RIGHT_TWICE -> "R2"
   | LEFT_CLOCKWISE -> "L"
   | LEFT_COUNTER_CLOCKWISE -> "L'"
+  | LEFT_TWICE -> "L2"
   | FRONT_CLOCKWISE -> "F"
   | FRONT_COUNTER_CLOCKWISE -> "F'"
+  | FRONT_TWICE -> "F2"
   | BACK_CLOCKWISE -> "B"
   | BACK_COUNTER_CLOCKWISE -> "B'"
+  | BACK_TWICE -> "B2"
   | ROTATE_Y_CLOCKWISE -> "y"
   | ROTATE_Y_COUNTER_CLOCKWISE -> "y'"
+  | ROTATE_Y_TWICE -> "y2"
   | ROTATE_X_CLOCKWISE -> "x"
   | ROTATE_X_COUNTER_CLOCKWISE -> "x'"
+  | ROTATE_X_TWICE -> "x2"
 
 let notation_to_move notation =
   match notation with
   | "U" -> Ok UP_CLOCKWISE
   | "U'" -> Ok UP_COUNTER_CLOCKWISE
+  | "U2" -> Ok UP_TWICE
   | "D" -> Ok DOWN_CLOCKWISE
   | "D'" -> Ok DOWN_COUNTER_CLOCKWISE
+  | "D2" -> Ok DOWN_TWICE
   | "R" -> Ok RIGHT_CLOCKWISE
   | "R'" -> Ok RIGHT_COUNTER_CLOCKWISE
+  | "R2" -> Ok RIGHT_TWICE
   | "L" -> Ok LEFT_CLOCKWISE
   | "L'" -> Ok LEFT_COUNTER_CLOCKWISE
+  | "L2" -> Ok LEFT_TWICE
   | "F" -> Ok FRONT_CLOCKWISE
   | "F'" -> Ok FRONT_COUNTER_CLOCKWISE
+  | "F2" -> Ok FRONT_TWICE
   | "B" -> Ok BACK_CLOCKWISE
   | "B'" -> Ok BACK_COUNTER_CLOCKWISE
+  | "B2" -> Ok BACK_TWICE
   | "y" -> Ok ROTATE_Y_CLOCKWISE
   | "y'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
+  | "y2" -> Ok ROTATE_Y_TWICE
   | "x" -> Ok ROTATE_X_CLOCKWISE
   | "x'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
+  | "x2" -> Ok ROTATE_X_TWICE
   | _ -> Error "Invalid move notation"
 
 let execute_scramble scramble =
