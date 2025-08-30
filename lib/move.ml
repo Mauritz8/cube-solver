@@ -862,7 +862,7 @@ let notation_to_move notation =
   | "B'" -> Ok BACK_COUNTER_CLOCKWISE
   | "B2" -> Ok BACK_TWICE
   | "y" -> Ok ROTATE_Y_CLOCKWISE
-  | "y'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
+  | "y'" -> Ok ROTATE_Y_COUNTER_CLOCKWISE
   | "y2" -> Ok ROTATE_Y_TWICE
   | "x" -> Ok ROTATE_X_CLOCKWISE
   | "x'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
