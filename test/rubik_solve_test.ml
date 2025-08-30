@@ -168,6 +168,8 @@ let solve_cube_test scramble =
       ()
 
 let () =
+  Logs.set_level (Some Logs.Debug);
+  Logs.set_reporter (Logs_fmt.reporter ());
   let open Alcotest in
   run "Solve"
     [

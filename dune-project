@@ -25,6 +25,7 @@
    dream
    lwt_ppx
    ppx_yojson_conv
+   logs
    (alcotest :with-test))
  (tags
   (topics "to describe" your project)))

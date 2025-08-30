@@ -32,4 +32,7 @@ let scramble () =
         let new_cube = make_move cube move in
         scramble_helper new_cube (move :: moves) (n - 1)
   in
-  scramble_helper solved_cube [] 20
+  let scramble_moves = scramble_helper solved_cube [] 20 in
+  Logs.info (fun m ->
+      m "Generated scramble: %s" (moves_to_string scramble_moves));
+  scramble_moves

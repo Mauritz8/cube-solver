@@ -22,6 +22,8 @@ let cors_middleware handler request =
   Lwt.return response
 
 let () =
+  Dream.initialize_log ~level:`Debug ();
+
   Dream.run @@ Dream.logger @@ cors_middleware
   @@ Dream.router
        [

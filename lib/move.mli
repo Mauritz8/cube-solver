@@ -30,3 +30,4 @@ val make_move : cube -> move -> cube
 val move_to_notation : move -> string
 val notation_to_move : string -> (move, string) result
 val execute_scramble : string -> cube
+val moves_to_string : move list -> string

@@ -15,6 +15,7 @@ depends: [
   "dream"
   "lwt_ppx"
   "ppx_yojson_conv"
+  "logs"
   "alcotest" {with-test}
   "odoc" {with-doc}
 ]

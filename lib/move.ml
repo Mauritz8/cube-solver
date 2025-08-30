@@ -876,3 +876,10 @@ let execute_scramble scramble =
            Result.get_ok (notation_to_move move_notation))
   in
   List.fold_left make_move solved_cube scramble_moves
+
+let moves_to_string moves =
+  List.fold_left
+    (fun scramble_string_acc move ->
+      scramble_string_acc ^ " " ^ move_to_notation move)
+    "" moves
+  |> String.trim

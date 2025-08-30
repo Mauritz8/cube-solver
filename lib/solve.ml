@@ -145,9 +145,15 @@ let solve_edges_second_layer_next_moves cube =
   in
   solve_edges_second_layer_next_moves_helper cube [] 0
 
-let solve_step error_condition error_msg step_solved get_next_moves cube =
+let solve_step step_solved get_next_moves cube =
+  let max_moves = 200 in
   let rec solve_step_helper cube moves =
-    if error_condition moves then Error error_msg
+    if List.length moves > max_moves then
+      let () =
+        Logs.err (fun m -> m "Did not find a solution under %d moves" max_moves)
+      in
+      let () = Logs.err (fun m -> m "Moves: %s" (moves_to_string moves)) in
+      Error (Printf.sprintf "Did not find a solution under %d moves" max_moves)
     else if step_solved cube then Ok moves
     else
       let next_moves = get_next_moves cube in
@@ -156,59 +162,64 @@ let solve_step error_condition error_msg step_solved get_next_moves cube =
   in
   solve_step_helper cube []
 
-let solve_cross =
-  let error_condition = fun moves -> List.length moves > 500 in
-  let error_msg =
-    "Unable to solve cross: didn't find a solution with less than 500 moves."
-  in
-  solve_step error_condition error_msg cross_top_face_is_solved
-    solve_cross_next_moves
+let solve_cross = solve_step cross_top_face_is_solved solve_cross_next_moves
 
 let solve_corners_first_layer =
-  let error_condition = fun moves -> List.length moves > 500 in
-  let error_msg =
-    "Unable to solve corners in the first layer: didn't find a solution with \
-     less than 500 moves."
-  in
-  solve_step error_condition error_msg corners_top_layer_are_solved
-    solve_corners_first_layer_next_moves
+  solve_step corners_top_layer_are_solved solve_corners_first_layer_next_moves
 
 let solve_edges_second_layer =
-  let error_condition = fun moves -> List.length moves > 500 in
-  let error_msg =
-    "Unable to solve edges in the second layer: didn't find a solution with \
-     less than 500 moves."
-  in
-  solve_step error_condition error_msg edges_second_layer_are_solved
-    solve_edges_second_layer_next_moves
+  solve_step edges_second_layer_are_solved solve_edges_second_layer_next_moves
 
 let solve cube =
-  Result.bind (solve_cross cube) (fun moves_to_solve_cross ->
-      let cross_solved_cube =
-        List.fold_left make_move cube moves_to_solve_cross
-      in
-      Result.bind (solve_corners_first_layer cross_solved_cube)
-        (fun moves_to_solve_corners_first_layer ->
-          let corners_first_layer_solved_cube =
-            List.fold_left make_move cross_solved_cube
-              moves_to_solve_corners_first_layer
-          in
-          let flip_cube_moves = [ ROTATE_X_TWICE ] in
-          let cube_after_flip =
-            List.fold_left make_move corners_first_layer_solved_cube
-              flip_cube_moves
-          in
-          solve_edges_second_layer cube_after_flip
-          |> Result.map (fun moves_to_solve_edges_second_layer ->
-                 [
-                   { name = "White Cross"; moves = moves_to_solve_cross };
-                   {
-                     name = "Corners in the First Layer";
-                     moves = moves_to_solve_corners_first_layer;
-                   };
-                   { name = "Flip the Cube"; moves = flip_cube_moves };
-                   {
-                     name = "Edges in the Second Layer";
-                     moves = moves_to_solve_edges_second_layer;
-                   };
-                 ])))
+  let ( let* ) = Result.bind in
+
+  Logs.info (fun m -> m "Starting solve...");
+
+  Logs.debug (fun m -> m "Solving cross...");
+  let* moves_to_solve_cross = solve_cross cube in
+  let cross_solved_cube = List.fold_left make_move cube moves_to_solve_cross in
+  Logs.debug (fun m ->
+      m "Finished solving cross: %s" (moves_to_string moves_to_solve_cross));
+
+  Logs.debug (fun m -> m "Solving corners first layer...");
+  let* moves_to_solve_corners_first_layer =
+    solve_corners_first_layer cross_solved_cube
+  in
+  let corners_first_layer_solved_cube =
+    List.fold_left make_move cross_solved_cube
+      moves_to_solve_corners_first_layer
+  in
+  Logs.debug (fun m ->
+      m "Finished solving corners first layer: %s"
+        (moves_to_string moves_to_solve_corners_first_layer));
+
+  Logs.debug (fun m -> m "Flipping cube...");
+  let flip_cube_moves = [ ROTATE_X_TWICE ] in
+  let cube_after_flip =
+    List.fold_left make_move corners_first_layer_solved_cube flip_cube_moves
+  in
+  Logs.debug (fun m ->
+      m "Finished flipping cube: %s" (moves_to_string flip_cube_moves));
+
+  Logs.debug (fun m -> m "Solving edges second layer...");
+  let* moves_to_solve_edges_second_layer =
+    solve_edges_second_layer cube_after_flip
+  in
+  Logs.debug (fun m ->
+      m "Finished solving edges second layer: %s"
+        (moves_to_string moves_to_solve_edges_second_layer));
+
+  Logs.info (fun m -> m "Finished solve.");
+  Ok
+    [
+      { name = "White Cross"; moves = moves_to_solve_cross };
+      {
+        name = "Corners in the First Layer";
+        moves = moves_to_solve_corners_first_layer;
+      };
+      { name = "Flip the Cube"; moves = flip_cube_moves };
+      {
+        name = "Edges in the Second Layer";
+        moves = moves_to_solve_edges_second_layer;
+      };
+    ]
