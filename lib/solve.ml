@@ -1,15 +1,12 @@
-open Cube
-open Move
+type solution_step = { name : string; moves : Move.move list }
 
-type solution_step = { name : string; moves : move list }
-
-let solve_cross_next_moves cube =
+let solve_cross_next_moves (cube : Cube.cube) =
   let cross_color = cube.top_face.snd.snd in
   if cube.bottom_face.fst.snd == cross_color then
     let is_matching_edge =
       cube.bottom_layer.front.snd == cube.middle_layer.front.snd
     in
-    if is_matching_edge then [ FRONT_TWICE ] else [ DOWN_CLOCKWISE ]
+    if is_matching_edge then [ Move.FRONT_TWICE ] else [ DOWN_CLOCKWISE ]
   else if cube.middle_layer.front.fst == cross_color then
     let is_matching_edge =
       cube.middle_layer.left.trd == cube.middle_layer.left.snd
@@ -30,7 +27,7 @@ let solve_cross_next_moves cube =
   else if cube.bottom_layer.front.snd == cross_color then [ FRONT_CLOCKWISE ]
   else [ ROTATE_Y_CLOCKWISE ]
 
-let solve_corners_first_layer_next_moves cube =
+let solve_corners_first_layer_next_moves (cube : Cube.cube) =
   let cross_color = cube.top_face.snd.snd in
   if cube.bottom_layer.front.fst == cross_color then
     let in_right_position =
@@ -38,7 +35,7 @@ let solve_corners_first_layer_next_moves cube =
     in
     if in_right_position then
       [
-        DOWN_CLOCKWISE;
+        Move.DOWN_CLOCKWISE;
         LEFT_CLOCKWISE;
         DOWN_COUNTER_CLOCKWISE;
         LEFT_COUNTER_CLOCKWISE;
@@ -87,8 +84,9 @@ let solve_corners_first_layer_next_moves cube =
     else [ DOWN_CLOCKWISE ]
   else [ ROTATE_Y_CLOCKWISE ]
 
-let solve_edges_second_layer_next_moves cube =
-  let rec solve_edges_second_layer_next_moves_helper cube moves n =
+let solve_edges_second_layer_next_moves (cube : Cube.cube) =
+  let rec solve_edges_second_layer_next_moves_helper (cube : Cube.cube) moves n
+      =
     if
       (cube.top_face.fst.snd == YELLOW || cube.top_layer.back.snd == YELLOW)
       && (cube.top_face.snd.fst == YELLOW || cube.top_layer.left.snd == YELLOW)
@@ -97,7 +95,7 @@ let solve_edges_second_layer_next_moves cube =
     then
       moves
       @ [
-          UP_CLOCKWISE;
+          Move.UP_CLOCKWISE;
           RIGHT_CLOCKWISE;
           UP_CLOCKWISE;
           RIGHT_COUNTER_CLOCKWISE;
@@ -138,8 +136,8 @@ let solve_edges_second_layer_next_moves cube =
           FRONT_COUNTER_CLOCKWISE;
         ]
     else
-      let move = UP_CLOCKWISE in
-      let new_cube = make_move cube move in
+      let move = Move.UP_CLOCKWISE in
+      let new_cube = Move.make cube move in
       solve_edges_second_layer_next_moves_helper new_cube (moves @ [ move ])
         (n + 1)
   in
@@ -152,23 +150,26 @@ let solve_step step_solved get_next_moves cube =
       let () =
         Logs.err (fun m -> m "Did not find a solution under %d moves" max_moves)
       in
-      let () = Logs.err (fun m -> m "Moves: %s" (moves_to_string moves)) in
+      let () = Logs.err (fun m -> m "Moves: %s" (Move.moves_to_string moves)) in
       Error (Printf.sprintf "Did not find a solution under %d moves" max_moves)
     else if step_solved cube then Ok moves
     else
       let next_moves = get_next_moves cube in
-      let cube_after_moves = List.fold_left make_move cube next_moves in
+      let cube_after_moves = List.fold_left Move.make cube next_moves in
       solve_step_helper cube_after_moves (moves @ next_moves)
   in
   solve_step_helper cube []
 
-let solve_cross = solve_step cross_top_face_is_solved solve_cross_next_moves
+let solve_cross =
+  solve_step Cube.cross_top_face_is_solved solve_cross_next_moves
 
 let solve_corners_first_layer =
-  solve_step corners_top_layer_are_solved solve_corners_first_layer_next_moves
+  solve_step Cube.corners_top_layer_are_solved
+    solve_corners_first_layer_next_moves
 
 let solve_edges_second_layer =
-  solve_step edges_second_layer_are_solved solve_edges_second_layer_next_moves
+  solve_step Cube.edges_second_layer_are_solved
+    solve_edges_second_layer_next_moves
 
 let solve cube =
   let ( let* ) = Result.bind in
@@ -177,29 +178,29 @@ let solve cube =
 
   Logs.debug (fun m -> m "Solving cross...");
   let* moves_to_solve_cross = solve_cross cube in
-  let cross_solved_cube = List.fold_left make_move cube moves_to_solve_cross in
+  let cross_solved_cube = List.fold_left Move.make cube moves_to_solve_cross in
   Logs.debug (fun m ->
-      m "Finished solving cross: %s" (moves_to_string moves_to_solve_cross));
+      m "Finished solving cross: %s" (Move.moves_to_string moves_to_solve_cross));
 
   Logs.debug (fun m -> m "Solving corners first layer...");
   let* moves_to_solve_corners_first_layer =
     solve_corners_first_layer cross_solved_cube
   in
   let corners_first_layer_solved_cube =
-    List.fold_left make_move cross_solved_cube
+    List.fold_left Move.make cross_solved_cube
       moves_to_solve_corners_first_layer
   in
   Logs.debug (fun m ->
       m "Finished solving corners first layer: %s"
-        (moves_to_string moves_to_solve_corners_first_layer));
+        (Move.moves_to_string moves_to_solve_corners_first_layer));
 
   Logs.debug (fun m -> m "Flipping cube...");
-  let flip_cube_moves = [ ROTATE_X_TWICE ] in
+  let flip_cube_moves = [ Move.ROTATE_X_TWICE ] in
   let cube_after_flip =
-    List.fold_left make_move corners_first_layer_solved_cube flip_cube_moves
+    List.fold_left Move.make corners_first_layer_solved_cube flip_cube_moves
   in
   Logs.debug (fun m ->
-      m "Finished flipping cube: %s" (moves_to_string flip_cube_moves));
+      m "Finished flipping cube: %s" (Move.moves_to_string flip_cube_moves));
 
   Logs.debug (fun m -> m "Solving edges second layer...");
   let* moves_to_solve_edges_second_layer =
@@ -207,7 +208,7 @@ let solve cube =
   in
   Logs.debug (fun m ->
       m "Finished solving edges second layer: %s"
-        (moves_to_string moves_to_solve_edges_second_layer));
+        (Move.moves_to_string moves_to_solve_edges_second_layer));
 
   Logs.info (fun m -> m "Finished solve.");
   Ok

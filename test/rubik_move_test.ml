@@ -1,15 +1,12 @@
-open Rubik.Cube
-open Rubik.Move
-
 let cube_testable =
   let equal cube1 cube2 = cube1 = cube2 in
   let cube_pretty_printer ff cube =
-    Format.fprintf ff "%s" (cube_to_string cube)
+    Format.fprintf ff "%s" (Rubik.Cube.to_string cube)
   in
   Alcotest.testable cube_pretty_printer equal
 
 let cube =
-  execute_scramble
+  Rubik.Move.execute_scramble
     "D2 R2 D' L2 U L R2 U' D R' D' R B R' F D F' R B' U F2 B U2 F2 L"
 
 let move_top_clockwise_test () =
@@ -31,7 +28,7 @@ let move_top_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube UP_CLOCKWISE in
+  let actual = Rubik.Move.make cube UP_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -54,7 +51,7 @@ let move_top_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube UP_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube UP_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -77,7 +74,7 @@ let move_bottom_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube DOWN_CLOCKWISE in
+  let actual = Rubik.Move.make cube DOWN_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
@@ -100,12 +97,12 @@ let move_bottom_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube DOWN_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube DOWN_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_right_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -142,12 +139,12 @@ let move_right_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube RIGHT_CLOCKWISE in
+  let actual = Rubik.Move.make cube RIGHT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_right_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -184,12 +181,12 @@ let move_right_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube RIGHT_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube RIGHT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_left_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -226,12 +223,12 @@ let move_left_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube LEFT_CLOCKWISE in
+  let actual = Rubik.Move.make cube LEFT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_left_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -268,12 +265,12 @@ let move_left_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube LEFT_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube LEFT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_front_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         { cube.top_face with trd = { fst = GREEN; snd = GREEN; trd = BLUE } };
@@ -305,12 +302,12 @@ let move_front_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube FRONT_CLOCKWISE in
+  let actual = Rubik.Move.make cube FRONT_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_front_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         { cube.top_face with trd = { fst = GREEN; snd = YELLOW; trd = ORANGE } };
@@ -339,12 +336,12 @@ let move_front_counter_clockwise_test () =
         { cube.bottom_face with fst = { fst = BLUE; snd = GREEN; trd = GREEN } };
     }
   in
-  let actual = make_move cube FRONT_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube FRONT_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_back_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         { cube.top_face with fst = { fst = BLUE; snd = YELLOW; trd = BLUE } };
@@ -376,12 +373,12 @@ let move_back_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube BACK_CLOCKWISE in
+  let actual = Rubik.Move.make cube BACK_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let move_back_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         { cube.top_face with fst = { fst = ORANGE; snd = WHITE; trd = GREEN } };
@@ -410,12 +407,12 @@ let move_back_counter_clockwise_test () =
         { cube.bottom_face with trd = { fst = BLUE; snd = YELLOW; trd = BLUE } };
     }
   in
-  let actual = make_move cube BACK_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube BACK_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let rotate_y_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -452,12 +449,12 @@ let rotate_y_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube ROTATE_Y_CLOCKWISE in
+  let actual = Rubik.Move.make cube ROTATE_Y_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let rotate_y_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -494,12 +491,12 @@ let rotate_y_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube ROTATE_Y_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube ROTATE_Y_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let rotate_x_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -536,12 +533,12 @@ let rotate_x_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube ROTATE_X_CLOCKWISE in
+  let actual = Rubik.Move.make cube ROTATE_X_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 
 let rotate_x_counter_clockwise_test () =
-  let expect =
+  let (expect : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -578,7 +575,7 @@ let rotate_x_counter_clockwise_test () =
         };
     }
   in
-  let actual = make_move cube ROTATE_X_COUNTER_CLOCKWISE in
+  let actual = Rubik.Move.make cube ROTATE_X_COUNTER_CLOCKWISE in
 
   Alcotest.(check cube_testable) "expected cube" expect actual
 

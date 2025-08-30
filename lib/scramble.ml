@@ -1,10 +1,7 @@
-open Cube
-open Move
-
 let random_face_turn () =
   Random.self_init ();
   match Random.int 16 with
-  | 0 -> UP_CLOCKWISE
+  | 0 -> Move.UP_CLOCKWISE
   | 1 -> UP_COUNTER_CLOCKWISE
   | 2 -> UP_TWICE
   | 3 -> DOWN_CLOCKWISE
@@ -29,10 +26,10 @@ let scramble () =
     | 0 -> List.rev moves
     | n ->
         let move = random_face_turn () in
-        let new_cube = make_move cube move in
+        let new_cube = Move.make cube move in
         scramble_helper new_cube (move :: moves) (n - 1)
   in
-  let scramble_moves = scramble_helper solved_cube [] 20 in
+  let scramble_moves = scramble_helper Cube.solved_cube [] 20 in
   Logs.info (fun m ->
-      m "Generated scramble: %s" (moves_to_string scramble_moves));
+      m "Generated scramble: %s" (Move.moves_to_string scramble_moves));
   scramble_moves

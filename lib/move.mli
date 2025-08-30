@@ -1,5 +1,3 @@
-open Cube
-
 type move =
   | UP_CLOCKWISE
   | UP_COUNTER_CLOCKWISE
@@ -26,8 +24,8 @@ type move =
   | ROTATE_X_COUNTER_CLOCKWISE
   | ROTATE_X_TWICE
 
-val make_move : cube -> move -> cube
-val move_to_notation : move -> string
-val notation_to_move : string -> (move, string) result
-val execute_scramble : string -> cube
+val make : Cube.cube -> move -> Cube.cube
+val to_notation : move -> string
+val from_notation : string -> (move, string) result
+val execute_scramble : string -> Cube.cube
 val moves_to_string : move list -> string

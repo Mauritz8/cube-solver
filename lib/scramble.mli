@@ -1,3 +1,1 @@
-open Move
-
-val scramble : unit -> move list
+val scramble : unit -> Move.move list

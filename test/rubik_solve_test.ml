@@ -1,29 +1,27 @@
-open Rubik.Cube
-open Rubik.Move
-open Rubik.Solve
-
 (* TODO: add more tests for edge cases within steps.
    Set up the cube state manually. *)
 
 let assert_cross_top_face_is_solved cube =
   let fail_message =
-    Printf.sprintf "Cross top face is solved: %s" (cube_to_string cube)
+    Printf.sprintf "Cross top face is solved: %s" (Rubik.Cube.to_string cube)
   in
-  Alcotest.(check bool) fail_message true (cross_top_face_is_solved cube)
+  Alcotest.(check bool)
+    fail_message true
+    (Rubik.Cube.cross_top_face_is_solved cube)
 
 let assert_first_two_layers_are_solved cube =
   let fail_message =
-    Printf.sprintf "First two layers are solved: %s" (cube_to_string cube)
+    Printf.sprintf "First two layers are solved: %s" (Rubik.Cube.to_string cube)
   in
   let first_two_layers_are_solved =
-    cross_bottom_face_is_solved cube
-    && corners_bottom_layer_are_solved cube
-    && edges_second_layer_are_solved cube
+    Rubik.Cube.cross_bottom_face_is_solved cube
+    && Rubik.Cube.corners_bottom_layer_are_solved cube
+    && Rubik.Cube.edges_second_layer_are_solved cube
   in
   Alcotest.(check bool) fail_message true first_two_layers_are_solved
 
 let solve_cross_already_solved () =
-  let cube =
+  let (cube : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -60,14 +58,14 @@ let solve_cross_already_solved () =
         };
     }
   in
-  match solve_cross cube with
+  match Rubik.Solve.solve_cross cube with
   | Error e -> failwith e
   | Ok moves ->
-      let solved_cube = List.fold_left make_move cube moves in
+      let solved_cube = List.fold_left Rubik.Move.make cube moves in
       assert_cross_top_face_is_solved solved_cube
 
 let solve_cross_edges_inserted_wrong_position () =
-  let cube =
+  let (cube : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -104,14 +102,14 @@ let solve_cross_edges_inserted_wrong_position () =
         };
     }
   in
-  match solve_cross cube with
+  match Rubik.Solve.solve_cross cube with
   | Error e -> failwith e
   | Ok moves ->
-      let solved_cube = List.fold_left make_move cube moves in
+      let solved_cube = List.fold_left Rubik.Move.make cube moves in
       assert_cross_top_face_is_solved solved_cube
 
 let solve_edges_second_layer_inserted_wrong_position () =
-  let cube =
+  let (cube : Rubik.Cube.cube) =
     {
       top_face =
         {
@@ -148,22 +146,25 @@ let solve_edges_second_layer_inserted_wrong_position () =
         };
     }
   in
-  match solve_edges_second_layer cube with
+  match Rubik.Solve.solve_edges_second_layer cube with
   | Error e -> failwith e
   | Ok moves ->
-      let solved_cube = List.fold_left make_move cube moves in
+      let solved_cube = List.fold_left Rubik.Move.make cube moves in
       assert_first_two_layers_are_solved solved_cube;
       ()
 
 let solve_cube_test scramble =
-  let cube = execute_scramble scramble in
-  match solve cube with
+  let cube = Rubik.Move.execute_scramble scramble in
+  match Rubik.Solve.solve cube with
   | Error e -> failwith e
   | Ok solution_steps ->
       let all_moves =
-        List.fold_left (fun moves step -> moves @ step.moves) [] solution_steps
+        List.fold_left
+          (fun (moves : Rubik.Move.move list) (step : Rubik.Solve.solution_step)
+             -> moves @ step.moves)
+          [] solution_steps
       in
-      let solved_cube = List.fold_left make_move cube all_moves in
+      let solved_cube = List.fold_left Rubik.Move.make cube all_moves in
       assert_first_two_layers_are_solved solved_cube;
       ()
 

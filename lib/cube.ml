@@ -59,7 +59,7 @@ let sticker_to_string = function
   | GREEN -> "G"
   | ORANGE -> "O"
 
-let cube_to_string cube =
+let to_string cube =
   Printf.sprintf
     "\n\
     \         %s %s %s\n\
