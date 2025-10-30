@@ -23,6 +23,11 @@ type move =
   | ROTATE_X_CLOCKWISE
   | ROTATE_X_COUNTER_CLOCKWISE
   | ROTATE_X_TWICE
+  | ROTATE_Z_CLOCKWISE
+  | ROTATE_Z_COUNTER_CLOCKWISE
+  | ROTATE_Z_TWICE
+  | FRONT_WIDE_CLOCKWISE
+  | FRONT_WIDE_COUNTER_CLOCKWISE
 
 let rotate_face_clockwise (face : Cube.face) =
   let face : Cube.face =
@@ -842,6 +847,14 @@ let rotate_x_counter_clockwise (cube : Cube.cube) =
   in
   new_cube
 
+(* TODO: remove counter-clockwise move functions
+ since a counter-clockwise move is the same as executing the
+ corresponding clockwise move three times *)
+(* TODO: In fact, I think every move can be executed by just using
+   a single move + x, y, z rotations.
+   The up move is the simplest one to implement. *)
+(* TODO: To make M moves, the down move has to be implemented as well *)
+(* TODO: z rotation can be done by combining x and y rotations *)
 let make cube move =
   match move with
   | UP_CLOCKWISE -> move_up true cube
@@ -868,6 +881,14 @@ let make cube move =
   | ROTATE_X_CLOCKWISE -> rotate_x_clockwise cube
   | ROTATE_X_COUNTER_CLOCKWISE -> rotate_x_counter_clockwise cube
   | ROTATE_X_TWICE -> cube |> rotate_x_clockwise |> rotate_x_clockwise
+  | ROTATE_Z_CLOCKWISE -> cube |> rotate_y_counter_clockwise
+      |> rotate_x_clockwise |> rotate_y_clockwise
+  | ROTATE_Z_COUNTER_CLOCKWISE -> cube |> rotate_y_clockwise
+      |> rotate_x_clockwise |> rotate_y_counter_clockwise
+  | ROTATE_Z_TWICE -> cube |> rotate_y_clockwise |> rotate_x_clockwise
+      |> rotate_x_clockwise |> rotate_y_counter_clockwise
+  | FRONT_WIDE_CLOCKWISE -> cube |> move_back_clockwise |> rotate_z_clockwise
+  | FRONT_WIDE_COUNTER_CLOCKWISE -> cube |> move_back_counter_clockwise |> rotate_z_counter_clockwise
 
 let to_notation = function
   | UP_CLOCKWISE -> "U"
@@ -894,6 +915,11 @@ let to_notation = function
   | ROTATE_X_CLOCKWISE -> "x"
   | ROTATE_X_COUNTER_CLOCKWISE -> "x'"
   | ROTATE_X_TWICE -> "x2"
+  | ROTATE_Z_CLOCKWISE -> "z"
+  | ROTATE_Z_COUNTER_CLOCKWISE -> "z'"
+  | ROTATE_Z_TWICE -> "z2"
+  | FRONT_WIDE_CLOCKWISE -> "Fw"
+  | FRONT_WIDE_COUNTER_CLOCKWISE -> "Fw'"
 
 let from_notation notation =
   match notation with
@@ -921,6 +947,11 @@ let from_notation notation =
   | "x" -> Ok ROTATE_X_CLOCKWISE
   | "x'" -> Ok ROTATE_X_COUNTER_CLOCKWISE
   | "x2" -> Ok ROTATE_X_TWICE
+  | "z" -> Ok ROTATE_Z_CLOCKWISE
+  | "z'" -> Ok ROTATE_Z_COUNTER_CLOCKWISE
+  | "z2" -> Ok ROTATE_Z_TWICE
+  | "Fw" -> Ok FRONT_WIDE_CLOCKWISE
+  | "Fw'" -> Ok FRONT_WIDE_COUNTER_CLOCKWISE
   | _ -> Error "Invalid move notation"
 
 let execute_scramble scramble =

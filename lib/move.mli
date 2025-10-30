@@ -23,6 +23,11 @@ type move =
   | ROTATE_X_CLOCKWISE
   | ROTATE_X_COUNTER_CLOCKWISE
   | ROTATE_X_TWICE
+  | ROTATE_Z_CLOCKWISE
+  | ROTATE_Z_COUNTER_CLOCKWISE
+  | ROTATE_Z_TWICE
+  | FRONT_WIDE_CLOCKWISE
+  | FRONT_WIDE_COUNTER_CLOCKWISE
 
 val make : Cube.cube -> move -> Cube.cube
 val to_notation : move -> string

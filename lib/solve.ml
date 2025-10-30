@@ -143,6 +143,60 @@ let solve_edges_second_layer_next_moves (cube : Cube.cube) =
   in
   solve_edges_second_layer_next_moves_helper cube [] 0
 
+let solve_cross_last_layer_next_moves (cube : Cube.cube) =
+  (* if cube.top_face.snd.snd == cube.top_face.fst.snd *)
+  (*   && cube.top_face.snd.snd == cube.top_face.snd.fst *)
+  (*   && cube.top_face.snd.snd == cube.top_face.snd.trd *)
+  (*   && cube.top_face.snd.snd == cube.top_face.trd.snd *)
+  (* then *)
+  if cube.top_face.fst.snd != cube.top_face.snd.snd
+    && cube.top_face.snd.fst == cube.top_face.snd.snd
+    && cube.top_face.snd.trd == cube.top_face.snd.snd
+    && cube.top_face.trd.snd != cube.top_face.snd.snd
+  then
+    [
+      Move.FRONT_CLOCKWISE;
+      Move.RIGHT_CLOCKWISE;
+      Move.UP_CLOCKWISE;
+      Move.RIGHT_COUNTER_CLOCKWISE;
+      Move.UP_COUNTER_CLOCKWISE;
+      Move.FRONT_COUNTER_CLOCKWISE;
+    ]
+  else if cube.top_face.fst.snd != cube.top_face.snd.snd
+    && cube.top_face.snd.fst != cube.top_face.snd.snd
+    && cube.top_face.snd.trd == cube.top_face.snd.snd
+    && cube.top_face.trd.snd == cube.top_face.snd.snd
+  then
+    [
+      Move.FRONT_CLOCKWISE; (* TODO: change to Fw *)
+      Move.RIGHT_CLOCKWISE;
+      Move.UP_CLOCKWISE;
+      Move.RIGHT_COUNTER_CLOCKWISE;
+      Move.UP_COUNTER_CLOCKWISE;
+      Move.FRONT_COUNTER_CLOCKWISE; (* TODO: change to Fw' *)
+    ]
+  else if cube.top_face.fst.snd != cube.top_face.snd.snd
+    && cube.top_face.snd.fst != cube.top_face.snd.snd
+    && cube.top_face.snd.trd != cube.top_face.snd.snd
+    && cube.top_face.trd.snd != cube.top_face.snd.snd
+  then
+    [
+      Move.FRONT_CLOCKWISE;
+      Move.RIGHT_CLOCKWISE;
+      Move.UP_CLOCKWISE;
+      Move.RIGHT_COUNTER_CLOCKWISE;
+      Move.UP_COUNTER_CLOCKWISE;
+      Move.FRONT_COUNTER_CLOCKWISE;
+
+      Move.FRONT_CLOCKWISE; (* TODO: change to Fw *)
+      Move.RIGHT_CLOCKWISE;
+      Move.UP_CLOCKWISE;
+      Move.RIGHT_COUNTER_CLOCKWISE;
+      Move.UP_COUNTER_CLOCKWISE;
+      Move.FRONT_COUNTER_CLOCKWISE; (* TODO: change to Fw' *)
+    ]
+  else [ Move.UP_CLOCKWISE ]
+
 let solve_step step_solved get_next_moves cube =
   let max_moves = 200 in
   let rec solve_step_helper cube moves =
@@ -170,6 +224,10 @@ let solve_corners_first_layer =
 let solve_edges_second_layer =
   solve_step Cube.edges_second_layer_are_solved
     solve_edges_second_layer_next_moves
+
+let solve_cross_last_layer =
+  solve_step Cube.cross_top_face_is_solved
+    solve_cross_last_layer_next_moves
 
 let solve cube =
   let ( let* ) = Result.bind in
@@ -206,9 +264,21 @@ let solve cube =
   let* moves_to_solve_edges_second_layer =
     solve_edges_second_layer cube_after_flip
   in
+  let edges_second_layer_solved_cube =
+    List.fold_left Move.make cube_after_flip
+      moves_to_solve_edges_second_layer
+  in
   Logs.debug (fun m ->
       m "Finished solving edges second layer: %s"
         (Move.moves_to_string moves_to_solve_edges_second_layer));
+
+  Logs.debug (fun m -> m "Solving cross last layer...");
+  let* moves_to_solve_cross_last_layer =
+    solve_cross_last_layer edges_second_layer_solved_cube
+  in
+  Logs.debug (fun m ->
+      m "Finished solving cross last layer: %s"
+        (Move.moves_to_string moves_to_solve_cross_last_layer));
 
   Logs.info (fun m -> m "Finished solve.");
   Ok

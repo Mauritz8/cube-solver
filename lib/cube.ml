@@ -128,34 +128,34 @@ let to_string cube =
     (sticker_to_string cube.bottom_face.trd.trd)
 
 let cross_top_face_is_solved cube =
-  let is_cross =
-    cube.top_face.snd.snd == cube.top_face.fst.snd
-    && cube.top_face.snd.snd == cube.top_face.snd.fst
-    && cube.top_face.snd.snd == cube.top_face.snd.trd
-    && cube.top_face.snd.snd == cube.top_face.trd.snd
-  in
+  cube.top_face.snd.snd == cube.top_face.fst.snd
+  && cube.top_face.snd.snd == cube.top_face.snd.fst
+  && cube.top_face.snd.snd == cube.top_face.snd.trd
+  && cube.top_face.snd.snd == cube.top_face.trd.snd
+
+let cross_with_matching_edges_top_face_is_solved cube =
   let is_matching_edges =
     cube.top_layer.front.snd == cube.middle_layer.front.snd
     && cube.top_layer.right.snd == cube.middle_layer.right.snd
     && cube.top_layer.left.snd == cube.middle_layer.left.snd
     && cube.top_layer.back.snd == cube.middle_layer.back.snd
   in
-  is_cross && is_matching_edges
+  cross_top_face_is_solved cube && is_matching_edges
 
 let cross_bottom_face_is_solved cube =
-  let is_cross =
-    cube.bottom_face.snd.snd == cube.bottom_face.fst.snd
-    && cube.bottom_face.snd.snd == cube.bottom_face.snd.fst
-    && cube.bottom_face.snd.snd == cube.bottom_face.snd.trd
-    && cube.bottom_face.snd.snd == cube.bottom_face.trd.snd
-  in
+  cube.bottom_face.snd.snd == cube.bottom_face.fst.snd
+  && cube.bottom_face.snd.snd == cube.bottom_face.snd.fst
+  && cube.bottom_face.snd.snd == cube.bottom_face.snd.trd
+  && cube.bottom_face.snd.snd == cube.bottom_face.trd.snd
+
+let cross_with_matching_edges_bottom_face_is_solved cube =
   let is_matching_edges =
     cube.bottom_layer.front.snd == cube.middle_layer.front.snd
     && cube.bottom_layer.right.snd == cube.middle_layer.right.snd
     && cube.bottom_layer.left.snd == cube.middle_layer.left.snd
     && cube.bottom_layer.back.snd == cube.middle_layer.back.snd
   in
-  is_cross && is_matching_edges
+  cross_bottom_face_is_solved cube && is_matching_edges
 
 let corners_top_layer_are_solved cube =
   let corners_inserted =

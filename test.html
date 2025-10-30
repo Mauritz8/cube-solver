@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Rubik's Cube</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+        }
+        #container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        #ui {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+        }
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        h1 {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .instructions {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <h1>3D Rubik's Cube</h1>
+    <div class="instructions">Drag to rotate view | Click buttons to animate moves</div>
+    <div id="ui">
+        <button onclick="rotateFront()">Front</button>
+        <button onclick="rotateBack()">Back</button>
+        <button onclick="rotateLeft()">Left</button>
+        <button onclick="rotateRight()">Right</button>
+        <button onclick="rotateUp()">Up</button>
+        <button onclick="rotateDown()">Down</button>
+        <button onclick="scramble()">Scramble</button>
+        <button onclick="resetCube()">Reset</button>
+    </div>
+
+    <script>
+        // Initialize Three.js components
+        let scene, camera, renderer, controls;
+        let cubeGroup = new THREE.Group();
+        let cubes = [];
+        let isAnimating = false;
+        let animationQueue = [];
+        
+        // Cube colors
+        const colors = [
+            0xff0000, // Red - Right
+            0xff8000, // Orange - Left
+            0xffffff, // White - Up
+            0xffff00, // Yellow - Down
+            0x00ff00, // Green - Front
+            0x0000ff  // Blue - Back
+        ];
+
+        // Initialize the scene
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(7, 7, 7);
+            camera.lookAt(0, 0, 0);
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('container').appendChild(renderer.domElement);
+            
+            // Add orbit controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // Create the Rubik's cube
+            createCube();
+            
+            // Add the cube group to the scene
+            scene.add(cubeGroup);
+            
+            // Start animation loop
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+        }
+        
+        // Create the Rubik's cube
+        function createCube() {
+            const geometry = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+            
+            // Create 3x3x3 cubes
+            for (let x = -1; x <= 1; x++) {
+                for (let y = -1; y <= 1; y++) {
+                    for (let z = -1; z <= 1; z++) {
+                        // Skip the inner cube
+                        if (x === 0 && y === 0 && z === 0) continue;
+                        
+                        const materials = [];
+                        
+                        // Right face (x = 1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: x === 1 ? colors[0] : 0x111111 
+                        }));
+                        
+                        // Left face (x = -1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: x === -1 ? colors[1] : 0x111111 
+                        }));
+                        
+                        // Top face (y = 1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: y === 1 ? colors[2] : 0x111111 
+                        }));
+                        
+                        // Bottom face (y = -1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: y === -1 ? colors[3] : 0x111111 
+                        }));
+                        
+                        // Front face (z = 1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: z === 1 ? colors[4] : 0x111111 
+                        }));
+                        
+                        // Back face (z = -1)
+                        materials.push(new THREE.MeshStandardMaterial({ 
+                            color: z === -1 ? colors[5] : 0x111111 
+                        }));
+                        
+                        const cube = new THREE.Mesh(geometry, materials);
+                        cube.position.set(x, y, z);
+                        cube.userData.originalPosition = cube.position.clone();
+                        cube.userData.originalRotation = cube.rotation.clone();
+                        
+                        cubes.push(cube);
+                        cubeGroup.add(cube);
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            controls.update();
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Rotate a face of the cube
+        function rotateFace(face, clockwise = true) {
+            if (isAnimating) {
+                animationQueue.push({face, clockwise});
+                return;
+            }
+            
+            isAnimating = true;
+            
+            const cubesToRotate = cubes.filter(cube => {
+                switch(face) {
+                    case 'front': return cube.position.z === 1;
+                    case 'back': return cube.position.z === -1;
+                    case 'left': return cube.position.x === -1;
+                    case 'right': return cube.position.x === 1;
+                    case 'up': return cube.position.y === 1;
+                    case 'down': return cube.position.y === -1;
+                }
+            });
+            
+            const axis = 
+                face === 'front' || face === 'back' ? 'z' :
+                face === 'left' || face === 'right' ? 'x' : 'y';
+            
+            const angle = (clockwise ? -1 : 1) * Math.PI / 2;
+            
+            const startTime = Date.now();
+            const duration = 300; // ms
+            
+            function updateRotation() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const currentAngle = angle * progress;
+                
+                cubesToRotate.forEach(cube => {
+                    switch(axis) {
+                        case 'x':
+                            cube.rotation.x = currentAngle;
+                            break;
+                        case 'y':
+                            cube.rotation.y = currentAngle;
+                            break;
+                        case 'z':
+                            cube.rotation.z = currentAngle;
+                            break;
+                    }
+                });
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateRotation);
+                } else {
+                    // Finalize rotation
+                    cubesToRotate.forEach(cube => {
+                        // Update position based on rotation
+                        const matrix = new THREE.Matrix4();
+                        switch(axis) {
+                            case 'x':
+                                matrix.makeRotationX(angle);
+                                break;
+                            case 'y':
+                                matrix.makeRotationY(angle);
+                                break;
+                            case 'z':
+                                matrix.makeRotationZ(angle);
+                                break;
+                        }
+                        cube.position.applyMatrix4(matrix);
+                        
+                        // Reset rotation for future animations
+                        cube.rotation.set(0, 0, 0);
+                    });
+                    
+                    isAnimating = false;
+                    
+                    // Process next animation in queue if any
+                    if (animationQueue.length > 0) {
+                        const nextMove = animationQueue.shift();
+                        rotateFace(nextMove.face, nextMove.clockwise);
+                    }
+                }
+            }
+            
+            updateRotation();
+        }
+        
+        // UI functions for button clicks
+        function rotateFront() { rotateFace('front'); }
+        function rotateBack() { rotateFace('back'); }
+        function rotateLeft() { rotateFace('left'); }
+        function rotateRight() { rotateFace('right'); }
+        function rotateUp() { rotateFace('up'); }
+        function rotateDown() { rotateFace('down'); }
+        
+        // Scramble the cube
+        function scramble() {
+            if (isAnimating) return;
+            
+            const moves = ['front', 'back', 'left', 'right', 'up', 'down'];
+            const directions = [true, false]; // clockwise or counterclockwise
+            
+            for (let i = 0; i < 20; i++) {
+                const move = moves[Math.floor(Math.random() * moves.length)];
+                const direction = directions[Math.floor(Math.random() * directions.length)];
+                animationQueue.push({face: move, clockwise: direction});
+            }
+            
+            // Start the animation sequence
+            if (animationQueue.length > 0 && !isAnimating) {
+                const nextMove = animationQueue.shift();
+                rotateFace(nextMove.face, nextMove.clockwise);
+            }
+        }
+        
+        // Reset the cube to its original state
+        function resetCube() {
+            if (isAnimating) return;
+            
+            cubes.forEach(cube => {
+                cube.position.copy(cube.userData.originalPosition);
+                cube.rotation.copy(cube.userData.originalRotation);
+            });
+            
+            // Clear animation queue
+            animationQueue = [];
+        }
+        
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>

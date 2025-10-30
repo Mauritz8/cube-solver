@@ -28,7 +28,7 @@
     const cube_container = document.getElementById("cube-container")!;
     cube_container.appendChild(renderer.domElement);
 
-    camera.position.set(4, 5, 5);
+    camera.position.set(3, 5, 7);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.01;
@@ -204,7 +204,7 @@ function get_move_description(move: string | undefined): string {
           {/if}
         </div>
         <button type="button" onclick={scramble_and_solve} class='btn-secondary' id='scramble-btn'>Scramble</button>
-        <p class='helper-text'>Ensure your physical cube matches the cube on the left before starting.</p>
+        <p class='helper-text'>Hold the cube with white on top and green facing you.</p>
       </section>
 
       <section class='info-card'>

@@ -1,13 +1,13 @@
 (* TODO: add more tests for edge cases within steps.
    Set up the cube state manually. *)
 
-let assert_cross_top_face_is_solved cube =
+let assert_cross_with_matching_edges_top_face_is_solved cube =
   let fail_message =
-    Printf.sprintf "Cross top face is solved: %s" (Rubik.Cube.to_string cube)
+    Printf.sprintf "Cross with matching edges top face is solved: %s" (Rubik.Cube.to_string cube)
   in
   Alcotest.(check bool)
     fail_message true
-    (Rubik.Cube.cross_top_face_is_solved cube)
+    (Rubik.Cube.cross_with_matching_edges_top_face_is_solved cube)
 
 let assert_first_two_layers_are_solved cube =
   let fail_message =
@@ -19,6 +19,14 @@ let assert_first_two_layers_are_solved cube =
     && Rubik.Cube.edges_second_layer_are_solved cube
   in
   Alcotest.(check bool) fail_message true first_two_layers_are_solved
+
+let assert_cross_top_face_is_solved cube =
+  let fail_message =
+    Printf.sprintf "Cross top face is solved: %s" (Rubik.Cube.to_string cube)
+  in
+  Alcotest.(check bool)
+    fail_message true
+    (Rubik.Cube.cross_top_face_is_solved cube)
 
 let solve_cross_already_solved () =
   let (cube : Rubik.Cube.cube) =
@@ -62,7 +70,7 @@ let solve_cross_already_solved () =
   | Error e -> failwith e
   | Ok moves ->
       let solved_cube = List.fold_left Rubik.Move.make cube moves in
-      assert_cross_top_face_is_solved solved_cube
+      assert_cross_with_matching_edges_top_face_is_solved solved_cube
 
 let solve_cross_edges_inserted_wrong_position () =
   let (cube : Rubik.Cube.cube) =
@@ -106,7 +114,7 @@ let solve_cross_edges_inserted_wrong_position () =
   | Error e -> failwith e
   | Ok moves ->
       let solved_cube = List.fold_left Rubik.Move.make cube moves in
-      assert_cross_top_face_is_solved solved_cube
+      assert_cross_with_matching_edges_top_face_is_solved solved_cube
 
 let solve_edges_second_layer_inserted_wrong_position () =
   let (cube : Rubik.Cube.cube) =
@@ -166,6 +174,7 @@ let solve_cube_test scramble =
       in
       let solved_cube = List.fold_left Rubik.Move.make cube all_moves in
       assert_first_two_layers_are_solved solved_cube;
+      assert_cross_top_face_is_solved solved_cube;
       ()
 
 let () =
